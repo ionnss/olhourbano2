@@ -1,0 +1,143 @@
+# Categories Configuration for Olho Urbano
+# Arquivo atualizado para categorias amplas, sem subcategorias,
+# e com localização obrigatória para todas as categorias.
+
+categories:
+  - id: "infraestrutura"
+    name: "Infraestrutura e Mobilidade"
+    icon: "🚧"
+    description: "Problemas com ruas, calçadas, sinalizações e transporte"
+
+  - id: "ciclismo"
+    name: "Ciclismo"
+    icon: "🚲"
+    description: "Problemas relacionados à infraestrutura cicloviária"
+
+  - id: "acessibilidade"
+    name: "Acessibilidade"
+    icon: "♿"
+    description: "Problemas de acessibilidade para pessoas com deficiência"
+
+  - id: "iluminacao"
+    name: "Iluminação Pública"
+    icon: "💡"
+    description: "Problemas com iluminação pública"
+
+  - id: "limpeza"
+    name: "Limpeza Urbana & Lixo"
+    icon: "♻️"
+    description: "Problemas com lixo, coleta e limpeza urbana"
+
+  - id: "saude_publica"
+    name: "Saúde Pública"
+    icon: "🚑"
+    description: "Problemas relacionados à saúde pública"
+
+  - id: "seguranca"
+    name: "Segurança Pública"
+    icon: "🚨"
+    description: "Problemas relacionados à segurança urbana"
+
+  - id: "meio_ambiente"
+    name: "Meio Ambiente"
+    icon: "🌳"
+    description: "Problemas ambientais e áreas verdes"
+
+  - id: "equipamentos_publicos"
+    name: "Estruturas Públicas"
+    icon: "🏚️"
+    description: "Problemas com estruturas e equipamentos públicos"
+
+  - id: "drenagem"
+    name: "Drenagem"
+    icon: "🌧️"
+    description: "Problemas com drenagem e alagamentos"
+
+  - id: "obras"
+    name: "Obras"
+    icon: "🧱"
+    description: "Problemas relacionados a obras e regularização"
+
+  - id: "corrupcao"
+    name: "Corrupção e Má Gestão"
+    icon: "🏛️"
+    description: "Denúncias de corrupção e má gestão pública"
+
+  - id: "transparencia"
+    name: "Transparência e Acesso à Informação"
+    icon: "📋"
+    description: "Problemas de acesso à informação pública"
+
+  - id: "saude_publica_servicos"
+    name: "Serviços de Saúde"
+    icon: "🏥"
+    description: "Problemas com atendimento e serviços de saúde pública"
+
+  - id: "educacao_publica"
+    name: "Educação Pública"
+    icon: "🎓"
+    description: "Problemas com ensino e infraestrutura educacional"
+
+  - id: "transporte_publico"
+    name: "Transporte Público"
+    icon: "🚌"
+    description: "Problemas com ônibus e transporte coletivo"
+
+  - id: "servicos_digitais"
+    name: "Serviços Digitais"
+    icon: "💻"
+    description: "Problemas com sites e aplicativos da prefeitura"
+
+  - id: "atendimento_cidadao"
+    name: "Atendimento ao Cidadão"
+    icon: "📞"
+    description: "Problemas com atendimento em repartições públicas"
+
+  - id: "problemas_sociais"
+    name: "Problemas Sociais"
+    icon: "👥"
+    description: "Questões sociais que afetam a comunidade"
+
+  - id: "comercio_fiscalizacao"
+    name: "Comércio e Fiscalização"
+    icon: "🏪"
+    description: "Problemas com estabelecimentos comerciais e fiscalização"
+
+  - id: "outros"
+    name: "Outros"
+    icon: "❓"
+    description: "Problemas que não se encaixam nas categorias acima"
+
+settings:
+  require_subcategory: false
+
+location_requirements:
+  location_required:
+    - "infraestrutura"
+    - "ciclismo"
+    - "acessibilidade"
+    - "iluminacao"
+    - "limpeza"
+    - "saude_publica"
+    - "seguranca"
+    - "meio_ambiente"
+    - "equipamentos_publicos"
+    - "drenagem"
+    - "obras"
+    - "corrupcao"
+    - "transparencia"
+    - "saude_publica_servicos"
+    - "educacao_publica"
+    - "transporte_publico"
+    - "servicos_digitais"
+    - "atendimento_cidadao"
+    - "problemas_sociais"
+    - "comercio_fiscalizacao"
+    - "outros"
+
+form_configurations:
+  location_required:
+    map_picker: true
+    address_required: true
+    coordinates_required: true
+    show_on_public_map: true

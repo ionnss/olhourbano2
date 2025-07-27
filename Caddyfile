@@ -1,0 +1,103 @@
+{
+	email olhourbano.contato@gmail.com
+	acme_ca https://acme-v02.api.letsencrypt.org/directory
+}
+
+# Shared snippet for static assets
+(snippet_static_handlers) {
+	handle /static/* {
+		uri strip_prefix /static
+		root * /olhourbano2/static
+		file_server
+	}
+	handle /statics/* {
+		uri strip_prefix /uploads
+		root * /olhourbano2/uploads
+		file_server
+	}
+	handle /robots.txt {
+		root * /olhourbano2/static
+		file_server
+	}
+	handle /sitemap.xml {
+		root * /olhourbano2/static
+		file_server
+	}
+}
+
+# Localhost block (for development)
+localhost {
+	tls internal
+
+	import snippet_static_handlers
+
+	handle /* {
+		reverse_proxy backend:8080 {
+			health_uri /
+			health_interval 5s
+			health_timeout 2s
+		}
+	}
+
+	log {
+		output stderr
+		format console
+		level DEBUG
+	}
+}
+
+# Production block
+olhourbano.com.br, www.olhourbano.com.br {
+	@www host www.olhourbano.com.br
+	redir @www https://olhourbano.com.br{uri} permanent
+
+	# Block suspicious paths
+	@blockpaths {
+		path /.env
+		path /.git/*
+		path /password.php
+		path /systembc/*
+		path /upl.php
+		path /1.php
+		path /t4
+		path /geoip/*
+		path /form.html
+	}
+	handle @blockpaths {
+		respond 404
+	}
+
+	import snippet_static_handlers
+
+	handle /* {
+		reverse_proxy backend:8080 {
+			health_uri /
+			health_interval 5s
+			health_timeout 2s
+		}
+	}
+
+	encode gzip
+
+	header {
+		X-Frame-Options "SAMEORIGIN"
+		X-Content-Type-Options "nosniff"
+		X-XSS-Protection "1; mode=block"
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; img-src 'self' data: https://cdn.jsdelivr.net https://maps.googleapis.com https://maps.gstatic.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; connect-src 'self' https://maps.googleapis.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;"
+		Permissions-Policy "geolocation=(self 'https://maps.googleapis.com')"
+	}
+
+	log {
+		output file /var/log/caddy/access.log {
+			roll_size 50MiB
+			roll_keep 5
+		}
+		format json
+	}
+
+	handle_errors {
+		respond "{http.error.status_code} {http.error.status_text}" {http.error.status_code}
+	}
+}
