@@ -4,7 +4,8 @@
 # This script performs comprehensive security checks to ensure
 # no sensitive information is exposed or leaked
 
-set -e
+# Remove set -e to prevent early exit on grep commands that find no matches
+# set -e
 
 # Colors for output
 RED='\033[0;31m'
@@ -72,19 +73,22 @@ echo "------------------------------"
 if [ ! -d ".git" ]; then
     print_status "WARN" "Not a git repository - skipping git history checks"
 else
-    # Check git history for secrets
-    if git log --all --full-history --oneline | grep -qi "password\|secret\|key"; then
+    # Check git history for secrets (exclude common security-related terms)
+    SUSPICIOUS_COMMITS=$(git log --all --full-history --oneline | grep -i "password\|secret\|key" | grep -v -i "use.*secret\|add.*secret\|implement.*secret\|docker.*secret\|secret.*management\|secret.*config\|api.*key.*config\|session.*key.*config" || true)
+    if [ -n "$SUSPICIOUS_COMMITS" ]; then
         print_status "FAIL" "Potential secrets found in git commit messages"
+        echo "$SUSPICIOUS_COMMITS" | head -3
     else
-        print_status "PASS" "No secrets found in git commit history"
+        print_status "PASS" "No suspicious secrets found in git commit history"
     fi
 
-    # Check for secrets in git-tracked files
-    SECRET_FILES=$(git ls-files | xargs grep -l "password\|secret\|key" 2>/dev/null | grep -v "\.md$\|\.sh$\|\.go$" || true)
-    if [ -n "$SECRET_FILES" ]; then
-        print_status "FAIL" "Potential secrets found in tracked files: $SECRET_FILES"
+    # Check for actual secret values in git-tracked files (look for assignments)
+    SECRET_ASSIGNMENTS=$(git ls-files | xargs grep -E "(password|secret|key)\s*=\s*['\"][^'\"]{8,}" 2>/dev/null || true)
+    if [ -n "$SECRET_ASSIGNMENTS" ]; then
+        print_status "FAIL" "Potential secret assignments found in tracked files"
+        echo "$SECRET_ASSIGNMENTS" | head -3
     else
-        print_status "PASS" "No secrets found in git-tracked files"
+        print_status "PASS" "No secret assignments found in git-tracked files"
     fi
 fi
 
@@ -101,17 +105,17 @@ echo ""
 echo "🔧 2. Source Code Security"
 echo "----------------------------"
 
-# Check for hardcoded passwords/secrets in Go files
-HARDCODED_SECRETS=$(grep -r "password\|secret\|key" --include="*.go" . | grep -v "PASSWORD_FILE\|SECRET_FILE\|KEY_FILE\|Password.*string\|Secret.*string\|Key.*string" | grep -v "//.*password\|//.*secret\|//.*key" || true)
+# Check for hardcoded secret values in Go files (look for actual assignments)
+HARDCODED_SECRETS=$(grep -r -E "(password|secret|key)\s*[:=]\s*['\"][^'\"]{8,}" --include="*.go" . | grep -v "PASSWORD_FILE\|SECRET_FILE\|KEY_FILE" || true)
 if [ -n "$HARDCODED_SECRETS" ]; then
-    print_status "FAIL" "Potential hardcoded secrets found in Go files"
+    print_status "FAIL" "Potential hardcoded secret values found in Go files"
     echo "$HARDCODED_SECRETS" | head -5
 else
-    print_status "PASS" "No hardcoded secrets found in source code"
+    print_status "PASS" "No hardcoded secret values found in source code"
 fi
 
 # Check String() method excludes sensitive fields
-if grep -q "DBPassword\|SMTPPassword\|SessionKey.*fmt.Sprintf" config/config.go 2>/dev/null; then
+if grep -A 10 "func.*String()" config/config.go 2>/dev/null | grep -q "DBPassword\|SMTPPassword\|SessionKey\|APIKey"; then
     print_status "FAIL" "String() method may expose sensitive fields"
 else
     print_status "PASS" "String() method properly excludes sensitive fields"

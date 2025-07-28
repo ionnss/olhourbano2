@@ -33,7 +33,7 @@ localhost {
 
 	handle /* {
 		reverse_proxy backend:8080 {
-			health_uri /
+			health_uri /health
 			health_interval 5s
 			health_timeout 2s
 		}
@@ -71,7 +71,7 @@ olhourbano.com.br, www.olhourbano.com.br {
 
 	handle /* {
 		reverse_proxy backend:8080 {
-			health_uri /
+			health_uri /health
 			health_interval 5s
 			health_timeout 2s
 		}
