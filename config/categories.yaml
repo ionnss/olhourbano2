@@ -3,7 +3,7 @@
 # e com localização obrigatória para todas as categorias.
 
 categories:
-  - id: "infraestrutura"
+  - id: "infraestrutura_mobilidade"
     name: "Infraestrutura e Mobilidade"
     icon: "🚧"
     description: "Problemas com ruas, calçadas, sinalizações e transporte"
@@ -18,7 +18,7 @@ categories:
     icon: "♿"
     description: "Problemas de acessibilidade para pessoas com deficiência"
 
-  - id: "iluminacao"
+  - id: "iluminacao_publica"
     name: "Iluminação Pública"
     icon: "💡"
     description: "Problemas com iluminação pública"
@@ -33,15 +33,15 @@ categories:
     icon: "🚑"
     description: "Problemas relacionados à saúde pública"
 
-  - id: "seguranca"
+  - id: "seguranca_publica"
     name: "Segurança Pública"
     icon: "🚨"
-    description: "Problemas relacionados à segurança urbana"
+    description: "Problemas relacionados à segurança pública urbana"
 
   - id: "meio_ambiente"
     name: "Meio Ambiente"
     icon: "🌳"
-    description: "Problemas ambientais e áreas verdes"
+    description: "Problemas ambientais e áreas verdes públicas"
 
   - id: "equipamentos_publicos"
     name: "Estruturas Públicas"
@@ -58,18 +58,13 @@ categories:
     icon: "🧱"
     description: "Problemas relacionados a obras e regularização"
 
-  - id: "corrupcao"
-    name: "Corrupção e Má Gestão"
+  - id: "corrupcao_gestao_publica"
+    name: "Corrupção e Má Gestão Pública"
     icon: "🏛️"
     description: "Denúncias de corrupção e má gestão pública"
 
-  - id: "transparencia"
-    name: "Transparência e Acesso à Informação"
-    icon: "📋"
-    description: "Problemas de acesso à informação pública"
-
-  - id: "saude_publica_servicos"
-    name: "Serviços de Saúde"
+  - id: "servicos_saude_publica"
+    name: "Serviços de Saúde Pública"
     icon: "🏥"
     description: "Problemas com atendimento e serviços de saúde pública"
 
@@ -83,25 +78,10 @@ categories:
     icon: "🚌"
     description: "Problemas com ônibus e transporte coletivo"
 
-  - id: "servicos_digitais"
-    name: "Serviços Digitais"
-    icon: "💻"
-    description: "Problemas com sites e aplicativos da prefeitura"
-
-  - id: "atendimento_cidadao"
-    name: "Atendimento ao Cidadão"
-    icon: "📞"
-    description: "Problemas com atendimento em repartições públicas"
-
-  - id: "problemas_sociais"
-    name: "Problemas Sociais"
-    icon: "👥"
-    description: "Questões sociais que afetam a comunidade"
-
   - id: "comercio_fiscalizacao"
     name: "Comércio e Fiscalização"
     icon: "🏪"
-    description: "Problemas com estabelecimentos comerciais e fiscalização"
+    description: "Problemas com estabelecimentos comerciais e fiscalização dos mesmos"
 
   - id: "outros"
     name: "Outros"
@@ -113,25 +93,21 @@ settings:
 
 location_requirements:
   location_required:
-    - "infraestrutura"
+    - "infraestrutura_mobilidade"
     - "ciclismo"
     - "acessibilidade"
-    - "iluminacao"
+    - "iluminacao_publica"
     - "limpeza"
     - "saude_publica"
-    - "seguranca"
+    - "seguranca_publica"
     - "meio_ambiente"
     - "equipamentos_publicos"
     - "drenagem"
     - "obras"
-    - "corrupcao"
-    - "transparencia"
-    - "saude_publica_servicos"
+    - "corrupcao_gestao_publica"
+    - "servicos_saude_publica"
     - "educacao_publica"
     - "transporte_publico"
-    - "servicos_digitais"
-    - "atendimento_cidadao"
-    - "problemas_sociais"
     - "comercio_fiscalizacao"
     - "outros"
 

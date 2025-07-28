@@ -1,0 +1,188 @@
+<div id="content">
+
+    <!-- Hero Section -->
+    <section id="home">
+      <div>
+        <h1>Ferramenta de Cidadania</h1>
+        <p>Participe da melhoria das cidades denunciando problemas urbanos de forma anônima e colaborativa.</p>
+        <div>
+          <div>
+            <span id="total-reports">-</span>
+            <span>Denúncias Registradas</span>
+          </div>
+          <div>
+            <span id="active-citizens">-</span>
+            <span>Cidadãos Ativos</span>
+          </div>
+        </div>
+        <div>
+          <button hx-get="/report" hx-target="#content">Registrar Denúncia</button>
+          <button hx-get="/feed_partial" hx-target="#content">Feed de Denúncias</button>
+          <p>Cidadania ativa, cidades melhores. Seja o olho da sua comunidade.</p>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Sobre a Plataforma -->
+    <section id="features">
+      <div>
+        <h2>Sobre o Olho Urbano</h2>
+        <p>
+          O Olho Urbano é uma plataforma para que qualquer cidadão possa denunciar e acompanhar problemas na
+          infraestrutura, acessibilidade, saúde, meio ambiente e segurança da cidade. As denúncias são anônimas, seguras
+          e ajudam a promover transparência, participação ativa e melhorias reais no espaço urbano.
+        </p>
+  
+        <div>
+          <div>
+            <h3>Denunciar Problemas</h3>
+            <p>infraestrutura, acessibilidade, saúde, meio ambiente, segurança e mais.</p>
+          </div>
+          <div>
+            <h3>Acompanhar Status</h3>
+            <p>Veja o andamento das denúncias e seja notificado.</p>
+          </div>
+          <div>
+            <h3>Votar e Priorizar</h3>
+            <p>Vote nos problemas mais urgentes da sua região. Receba apoio e apoie outros olhos urbanos.</p>
+          </div>
+          <div>
+            <h3>Privacidade Garantida</h3>
+            <p>Denúncias anônimas, dados protegidos e criptografados.</p>
+          </div>
+        </div>
+  
+        <div>
+          <a href="/report" hx-get="/report" hx-target="#content">Comece a Denunciar</a>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Categorias (O que pode ser reportado) -->
+    <section id="use-cases">
+      <div>
+        <h2>O Que Você Pode Reportar</h2>
+        <p>Problemas públicos comuns que precisam de atenção imediata.</p>
+  
+        <div>
+          <div>
+            <h3>Infraestrutura e Mobilidade</h3>
+            <p>Buracos, calçadas, sinalização, trânsito, transporte viário.</p>
+          </div>
+          <div>
+            <h3>Ciclismo</h3>
+            <p>Ciclovias, bicicletários, segurança de ciclistas.</p>
+          </div>
+          <div>
+            <h3>Acessibilidade</h3>
+            <p>Rampas, acessos, mobilidade de pessoas com deficiência.</p>
+          </div>
+          <div>
+            <h3>Iluminação Pública</h3>
+            <p>Postes apagados, iluminação deficiente, segurança à noite.</p>
+          </div>
+          <div>
+            <h3>Limpeza</h3>
+            <p>Lixo acumulado, coleta irregular, descarte inadequado.</p>
+          </div>
+          <div>
+            <h3>Saúde Pública</h3>
+            <p>Infestações, risco de dengue, saneamento precário.</p>
+          </div>
+          <div>
+            <h3>Segurança Pública</h3>
+            <p>Áreas perigosas, vandalismo, pontos de risco.</p>
+          </div>
+          <div>
+            <h3>Meio Ambiente</h3>
+            <p>Desmatamento, poluição, áreas verdes degradadas.</p>
+          </div>
+          <div>
+            <h3>Equipamentos Públicos</h3>
+            <p>Praças, parques, bancos, academias ao ar livre danificados.</p>
+          </div>
+          <div>
+            <h3>Drenagem</h3>
+            <p>Alagamentos, bocas de lobo entupidas, escoamento deficiente.</p>
+          </div>
+          <div>
+            <h3>Obras</h3>
+            <p>Obras paradas, tapumes abandonados, intervenções urbanas.</p>
+          </div>
+          <div>
+            <h3>Corrupção e Gestão Pública</h3>
+            <p>Má gestão de recursos, uso indevido de verbas públicas.</p>
+          </div>
+          <div>
+            <h3>Serviços de Saúde Pública</h3>
+            <p>Unidades de saúde sem atendimento, fila de espera, má infraestrutura.</p>
+          </div>
+          <div>
+            <h3>Educação Pública</h3>
+            <p>Escolas deterioradas, falta de merenda, estrutura precária.</p>
+          </div>
+          <div>
+            <h3>Transporte Público</h3>
+            <p>Linhas ineficientes, ônibus lotados, pontos sem abrigo.</p>
+          </div>
+          <div>
+            <h3>Comércio e Fiscalização</h3>
+            <p>Ambulantes irregulares, ocupação ilegal, falta de fiscalização.</p>
+          </div>
+          <div>
+            <h3>Outros</h3>
+            <p>Problemas que não se enquadram nas categorias anteriores.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Footer -->
+    <footer>
+      <div>
+        <div>
+          <div>
+            <h3>Olho Urbano</h3>
+            <p>© 2025 Olho Urbano. Todos os direitos reservados.</p>
+            <p>Criado com 💙 em Curitiba</p>
+            <div>
+              <a href="https://x.com/olhourbanoapp" target="_blank">Twitter</a>
+              <a href="https://www.linkedin.com/company/olho-urbano/">LinkedIn</a>
+              <a href="https://www.instagram.com/olho.urbano/" target="_blank">Instagram</a>
+              <a href="mailto:olhourbano.contato@gmail.com">Email</a>
+            </div>
+          </div>
+  
+          <div>
+            <h4>Institucional</h4>
+            <ul>
+              <li><a hx-get="/sobre" hx-target="#content">Sobre nós</a></li>
+              <li><a hx-get="/transparencia" hx-target="#content">Transparência</a></li>
+              <li><a hx-get="/status" hx-target="#content">Status</a></li>
+              <li><a hx-get="/termos" hx-target="#content">Termos e privacidade</a></li>
+              <li><a hx-get="/auditoria" hx-target="#content">Auditoria</a></li>
+              <li><a hx-get="/ajuda" hx-target="#content">Central de ajuda</a></li>
+              <li><a hx-get="/blog" hx-target="#content">Blog</a></li>
+              <li><a hx-get="/comunidade" hx-target="#content">Comunidade</a></li>
+            </ul>
+          </div>
+  
+          <div>
+            <h4>Soluções e Parcerias</h4>
+            <ul>
+              <li><a hx-get="/cidades" hx-target="#content">Prefeituras e Governos</a></li>
+              <li><a hx-get="/publicas" hx-target="#content">Órgãos Públicos</a></li>
+              <li><a hx-get="/empresas" hx-target="#content">Empresas Responsáveis</a></li>
+              <li><a hx-get="/pesquisadores" hx-target="#content">Universidades e Pesquisadores</a></li>
+            </ul>
+          </div>
+        </div>
+  
+        <div>
+          <a href="/" title="Voltar ao topo">Voltar</a>
+        </div>
+      </div>
+    </footer>
+  
+  </div>
+  
