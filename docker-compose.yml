@@ -5,8 +5,10 @@ services:
     restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER"}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
     volumes:
       - db_data:/var/lib/postgresql/data
     networks:
@@ -18,7 +20,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8081:8080"
     volumes:
       - ./static:/olhurbano2/static
     depends_on:
@@ -46,13 +48,12 @@ services:
       - CPFHUB_API_KEY_FILE=/run/secrets/cpfhub_api_key
       - GOOGLE_MAPS_API_URL=https://maps.googleapis.com/maps/api
       - GOOGLE_MAPS_API_KEY_FILE=/run/secrets/google_maps_api_key
-    command: ["wait-for-it.sh", "db:5432", "-t", "45", "--", "usr/local/bin/app_olhurbano2"]
+    command: ["/wait-for-it.sh", "db:5432", "-t", "45", "--", "/usr/local/bin/app_olhourbano2"]
     restart: on-failure
     secrets:
       - smtp_password
       - db_password
       - session_key
-      - postgres_password
       - cpfhub_api_key
       - google_maps_api_key
 
@@ -63,9 +64,20 @@ services:
     environment:
       - DB_HOST=db
       - DB_PORT=5432
-      - DB_USER=olhourbano
+      - DB_USER=${POSTGRES_USER}
       - DB_PASSWORD_FILE=/run/secrets/db_password
-      - DB_NAME=olhourbanovault
+      - DB_NAME=${POSTGRES_DB}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD_FILE=/run/secrets/smtp_password
+      - SESSION_KEY_FILE=/run/secrets/session_key
+      - COOKIE_DOMAIN=${COOKIE_DOMAIN}
+      - APP_VERSION=${APP_VERSION}
+      - CPFHUB_API_URL=https://api.cpfhub.io/api/cpf
+      - CPFHUB_API_KEY_FILE=/run/secrets/cpfhub_api_key
+      - GOOGLE_MAPS_API_URL=https://maps.googleapis.com/maps/api
+      - GOOGLE_MAPS_API_KEY_FILE=/run/secrets/google_maps_api_key
     command: ["/wait-for-it.sh", "db:5432", "-t", "45", "--", "/usr/local/bin/app_olhourbano2", "migrate"]
     depends_on:
       - db
@@ -75,6 +87,10 @@ services:
       - ./db/migrations:/olhourbano2/db/migrations
     secrets:
       - db_password
+      - smtp_password
+      - session_key
+      - cpfhub_api_key
+      - google_maps_api_key
 
   caddy:
     image: caddy:2.10.0-alpine
@@ -110,8 +126,6 @@ secrets:
     file: ./secrets/smtp_password.txt
   session_key:
     file: ./secrets/session_key.txt
-  postgres_password:
-    file: ./secrets/postgres_password.txt
   cpfhub_api_key:
     file: ./secrets/cpfhub_api_key.txt
   google_maps_api_key:
