@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <!-- Title -->
+    <title>Olho Urbano</title>
+
+    <!-- Meta tags -->
+    <meta name="author" content="Olho Urbano">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta name="google" content="notranslate">
+
+    <!-- Description -->
+    <meta name="description"
+        content="Plataforma para cidadãos reportarem e acompanharem problemas na infraestrutura, acessibilidade, iluminação pública, 
+        segurança pública, corrupção, meio ambiente, obras, fiscalização de comércio, entre outros.">
+    <meta name="keywords"
+        content="denúncia pública, infraestrutura urbana, problemas na cidade, buracos na rua, 
+        iluminação pública, segurança pública, cidadania ativa, corrupção, meio ambiente, obras, fiscalização de comércio, entre outros">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" 
+    href="/static/resources/circular_eye.png">
+    <link rel="icon" type="image/png" sizes="32x32" 
+    href="/static/resources/circular_eye.png">
+    <link rel="icon" type="image/png" sizes="16x16" 
+    href="/static/resources/circular_eye.png">
+    <link rel="apple-touch-icon" sizes="180x180" 
+    href="/static/resources/circular_eye.png">
+
+    <!-- Bootstrap 5.3.7 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" 
+    rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" 
+    crossorigin="anonymous">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" 
+    href="https://fonts.googleapis.com">
+    <link rel="preconnect" 
+    href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" 
+    rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/olhourbano.css">
+
+    <!-- Custom JS -->
+    <script src="/static/js/olhourbano.js"></script>
+
+</head>
+<body>
+    {{template "header.html" .}}
+    <main>
+        {{block "index" .}}
+        {{end}}
+    </main>
+    {{template "footer.html" .}}
+</body>
+</html>

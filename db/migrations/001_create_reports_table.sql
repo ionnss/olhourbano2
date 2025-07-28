@@ -1,0 +1,14 @@
+CREATE TABLE reports (
+    id SERIAL PRIMARY KEY,
+    problem_type VARCHAR(100),
+    cpf VARCHAR(64),
+    email VARCHAR(100),
+    location TEXT,
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION,
+    description TEXT,
+    photo_path TEXT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    vote_count INTEGER DEFAULT 0,
+    hashed_id VARCHAR(64)
+); 
