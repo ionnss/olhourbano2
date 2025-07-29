@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"olhourbano2/config"
 	"olhourbano2/db"
 	"olhourbano2/routes"
+	"os"
 )
 
 func main() {
@@ -27,6 +29,15 @@ func main() {
 	}
 	defer db.DB.Close()
 	fmt.Printf("Database connection established successfully (Host: %s:%s)\n", cfg.DBHost, cfg.DBPort)
+
+	// Run migrations (check if migrations are already applied)
+	if len(os.Args) > 1 && os.Args[1] == "migrate" {
+		if err := db.RunMigrations(); err != nil {
+			log.Fatalf("Error running migrations: %v\n", err)
+		}
+		fmt.Println("Migrations applied successfully")
+		return
+	}
 
 	// Create routes
 	r := routes.CreateRoutes()
