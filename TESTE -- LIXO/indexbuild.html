@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <!-- Title -->
+    <title>Olho Urbano</title>
+
+    <!-- Meta tags -->
+    <meta name="author" content="Olho Urbano">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta name="google" content="notranslate">
+
+    <!-- Description -->
+    <meta name="description" content="Plataforma para cidadãos reportarem e acompanharem problemas na infraestrutura, acessibilidade, iluminação pública, 
+        segurança pública, corrupção, meio ambiente, obras, fiscalização de comércio, entre outros.">
+    <meta name="keywords"
+        content="denúncia pública, infraestrutura urbana, problemas na cidade, buracos na rua, 
+        iluminação pública, segurança pública, cidadania ativa, corrupção, meio ambiente, obras, fiscalização de comércio, entre outros">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/resources/circular_eye.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/resources/circular_eye.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/resources/circular_eye.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/resources/circular_eye.png">
+
+    <!-- Bootstrap 5.3.7 CSS and Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- Bootstrap 5.3.7 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+        crossorigin="anonymous"></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <!-- <link rel="stylesheet" href="/static/css/olhourbano.css"> -->
+
+    <!-- Custom JS -->
+    <!-- <script src="/static/js/olhourbano.js"></script> -->
+
+    <style>
+
+        /* General */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f0f0f0;
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            margin: 2rem;
+            padding: 0;
+            position: relative;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3C/svg%3E");
+            background-size: 70px 70px;
+            background-repeat: repeat;
+            opacity: 0.36;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        main {
+            background-color: none !important;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            body {
+                margin: 1rem;
+                padding: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                margin: 1rem;
+            }
+        }
+
+        /* Prevent horizontal scroll on mobile */
+        .container-fluid, .container {
+            overflow-x: hidden;
+        }
+
+        /* Touch-friendly buttons */
+        .btn, button, a {
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        /* Header */
+        header .bi {
+            color: #333333 !important;
+            font-size: 1.2rem;
+        }
+
+        .navbar-brand-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333333;
+            margin-left: 0.5rem;
+        }
+
+        .navbar-buttons .bi {
+            font-size: 1.4rem;
+        }
+
+        /* Mobile Header Adjustments */
+        @media (max-width: 768px) {
+            .navbar-brand img {
+                height: 40px !important;
+            }
+            
+            .navbar-brand-text {
+                font-size: 1.1rem;
+                margin-left: 0.3rem;
+            }
+            
+            .navbar-buttons .bi {
+                font-size: 1.1rem;
+            }
+            
+            .navbar-buttons .btn {
+                padding: 0.4rem !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-brand-text {
+                display: none;
+            }
+        }
+
+        /* Common Section Styling */
+        .styled-section {
+            margin-top: 2rem;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 5px 5px 8px 0 rgba(51, 51, 51, 0.8);
+            padding: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .styled-section {
+                padding: 2rem 1.5rem;
+                margin-top: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .styled-section {
+                padding: 1.5rem 1rem;
+                margin-top: 1rem;
+                border-radius: 20px;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /* Hero Section */
+        .hero-section {
+            margin-top: 2rem;
+            background-image: url('/static/resource/hero_background.svg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 5px 5px 8px 0 rgba(51, 51, 51, 0.8);
+            padding: 2rem;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(30, 30, 40, 0.9);
+            backdrop-filter: blur(0px);
+            z-index: 1;
+        }
+
+        .hero-section>* {
+            position: relative;
+            z-index: 2;
+            color: white;
+        }
+
+        .hero-section .btn {
+            box-shadow: 0 4px 8px 0 rgba(51, 51, 51, 0.6), 0 0 15px rgba(255, 255, 255, 0.13);
+            transition: all 0.3s ease;
+        }
+
+        .hero-section .btn:hover {
+            box-shadow: 0 6px 12px 0 rgba(51, 51, 51, 0.8), 0 0 25px rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .hero-section .btn i {
+            font-size: 1.1rem;
+        }
+
+        .hero-title h1 {
+            font-weight: 700;
+        }
+
+        .hero-description p {
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+
+        .total-stats {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .total-stats-separator {
+            width: 1px;
+            height: 3rem;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .hero-footer {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #ffffff80;
+        }
+
+        .button-text {
+            font-size: 1rem;
+            font-weight: 550;
+        }
+
+        /* Mobile Hero Adjustments */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 1.5rem;
+                margin-top: 1.5rem;
+            }
+            
+            .hero-title h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-description p {
+                font-size: 1rem;
+                padding: 0 !important;
+            }
+            
+            .total-stats {
+                flex-direction: column;
+                gap: 1rem !important;
+                text-align: center;
+            }
+            
+            .total-stats-separator {
+                display: none;
+            }
+            
+            .hero-footer {
+                padding: 0 !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 1rem;
+                border-radius: 20px;
+            }
+            
+            .hero-title h1 {
+                font-size: 1.8rem;
+            }
+            
+            .button-text {
+                display: none !important;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /* Features Section Styling */
+
+        .features-section {
+            margin-top: 6rem !important;
+            background-color: none !important;
+        }
+
+        .features-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .features-section p {
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: #666;
+            text-align: center;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .feature-card {
+            background: rgba(248, 249, 250, 0.8);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 10px rgba(0, 0, 0, 0.25);
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            font-size: 1rem;
+            color: #666;
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+        .feature-card i {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: rem;
+        }
+
+        .feature-card:hover i {
+            color: #007bff;
+            transition: all 1s ease;
+        }
+
+        .features-cta {
+            text-align: center;
+            margin-bottom: 8rem !important;
+        }
+
+        .features-cta a {
+            display: inline-block;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(51, 51, 51, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        .features-cta a:hover {
+            transform: translateY(-2px);
+            box-shadow: 2px 8px 35px rgb(5, 178, 34);
+            color: white;
+            text-decoration: none;
+            transition: all 0.7s ease;
+        }
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        /* Use Cases Section Styling */
+
+        .use-cases-section {
+            margin-top: 2rem;
+            margin-bottom: 6rem;
+        }
+
+        /* Full-width carousel that breaks out of container */
+        .use-cases-section .container {
+            padding-left: 0;
+            padding-right: 0;
+            max-width: none;
+            width: 100%;
+        }
+
+        .use-cases-header {
+            padding-left: 3rem;
+            padding-right: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .use-cases-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .use-cases-section > div > p {
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: #666;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .scroll-hint {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #999;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .scroll-hint i {
+            font-size: 1.1rem;
+            margin: 0 0.3rem;
+            animation: scroll-pulse 2s infinite;
+        }
+
+        @keyframes scroll-pulse {
+            0%, 100% { opacity: 0.5; transform: translateX(0); }
+            50% { opacity: 1; transform: translateX(3px); }
+        }
+        
+        
+        /* Categories Carousel Container */
+        .categories-carousel-container {
+            position: relative;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .categories-grid {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: thin; /* Firefox - show thin scrollbar */
+            scrollbar-color: #ccc transparent; /* Firefox scrollbar colors */
+            padding: 1rem 3rem;
+            cursor: grab;
+        }
+
+        .categories-grid:active {
+            cursor: grabbing;
+        }
+
+        /* Show scrollbar on webkit browsers for mouse users */
+        .categories-grid::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .categories-grid::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+
+        .categories-grid::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        .categories-grid::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .category-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 1.5rem;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            flex: 0 0 280px; /* Fixed width for carousel */
+            min-height: 120px;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 10px rgba(0, 0, 0, 0.25);
+        }
+
+        .category-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .category-card h3 .emoji {
+            font-size: 1.4rem;
+            margin-right: 0.3rem;
+        }
+
+        .category-card p {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+
+        /* Tablet Responsiveness for Sections */
+        @media (max-width: 992px) and (min-width: 769px) {
+            .features-grid {
+                max-width: 700px;
+                gap: 1.5rem;
+            }
+        }
+
+        /* Mobile Responsiveness for Sections */
+        @media (max-width: 768px) {
+            .features-section h2,
+            .use-cases-section h2 {
+                font-size: 2rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .features-section p,
+            .use-cases-section > div > p {
+                font-size: 1rem;
+                margin-bottom: 2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+                max-width: none;
+            }
+            
+            .feature-card {
+                padding: 1.5rem;
+            }
+            
+            .use-cases-header {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+            
+            .categories-carousel-container {
+                padding: 0;
+            }
+            
+            .categories-grid {
+                gap: 1rem;
+                padding: 1rem 2rem;
+            }
+            
+            .category-card {
+                padding: 1.2rem;
+                flex: 0 0 260px;
+            }
+            
+            .features-cta a {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .features-section h2,
+            .use-cases-section h2 {
+                font-size: 1.8rem;
+            }
+            
+            .feature-card {
+                padding: 1.2rem;
+            }
+            
+            .feature-card h3 {
+                font-size: 1.2rem;
+            }
+            
+            .use-cases-header {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            .categories-carousel-container {
+                padding: 0;
+            }
+            
+            .categories-grid {
+                padding: 1rem 1rem;
+            }
+            
+            .category-card {
+                padding: 1rem;
+                flex: 0 0 240px;
+            }
+            
+            .category-card h3 {
+                font-size: 1.1rem;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /* Footer */
+        .footer-section {
+            background-color: #f0f0f0;
+            color: #333333;
+            padding: 2rem;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            margin-top: 2rem;
+            box-shadow: 0px 0px 45px 3px rgba(51, 51, 51, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .text-logo-footer h3 {
+            font-size: 2rem;
+            font-weight: 700 !important;
+            color: #333333;
+        }
+
+        .footer-section:hover {
+            box-shadow: 0px 0px 45px 3px rgba(51, 51, 51, 0.8);
+            transition: all 0.3s ease;
+            transform: translateX(-2px);
+        }
+
+        .logo-footer .bi {
+            font-size: 1.1rem;
+            color: #333333;
+            text-decoration: none !important;
+        }
+
+        .social-media {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.0001rem !important;
+            font-size: 1.1rem;
+            margin-top: 5rem;
+        }
+
+        .social-media a {
+            text-decoration: none !important;
+            color: #333333 !important;
+            transition: all 0.3s ease;
+        }
+
+        .social-media a:hover {
+            color: #007bff !important;
+            text-decoration: none !important;
+            transition: all 2s ease;
+        }
+
+        .social-media a:visited,
+        .social-media a:link,
+        .social-media a:active {
+            text-decoration: none !important;
+        }
+
+        .institucional-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #333333;
+        }
+
+        .solucoes-parcerias-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #333333;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #333333;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: #333333;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #007bff !important;
+        }
+
+        .footer-final {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #333333;
+        }
+
+        .footer-divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent 0%, #828080 50%, #828080 50%, transparent 100%);
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            border: none;
+            margin-left: 10rem;
+            margin-right: 10rem;
+            opacity: 0.3;
+        }
+
+        /* Mobile Footer Adjustments */
+        @media (max-width: 768px) {
+            .footer-section {
+                padding: 1.5rem;
+                margin-top: 1.5rem;
+            }
+            
+            .footer-section .container {
+                flex-direction: column;
+                text-align: center;
+                gap: 2rem;
+            }
+            
+            .logo-footer,
+            .institucional,
+            .solucoes-parcerias {
+                padding: 0 !important;
+            }
+            
+            .logo-footer img {
+                height: 70px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-section {
+                padding: 1rem;
+                border-radius: 20px 20px 0 0;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <main>
+
+        <header>
+            <nav class="navbar navbar-expand-lg d-flex justify-content-between" role="navigation">
+                <!-- Logo on the left -->
+                <div class="d-flex align-items-center">
+                    <a class="navbar-brand" href="/">
+                        <img src="/static/resource/blue_eye.svg" alt="Olho Urbano" style="height: 60px;">
+                        <span class="navbar-brand-text">Olho Urbano</span>
+                    </a>
+                </div>
+
+                <!-- Navigation Buttons on the right -->
+                <div class="navbar-buttons d-flex align-items-center">
+                    <!-- Report Button -->
+                    <button type="button" class="btn px-2 py-2" hx-get="/report" hx-target="#content"
+                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Registrar Denúncia">
+                        <i class="bi bi-flag-fill me-1"></i>
+                    </button>
+
+                    <!-- Feed Button -->
+                    <button type="button" class="btn px-2 py-2" hx-get="/feed" hx-target="#content"
+                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Feed de Denúncias">
+                        <i class="bi bi-list-ul me-1"></i>
+                    </button>
+
+                    <!-- Map Button -->
+                    <button type="button" class="btn px-2 py-2" hx-get="/map" hx-target="#content"
+                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Mapa de Denúncias">
+                        <i class="bi bi-map-fill me-1"></i>
+                    </button>
+                </div>
+            </nav>
+        </header>
+
+        <div id="content">
+
+            <!-- Hero Section -->
+            <section class="hero-section container py-5 px-5">
+
+                <div class="container text-center">
+
+                    <div class="hero-title display-4">
+                        <h1>Ferramenta de Cidadania</h1>
+                    </div>
+
+                    <div class="hero-description px-4 mt-5">
+                        <p>Participe da melhoria das cidades denunciando problemas urbanos de forma anônima e
+                            colaborativa.</p>
+                    </div>
+
+
+                    <div class="total-stats d-flex gap-5 justify-content-center mt-5">
+                        <div>
+                            <span id="total-reports"></span>
+                            <span>Denúncias Registradas</span>
+                        </div>
+                        <div class="total-stats-separator"></div>
+                        <div>
+                            <span id="active-citizens"></span>
+                            <span>Cidadãos Ativos</span>
+                        </div>
+                    </div>
+
+
+                    <div class="d-flex gap-3 justify-content-center mt-5">
+                        <button class="btn btn-primary btn-sm rounded-pill px-3 py-3" hx-get="/report"
+                            hx-target="#content">
+                            <i class="bi bi-flag-fill me-1"></i>
+                            <span class="button-text d-none d-md-inline">Denunciar</span>
+                        </button>
+                        <button class="btn btn-secondary btn-sm rounded-pill px-3 py-1" hx-get="/feed_partial"
+                            hx-target="#content">
+                            <i class="bi bi-list-ul me-1"></i>
+                            <span class="button-text d-none d-md-inline">Feed de Denúncias</span>
+                        </button>
+                        <button class="btn btn-success btn-sm rounded-pill px-3 py-1" hx-get="/map"
+                            hx-target="#content">
+                            <i class="bi bi-map-fill me-1 text-swhite"></i>
+                            <span class="button-text d-none d-md-inline ">Mapa de Denúncias</span>
+                        </button>
+                    </div>
+
+                    <div class="hero-footer mt-5 px-5">
+                        <p>Cidadania ativa, cidades melhores. Seja o olho da sua comunidade.</p>
+                    </div>
+
+
+                </div>
+            </section>
+
+            <!-- Sobre a Plataforma -->
+            <section class="features-section ">
+                <div class="container">
+                    <h2>Sobre o Olho Urbano</h2>
+                    <p>
+                        O Olho Urbano é uma plataforma para que qualquer cidadão possa denunciar e acompanhar problemas
+                        na infraestrutura, acessibilidade, saúde, meio ambiente e segurança da cidade. As denúncias são
+                        anônimas, seguras e ajudam a promover transparência, participação ativa e melhorias reais no espaço urbano.
+                    </p>
+
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <i class="bi bi-flag-fill"></i>
+                            <h3>Denunciar Problemas</h3>
+                            <p>Infraestrutura, acessibilidade, saúde, meio ambiente, segurança e mais.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="bi bi-clock-history"></i>
+                            <h3>Acompanhar Status</h3>
+                            <p>Veja o andamento das denúncias e seja notificado sobre atualizações.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="bi bi-people-fill"></i>
+                            <h3>Votar e Priorizar</h3>
+                            <p>Vote nos problemas mais urgentes da sua região. Receba apoio e apoie outros olhos urbanos.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="bi bi-shield-lock-fill"></i>
+                            <h3>Privacidade Garantida</h3>
+                            <p>Denúncias anônimas, dados protegidos e criptografados para sua segurança.</p>
+                        </div>
+                    </div>
+
+                    <div class="features-cta d-flex justify-content-center mt-5">
+                        <a href="/report" hx-get="/report" hx-target="#content">
+                            <i class="bi bi-plus-circle me-1 mr-1"></i>
+                            Comece a Denunciar
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Categorias (O que pode ser reportado) -->
+            <section id="use-cases" class="use-cases-section">
+                <div class="container">
+                    <div class="use-cases-header text-center">
+                        <h2>O Que Você Pode Reportar</h2>
+                        <p>Problemas públicos comuns que precisam de atenção imediata.</p>
+                        
+                    </div>
+
+                    <div class="categories-carousel-container">
+                        <div class="categories-grid">
+                            <div class="category-card">
+                                <h3><span class="emoji">🚧</span>Infraestrutura e Mobilidade</h3>
+                                <p>Problemas com ruas, calçadas, sinalizações e transporte.</p>
+                            </div>
+                            <div class="category-card">
+                                <h3><span class="emoji">🚲</span>Ciclismo</h3>
+                                <p>Problemas relacionados à infraestrutura cicloviária.</p>
+                            </div>
+                            <div class="category-card">
+                                <h3><span class="emoji">♿</span>Acessibilidade</h3>
+                                <p>Problemas de acessibilidade para pessoas com deficiência.</p>
+                            </div>
+                            <div class="category-card">
+                                <h3><span class="emoji">💡</span>Iluminação Pública</h3>
+                                <p>Problemas com iluminação pública.</p>
+                            </div>
+                            <div class="category-card">
+                                <h3><span class="emoji">♻️</span>Limpeza Urbana & Lixo</h3>
+                                <p>Problemas com lixo, coleta e limpeza urbana.</p>
+                            </div>
+                            <div class="category-card">
+                                <h3><span class="emoji">🚑</span>Saúde Pública</h3>
+                                <p>Problemas relacionados à saúde pública.</p>
+                            </div>
+                            <div class="category-card">
+                                <h3><span class="emoji">🚨</span>Segurança Pública</h3>
+                                <p>Problemas relacionados à segurança pública urbana.</p>
+                            </div>
+                            <div class="category-card">
+                                <h3><span class="emoji">🌳</span>Meio Ambiente</h3>
+                                <p>Problemas ambientais e áreas verdes públicas.</p>
+                            </div>
+                            <div class="category-card">
+                                <h3><span class="emoji">🏚️</span>Estruturas Públicas</h3>
+                                <p>Problemas com estruturas e equipamentos públicos.</p>
+                            </div>
+                            <div class="category-card">
+                                <h3><span class="emoji">🌧️</span>Drenagem</h3>
+                                <p>Problemas com drenagem e alagamentos.</p>
+                            </div>
+                            <div class="category-card">
+                                <h3><span class="emoji">🧱</span>Obras</h3>
+                                <p>Problemas relacionados a obras e regularização.</p>
+                            </div>
+                            <div class="category-card">
+                                <h3><span class="emoji">🏛️</span>Corrupção e Má Gestão Pública</h3>
+                                <p>Denúncias de corrupção e má gestão pública.</p>
+                            </div>
+                            <div class="category-card">
+                                <h3><span class="emoji">🏥</span>Serviços de Saúde Pública</h3>
+                                <p>Problemas com atendimento e serviços de saúde pública.</p>
+                            </div>
+                            <div class="category-card">
+                                <h3><span class="emoji">🎓</span>Educação Pública</h3>
+                                <p>Problemas com ensino e infraestrutura educacional.</p>
+                            </div>
+                            <div class="category-card">
+                                <h3><span class="emoji">🚌</span>Transporte Público</h3>
+                                <p>Problemas com ônibus e transporte coletivo.</p>
+                            </div>
+                            <div class="category-card">
+                                <h3><span class="emoji">🏪</span>Comércio e Fiscalização</h3>
+                                <p>Problemas com estabelecimentos comerciais e fiscalização dos mesmos.</p>
+                            </div>
+                            <div class="category-card">
+                                <h3><span class="emoji">❓</span>Outros</h3>
+                                <p>Problemas que não se encaixam nas categorias acima.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scroll-hint text-center mt-2">
+                        <i class="bi bi-arrow-left"></i>
+                        Deslize para ver todas as categorias
+                        <i class="bi bi-arrow-right"></i>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="footer-section container py-5 px-5 mt-auto">
+        <div class="container d-flex justify-content-between">
+
+            <div class="logo-footer text-center">
+
+                <!-- Logo -->
+                <div class="mb-3">
+                    <img src="/static/resource/blue_eye.svg" alt="Olho Urbano" style="height: 90px">
+                </div>
+
+                <div class="text-logo-footer text-center">
+                    <h3>OU</h3>
+                </div>
+
+                
+
+               
+
+            </div>
+
+            <div class="institucional px-5">
+                <h4 class="institucional-title mb-3">Institucional</h4>
+                <ul class="footer-links">
+                    <li><a hx-get="/sobre" hx-target="#content">Sobre nós</a></li>
+                    <li><a hx-get="/status" hx-target="#content">Status</a></li>
+                    <li><a hx-get="/termos" hx-target="#content">Termos e privacidade</a></li>
+                    <li><a hx-get="/ajuda" hx-target="#content">Ajuda</a></li>
+                    <li><a hx-get="/blog" hx-target="#content">Blog</a></li>
+                </ul>
+            </div>
+
+            <div class="solucoes-parcerias px-5">
+                <h4 class="solucoes-parcerias-title mb-3">Soluções e Parcerias</h4>
+                <ul class="footer-links">
+                    <li><a hx-get="/governos" hx-target="#content">Prefeituras e Governos</a></li>
+                    <li><a hx-get="/empresas" hx-target="#content">Empresas</a></li>
+                    <li><a hx-get="/pesquisadores" hx-target="#content">Universidades e Pesquisadores</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-final justify-content-center mt-5 text-muted">
+            
+             
+            <!-- Social Media -->
+             <div class="social-media">
+                <a href="https://x.com/olhourbanoapp">
+                    <i class="bi bi-twitter-x"></i>
+                </a>
+                <a href="https://www.linkedin.com/company/olho-urbano/">
+                    <i class="bi bi-linkedin"></i>
+                </a>
+                <a href="https://www.instagram.com/olho.urbano/">
+                    <i class="bi bi-instagram"></i>
+                </a>
+                <a href="mailto:olhourbano.contato@gmail.com">
+                    <i class="bi bi-envelope-fill"></i>
+                </a>
+            </div>
+
+
+            <div class="footer-divider mt-5 mb-5"></div>
+
+            <!-- Footer Final Text -->
+            <div class="footer-final-text text-center">
+                <p class=" text-center">© 2025 Olho Urbano. Todos os direitos reservados.</p>
+                <p class="text-center">Criado com 💙 em Curitiba</p>
+            </div>
+
+        </div>
+    </footer>
+
+</body>
+
+</html>

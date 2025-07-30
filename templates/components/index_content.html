@@ -1,141 +1,187 @@
 {{define "index_content"}}
 <div id="content">
 
-    <!-- Hero Section -->
-    <section id="hero">
-      <div>
+  <!-- Hero Section -->
+  <section class="hero-section container py-5 px-5">
+
+    <div class="container text-center">
+
+      <div class="hero-title display-4">
         <h1>Ferramenta de Cidadania</h1>
-        <p>Participe da melhoria das cidades denunciando problemas urbanos de forma anônima e colaborativa.</p>
+      </div>
+
+      <div class="hero-description px-4 mt-5">
+        <p>Participe da melhoria das cidades denunciando problemas urbanos de forma anônima e
+          colaborativa.</p>
+      </div>
+
+
+      <div class="total-stats d-flex gap-5 justify-content-center mt-5">
         <div>
-          <div>
-            <span id="total-reports">-</span>
-            <span>Denúncias Registradas</span>
-          </div>
-          <div>
-            <span id="active-citizens">-</span>
-            <span>Cidadãos Ativos</span>
-          </div>
+          <span id="total-reports"></span>
+          <span>Denúncias Registradas</span>
         </div>
+        <div class="total-stats-separator"></div>
         <div>
-          <button hx-get="/report" hx-target="#content">Registrar Denúncia</button>
-          <button hx-get="/feed_partial" hx-target="#content">Feed de Denúncias</button>
-          <p>Cidadania ativa, cidades melhores. Seja o olho da sua comunidade.</p>
+          <span id="active-citizens"></span>
+          <span>Cidadãos Ativos</span>
         </div>
       </div>
-    </section>
-  
-    <!-- Sobre a Plataforma -->
-    <section id="features">
-      <div>
-        <h2>Sobre o Olho Urbano</h2>
-        <p>
-          O Olho Urbano é uma plataforma para que qualquer cidadão possa denunciar e acompanhar problemas na
-          infraestrutura, acessibilidade, saúde, meio ambiente e segurança da cidade. As denúncias são anônimas, seguras
-          e ajudam a promover transparência, participação ativa e melhorias reais no espaço urbano.
-        </p>
-  
-        <div>
-          <div>
-            <h3>Denunciar Problemas</h3>
-            <p>infraestrutura, acessibilidade, saúde, meio ambiente, segurança e mais.</p>
-          </div>
-          <div>
-            <h3>Acompanhar Status</h3>
-            <p>Veja o andamento das denúncias e seja notificado.</p>
-          </div>
-          <div>
-            <h3>Votar e Priorizar</h3>
-            <p>Vote nos problemas mais urgentes da sua região. Receba apoio e apoie outros olhos urbanos.</p>
-          </div>
-          <div>
-            <h3>Privacidade Garantida</h3>
-            <p>Denúncias anônimas, dados protegidos e criptografados.</p>
-          </div>
+
+
+      <div class="d-flex gap-3 justify-content-center mt-5">
+        <button class="btn btn-primary btn-sm rounded-pill px-3 py-3" hx-get="/report" hx-target="#content">
+          <i class="bi bi-flag-fill me-1"></i>
+          <span class="button-text d-none d-md-inline">Denunciar</span>
+        </button>
+        <button class="btn btn-secondary btn-sm rounded-pill px-3 py-1" hx-get="/feed_partial" hx-target="#content">
+          <i class="bi bi-list-ul me-1"></i>
+          <span class="button-text d-none d-md-inline">Feed de Denúncias</span>
+        </button>
+        <button class="btn btn-success btn-sm rounded-pill px-3 py-1" hx-get="/map" hx-target="#content">
+          <i class="bi bi-map-fill me-1 text-swhite"></i>
+          <span class="button-text d-none d-md-inline ">Mapa de Denúncias</span>
+        </button>
+      </div>
+
+      <div class="hero-footer mt-5 px-5">
+        <p>Cidadania ativa, cidades melhores. Seja o olho da sua comunidade.</p>
+      </div>
+
+
+    </div>
+  </section>
+
+  <!-- Sobre a Plataforma -->
+  <section class="features-section ">
+    <div class="container">
+      <h2>Sobre o Olho Urbano</h2>
+      <p>
+        O Olho Urbano é uma plataforma para que qualquer cidadão possa denunciar e acompanhar problemas
+        na infraestrutura, acessibilidade, saúde, meio ambiente e segurança da cidade. As denúncias são
+        anônimas, seguras e ajudam a promover transparência, participação ativa e melhorias reais no espaço urbano.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <i class="bi bi-flag-fill"></i>
+          <h3>Denunciar Problemas</h3>
+          <p>Infraestrutura, acessibilidade, saúde, meio ambiente, segurança e mais.</p>
         </div>
-  
-        <div>
-          <a href="/report" hx-get="/report" hx-target="#content">Comece a Denunciar</a>
+        <div class="feature-card">
+          <i class="bi bi-clock-history"></i>
+          <h3>Acompanhar Status</h3>
+          <p>Veja o andamento das denúncias e seja notificado sobre atualizações.</p>
+        </div>
+        <div class="feature-card">
+          <i class="bi bi-people-fill"></i>
+          <h3>Votar e Priorizar</h3>
+          <p>Vote nos problemas mais urgentes da sua região. Receba apoio e apoie outros olhos urbanos.</p>
+        </div>
+        <div class="feature-card">
+          <i class="bi bi-shield-lock-fill"></i>
+          <h3>Privacidade Garantida</h3>
+          <p>Denúncias anônimas, dados protegidos e criptografados para sua segurança.</p>
         </div>
       </div>
-    </section>
-  
-    <!-- Categorias (O que pode ser reportado) -->
-    <section id="use-cases">
-      <div>
+
+      <div class="features-cta d-flex justify-content-center mt-5">
+        <a href="/report" hx-get="/report" hx-target="#content">
+          <i class="bi bi-plus-circle me-1 mr-1"></i>
+          Comece a Denunciar
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categorias (O que pode ser reportado) -->
+  <section id="use-cases" class="use-cases-section">
+    <div class="container">
+      <div class="use-cases-header text-center">
         <h2>O Que Você Pode Reportar</h2>
         <p>Problemas públicos comuns que precisam de atenção imediata.</p>
-  
-        <div>
-          <div>
-            <h3>Infraestrutura e Mobilidade</h3>
-            <p>Buracos, calçadas, sinalização, trânsito, transporte viário.</p>
+
+      </div>
+
+      <div class="categories-carousel-container">
+        <div class="categories-grid">
+          <div class="category-card">
+            <h3><span class="emoji">🚧</span>Infraestrutura e Mobilidade</h3>
+            <p>Problemas com ruas, calçadas, sinalizações e transporte.</p>
           </div>
-          <div>
-            <h3>Ciclismo</h3>
-            <p>Ciclovias, bicicletários, segurança de ciclistas.</p>
+          <div class="category-card">
+            <h3><span class="emoji">🚲</span>Ciclismo</h3>
+            <p>Problemas relacionados à infraestrutura cicloviária.</p>
           </div>
-          <div>
-            <h3>Acessibilidade</h3>
-            <p>Rampas, acessos, mobilidade de pessoas com deficiência.</p>
+          <div class="category-card">
+            <h3><span class="emoji">♿</span>Acessibilidade</h3>
+            <p>Problemas de acessibilidade para pessoas com deficiência.</p>
           </div>
-          <div>
-            <h3>Iluminação Pública</h3>
-            <p>Postes apagados, iluminação deficiente, segurança à noite.</p>
+          <div class="category-card">
+            <h3><span class="emoji">💡</span>Iluminação Pública</h3>
+            <p>Problemas com iluminação pública.</p>
           </div>
-          <div>
-            <h3>Limpeza</h3>
-            <p>Lixo acumulado, coleta irregular, descarte inadequado.</p>
+          <div class="category-card">
+            <h3><span class="emoji">♻️</span>Limpeza Urbana & Lixo</h3>
+            <p>Problemas com lixo, coleta e limpeza urbana.</p>
           </div>
-          <div>
-            <h3>Saúde Pública</h3>
-            <p>Infestações, risco de dengue, saneamento precário.</p>
+          <div class="category-card">
+            <h3><span class="emoji">🚑</span>Saúde Pública</h3>
+            <p>Problemas relacionados à saúde pública.</p>
           </div>
-          <div>
-            <h3>Segurança Pública</h3>
-            <p>Áreas perigosas, vandalismo, pontos de risco.</p>
+          <div class="category-card">
+            <h3><span class="emoji">🚨</span>Segurança Pública</h3>
+            <p>Problemas relacionados à segurança pública urbana.</p>
           </div>
-          <div>
-            <h3>Meio Ambiente</h3>
-            <p>Desmatamento, poluição, áreas verdes degradadas.</p>
+          <div class="category-card">
+            <h3><span class="emoji">🌳</span>Meio Ambiente</h3>
+            <p>Problemas ambientais e áreas verdes públicas.</p>
           </div>
-          <div>
-            <h3>Equipamentos Públicos</h3>
-            <p>Praças, parques, bancos, academias ao ar livre danificados.</p>
+          <div class="category-card">
+            <h3><span class="emoji">🏚️</span>Estruturas Públicas</h3>
+            <p>Problemas com estruturas e equipamentos públicos.</p>
           </div>
-          <div>
-            <h3>Drenagem</h3>
-            <p>Alagamentos, bocas de lobo entupidas, escoamento deficiente.</p>
+          <div class="category-card">
+            <h3><span class="emoji">🌧️</span>Drenagem</h3>
+            <p>Problemas com drenagem e alagamentos.</p>
           </div>
-          <div>
-            <h3>Obras</h3>
-            <p>Obras paradas, tapumes abandonados, intervenções urbanas.</p>
+          <div class="category-card">
+            <h3><span class="emoji">🧱</span>Obras</h3>
+            <p>Problemas relacionados a obras e regularização.</p>
           </div>
-          <div>
-            <h3>Corrupção e Gestão Pública</h3>
-            <p>Má gestão de recursos, uso indevido de verbas públicas.</p>
+          <div class="category-card">
+            <h3><span class="emoji">🏛️</span>Corrupção e Má Gestão Pública</h3>
+            <p>Denúncias de corrupção e má gestão pública.</p>
           </div>
-          <div>
-            <h3>Serviços de Saúde Pública</h3>
-            <p>Unidades de saúde sem atendimento, fila de espera, má infraestrutura.</p>
+          <div class="category-card">
+            <h3><span class="emoji">🏥</span>Serviços de Saúde Pública</h3>
+            <p>Problemas com atendimento e serviços de saúde pública.</p>
           </div>
-          <div>
-            <h3>Educação Pública</h3>
-            <p>Escolas deterioradas, falta de merenda, estrutura precária.</p>
+          <div class="category-card">
+            <h3><span class="emoji">🎓</span>Educação Pública</h3>
+            <p>Problemas com ensino e infraestrutura educacional.</p>
           </div>
-          <div>
-            <h3>Transporte Público</h3>
-            <p>Linhas ineficientes, ônibus lotados, pontos sem abrigo.</p>
+          <div class="category-card">
+            <h3><span class="emoji">🚌</span>Transporte Público</h3>
+            <p>Problemas com ônibus e transporte coletivo.</p>
           </div>
-          <div>
-            <h3>Comércio e Fiscalização</h3>
-            <p>Ambulantes irregulares, ocupação ilegal, falta de fiscalização.</p>
+          <div class="category-card">
+            <h3><span class="emoji">🏪</span>Comércio e Fiscalização</h3>
+            <p>Problemas com estabelecimentos comerciais e fiscalização dos mesmos.</p>
           </div>
-          <div>
-            <h3>Outros</h3>
-            <p>Problemas que não se enquadram nas categorias anteriores.</p>
+          <div class="category-card">
+            <h3><span class="emoji">❓</span>Outros</h3>
+            <p>Problemas que não se encaixam nas categorias acima.</p>
           </div>
         </div>
       </div>
-    </section>
-  </div>
+      <div class="scroll-hint text-center mt-2">
+        <i class="bi bi-arrow-left"></i>
+        Deslize para ver todas as categorias
+        <i class="bi bi-arrow-right"></i>
+      </div>
+    </div>
+  </section>
+
+</div>
 {{end}}

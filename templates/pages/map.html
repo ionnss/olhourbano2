@@ -45,18 +45,14 @@
     rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/static/css/olhourbano.css">
+    <link rel="stylesheet" href="/static/css/map.css">
 
     <!-- Custom JS -->
     <script src="/static/js/olhourbano.js"></script>
 
 </head>
 <body>
-    {{template "header.html" .}}
-    <main>
-
-        {{block "report_content" .}}
-        {{end}}
-    </main>
+    {{block "map_content" .}}
+    {{end}}
 </body>
 </html>
