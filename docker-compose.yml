@@ -48,7 +48,7 @@ services:
       - CPFHUB_API_KEY_FILE=/run/secrets/cpfhub_api_key
       - GOOGLE_MAPS_API_URL=https://maps.googleapis.com/maps/api
       - GOOGLE_MAPS_API_KEY_FILE=/run/secrets/google_maps_api_key
-    command: ["/wait-for-it.sh", "db:5432", "-t", "45", "--", "/usr/local/bin/app_olhourbano2"]
+    command: ["/wait-for-it.sh", "db:5432", "-t", "60", "--", "/usr/local/bin/app_olhourbano2"]
     restart: on-failure
     secrets:
       - smtp_password
