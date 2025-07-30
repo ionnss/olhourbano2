@@ -8,6 +8,7 @@ import (
 	"olhourbano2/db"
 	"olhourbano2/routes"
 	"os"
+	"strconv"
 )
 
 func main() {
@@ -30,13 +31,65 @@ func main() {
 	defer db.DB.Close()
 	fmt.Printf("Database connection established successfully (Host: %s:%s)\n", cfg.DBHost, cfg.DBPort)
 
-	// Run migrations (check if migrations are already applied)
-	if len(os.Args) > 1 && os.Args[1] == "migrate" {
-		if err := db.RunMigrations(); err != nil {
-			log.Fatalf("Error running migrations: %v\n", err)
+	// Handle migration commands
+	if len(os.Args) > 1 {
+		switch os.Args[1] {
+		case "migrate":
+			if err := db.RunMigrations(); err != nil {
+				log.Fatalf("Error running migrations: %v\n", err)
+			}
+			fmt.Println("Migrations applied successfully")
+			return
+
+		case "migrate:status":
+			status, err := db.GetMigrationsStatus()
+			if err != nil {
+				log.Fatalf("Error getting migration status: %v\n", err)
+			}
+
+			fmt.Println("Migration Status:")
+			fmt.Println("================")
+			for _, s := range status {
+				statusStr := "❌ Pending"
+				if s.Applied {
+					statusStr = fmt.Sprintf("✅ Applied at %s", s.AppliedAt.Format("2006-01-02 15:04:05"))
+				}
+				fmt.Printf("Version %d: %s - %s\n", s.Version, s.Name, statusStr)
+			}
+			return
+
+		case "migrate:rollback":
+			if len(os.Args) < 3 {
+				log.Fatalf("Usage: %s migrate:rollback <target_version>\n", os.Args[0])
+			}
+
+			targetVersion, err := strconv.Atoi(os.Args[2])
+			if err != nil {
+				log.Fatalf("Invalid target version: %v\n", err)
+			}
+
+			if err := db.RollbackMigrations(targetVersion); err != nil {
+				log.Fatalf("Error rolling back migrations: %v\n", err)
+			}
+			fmt.Printf("Rolled back to version %d successfully\n", targetVersion)
+			return
+
+		case "migrate:validate":
+			if err := db.ValidateMigrations(); err != nil {
+				log.Fatalf("Migration validation failed: %v\n", err)
+			}
+			fmt.Println("All migrations are valid")
+			return
+
+		default:
+			fmt.Printf("Unknown command: %s\n", os.Args[1])
+			fmt.Println("Available commands:")
+			fmt.Println("  migrate           - Apply pending migrations")
+			fmt.Println("  migrate:status    - Show migration status")
+			fmt.Println("  migrate:rollback <version> - Rollback to specific version")
+			fmt.Println("  migrate:validate  - Validate migration files")
+			return
 		}
-		fmt.Println("Migrations applied successfully")
-		return
 	}
 
 	// Create routes
