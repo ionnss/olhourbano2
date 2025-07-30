@@ -190,6 +190,11 @@ main {
     .hero-footer {
         padding: 0 !important;
     }
+
+    .hero-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -202,8 +207,11 @@ main {
         font-size: 1.8rem;
     }
     
-    .button-text {
-        display: none !important;
+    
+
+    .hero-buttons {
+        flex-direction: column;
+        gap: 1rem;
     }
 }
 

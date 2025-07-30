@@ -47,10 +47,10 @@ echo "your-strong-session-key-for-production" > secrets/session_key.txt
 echo "your-gmail-app-password" > secrets/smtp_password.txt
 
 # CPF API key
-echo "REDACTED6654f2cf105fcb15fbfbc89bad760d4aecd4822f" > secrets/cpfhub_api_key.txt
+echo "fa018a9cd28f31e28..." > secrets/cpfhub_api_key.txt
 
 # Google Maps API key
-echo "REDACTED" > secrets/google_maps_api_key.txt
+echo "AIzaSyA9IfFHzj9hV..." > secrets/google_maps_api_key.txt
 ```
 
 ### 4. **Set Secure Permissions**
@@ -230,6 +230,68 @@ find secrets/ -type f ! -perm 600
 # Should return nothing
 ```
 
+## 🗄️ Database Migrations
+
+Your application uses a custom migration system to manage database schema changes safely.
+
+### Migration Commands
+
+All migration commands must be run with the correct working directory (`-w /olhourbano2`):
+
+```bash
+# Check migration status
+docker exec -w /olhourbano2 olhourbano2-backend-1 /usr/local/bin/app_olhourbano2 migrate:status
+
+# Apply pending migrations
+docker exec -w /olhourbano2 olhourbano2-backend-1 /usr/local/bin/app_olhourbano2 migrate
+
+# Validate migration files
+docker exec -w /olhourbano2 olhourbano2-backend-1 /usr/local/bin/app_olhourbano2 migrate:validate
+
+# Rollback to specific version (e.g., version 2)
+docker exec -w /olhourbano2 olhourbano2-backend-1 /usr/local/bin/app_olhourbano2 migrate:rollback 2
+```
+
+### Migration Workflow for Deployments
+
+**Before deploying new code:**
+```bash
+# 1. Check current migration status
+docker exec -w /olhourbano2 olhourbano2-backend-1 /usr/local/bin/app_olhourbano2 migrate:status
+
+# 2. Pull latest code
+git pull
+
+# 3. Rebuild containers (migrations run automatically during startup)
+docker compose down
+docker compose up --build -d
+
+# 4. Verify migrations were applied
+docker exec -w /olhourbano2 olhourbano2-backend-1 /usr/local/bin/app_olhourbano2 migrate:status
+```
+
+**Emergency rollback:**
+```bash
+# If you need to rollback database changes
+docker exec -w /olhourbano2 olhourbano2-backend-1 /usr/local/bin/app_olhourbano2 migrate:rollback [target_version]
+
+# Example: rollback to version 2
+docker exec -w /olhourbano2 olhourbano2-backend-1 /usr/local/bin/app_olhourbano2 migrate:rollback 2
+```
+
+### Database Access
+
+```bash
+# Connect to database interactively
+docker exec -it olhourbano2-db-1 psql -U olhourbano olhourbanovault
+
+# Run single SQL commands
+docker exec olhourbano2-db-1 psql -U olhourbano olhourbanovault -c "SELECT COUNT(*) FROM reports;"
+
+# View migration history
+docker exec olhourbano2-db-1 psql -U olhourbano olhourbanovault -c "SELECT * FROM schema_migrations ORDER BY version;"
+```
+
 ## 🎯 Production Checklist
 
 - [ ] Repository cloned to VPS
@@ -239,6 +301,8 @@ find secrets/ -type f ! -perm 600
 - [ ] Docker compose services running
 - [ ] Application logs show successful configuration loading
 - [ ] Database connection working
+- [ ] **Database migrations applied successfully**
+- [ ] **Migration status verified**
 - [ ] HTTPS certificates obtained (Caddy handles this)
 - [ ] Firewall configured
 - [ ] Backups scheduled

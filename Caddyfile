@@ -10,7 +10,7 @@
 		root * /olhourbano2/static
 		file_server
 	}
-	handle /statics/* {
+	handle /uploads/* {
 		uri strip_prefix /uploads
 		root * /olhourbano2/uploads
 		file_server
