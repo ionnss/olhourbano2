@@ -1,0 +1,139 @@
+/* Footer */
+.footer-section {
+    background-color: #f0f0f0;
+    color: #333333;
+    padding: 2rem;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    margin-top: 2rem;
+    box-shadow: 0px 0px 45px 3px rgba(51, 51, 51, 0.5);
+    transition: all 0.3s ease;
+}
+
+.text-logo-footer h3 {
+    font-size: 2rem;
+    font-weight: 700 !important;
+    color: #333333;
+}
+
+.footer-section:hover {
+    box-shadow: 0px 0px 45px 3px rgba(51, 51, 51, 0.8);
+    transition: all 0.3s ease;
+    transform: translateX(-2px);
+}
+
+.logo-footer .bi {
+    font-size: 1.1rem;
+    color: #333333;
+    text-decoration: none !important;
+}
+
+.social-media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.0001rem !important;
+    font-size: 1.1rem;
+    margin-top: 5rem;
+}
+
+.social-media a {
+    text-decoration: none !important;
+    color: #333333 !important;
+    transition: all 0.3s ease;
+}
+
+.social-media a:hover {
+    color: #007bff !important;
+    text-decoration: none !important;
+    transition: all 2s ease;
+}
+
+.social-media a:visited,
+.social-media a:link,
+.social-media a:active {
+    text-decoration: none !important;
+}
+
+.institucional-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #333333;
+}
+
+.solucoes-parcerias-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #333333;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #333333;
+}
+
+.footer-links li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+    color: #333333;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #007bff !important;
+}
+
+.footer-final {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #333333;
+}
+
+.footer-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent 0%, #828080 50%, #828080 50%, transparent 100%);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: none;
+    margin-left: 10rem;
+    margin-right: 10rem;
+    opacity: 0.3;
+}
+
+/* Mobile Footer Adjustments */
+@media (max-width: 768px) {
+    .footer-section {
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .footer-section .container {
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+    }
+    
+    .logo-footer,
+    .institucional,
+    .solucoes-parcerias {
+        padding: 0 !important;
+    }
+    
+    .logo-footer img {
+        height: 70px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-section {
+        padding: 1rem;
+        border-radius: 20px 20px 0 0;
+    }
+}

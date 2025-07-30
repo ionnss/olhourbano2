@@ -1,0 +1,16 @@
+/* Header */
+header .bi {
+    color: #333333 !important;
+    font-size: 1.2rem;
+}
+
+.navbar-brand-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #333333;
+    margin-left: 0.5rem;
+}
+
+.navbar-buttons .bi {
+    font-size: 1.4rem;
+}
