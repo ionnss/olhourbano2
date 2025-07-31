@@ -24,11 +24,12 @@ services:
     volumes:
       - ./static:/olhourbano2/static
       - ./uploads:/olhourbano2/uploads
+      - ./templates:/olhourbano2/templates
     depends_on:
       - db
     networks:
       - olhourbano_network
-    working_dir: /olhurbano2
+    working_dir: /olhourbano2
     environment:
       - DB_HOST=db
       - DB_PORT=5432

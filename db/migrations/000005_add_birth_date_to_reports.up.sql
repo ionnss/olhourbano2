@@ -1,0 +1,1 @@
+ALTER TABLE reports ADD COLUMN birth_date DATE;

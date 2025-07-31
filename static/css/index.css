@@ -195,6 +195,25 @@ main {
         flex-direction: column;
         gap: 1rem;
     }
+    
+    /* Mobile hero button adjustments */
+    .hero-section .btn {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.2rem !important;
+    }
+    
+    .hero-section .btn:hover {
+        box-shadow: 0 4px 8px 0 rgba(51, 51, 51, 0.6), 0 0 15px rgba(255, 255, 255, 0.15);
+        transform: translateY(-1px);
+    }
+    
+    .button-text {
+        font-size: 0.9rem;
+    }
+    
+    .hero-section .btn i {
+        font-size: 1rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -207,11 +226,28 @@ main {
         font-size: 1.8rem;
     }
     
-    
-
     .hero-buttons {
         flex-direction: column;
         gap: 1rem;
+    }
+    
+    /* Extra small mobile hero button adjustments */
+    .hero-section .btn {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem !important;
+    }
+    
+    .hero-section .btn:hover {
+        box-shadow: 0 3px 6px 0 rgba(51, 51, 51, 0.5), 0 0 12px rgba(255, 255, 255, 0.12);
+        transform: translateY(-1px);
+    }
+    
+    .button-text {
+        font-size: 0.85rem;
+    }
+    
+    .hero-section .btn i {
+        font-size: 0.9rem;
     }
 }
 
@@ -293,7 +329,8 @@ main {
 
 .features-cta {
     text-align: center;
-    margin-bottom: 8rem !important;
+    margin-bottom: 6rem !important;
+    margin-top: 6rem !important;
 }
 
 .features-cta a {
@@ -323,8 +360,8 @@ main {
 /* Use Cases Section Styling */
 
 .use-cases-section {
-    margin-top: 2rem;
-    margin-bottom: 6rem;
+    margin-top: 6rem !important;
+    margin-bottom: 6rem !important;
 }
 
 /* Full-width carousel that breaks out of container */
@@ -348,6 +385,7 @@ main {
     color: #333;
     text-align: center;
     margin-bottom: 3rem;
+    margin-top: 2rem;
 }
 
 .use-cases-section > div > p {

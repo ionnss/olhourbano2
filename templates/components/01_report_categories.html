@@ -1,3 +1,55 @@
 {{define "report_categories"}}
+<div class="report-categories-container container my-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="styled-section">
+                <div class="text-center mb-5">
+                    <h1 class="mb-3" style="font-weight: 700; color: #333; font-size: 2.5rem;">Selecione a Categoria</h1>
+                    <p class="mb-0" style="font-size: 1.1rem; color: #666; line-height: 1.6;">
+                        Escolha a categoria que melhor descreve sua denúncia
+                    </p>
+                </div>
+                
+                <form action="/report" method="POST" id="categoryForm">
+                    <div class="categories-grid mb-5">
+                        {{range .Categories}}
+                        <div class="category-option">
+                            <input type="radio" class="btn-check" name="category" value="{{.ID}}" id="category_{{.ID}}" required>
+                            <label class="category-card" for="category_{{.ID}}">
+                                <h3>
+                                    <span class="emoji">{{.Icon}}</span>
+                                    {{.Name}}
+                                </h3>
+                                <p>{{.Description}}</p>
+                            </label>
+                        </div>
+                        {{end}}
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="cta-button" disabled id="continueBtn">
+                            <i class="bi bi-arrow-right me-2"></i>
+                            Continuar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const categoryInputs = document.querySelectorAll('input[name="category"]');
+    const continueBtn = document.getElementById('continueBtn');
+    
+    categoryInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            continueBtn.disabled = false;
+        });
+    });
+});
+</script>
 {{end}}

@@ -22,6 +22,14 @@ func main() {
 	}
 	fmt.Printf("Configuration loaded successfully (App Version: %s)\n", cfg.AppVersion)
 
+	// Load categories configuration
+	_, err = config.LoadCategories()
+	if err != nil {
+		fmt.Printf("Error loading categories configuration: %v\n", err)
+		return
+	}
+	fmt.Println("Categories configuration loaded successfully")
+
 	// Connect to the database
 	db.DB, err = db.ConnectDB()
 	if err != nil {

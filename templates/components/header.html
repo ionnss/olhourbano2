@@ -5,29 +5,29 @@
       <div class="d-flex align-items-center">
         <a class="navbar-brand" href="/">
           <img src="/static/resource/blue_eye.svg" alt="Olho Urbano" style="height: 60px;">
-          <span class="navbar-brand-text">Olho Urbano</span>
+          <span class="navbar-brand-text d-inline">Olho Urbano</span>
         </a>
       </div>
 
       <!-- Navigation Buttons on the right -->
       <div class="navbar-buttons d-flex align-items-center">
         <!-- Report Button -->
-        <button type="button" class="btn px-2 py-2" hx-get="/report" hx-target="#content" data-bs-toggle="tooltip"
+        <a href="/report" class="btn px-2 py-2" data-bs-toggle="tooltip"
           data-bs-placement="bottom" title="Registrar Denúncia">
           <i class="bi bi-flag-fill me-1"></i>
-        </button>
+        </a>
 
         <!-- Feed Button -->
-        <button type="button" class="btn px-2 py-2" hx-get="/feed" hx-target="#content" data-bs-toggle="tooltip"
+        <a href="/feed" class="btn px-2 py-2" data-bs-toggle="tooltip"
           data-bs-placement="bottom" title="Feed de Denúncias">
           <i class="bi bi-list-ul me-1"></i>
-        </button>
+        </a>
 
         <!-- Map Button -->
-        <button type="button" class="btn px-2 py-2" hx-get="/map" hx-target="#content" data-bs-toggle="tooltip"
+        <a href="/map" class="btn px-2 py-2" data-bs-toggle="tooltip"
           data-bs-placement="bottom" title="Mapa de Denúncias">
           <i class="bi bi-map-fill me-1"></i>
-        </button>
+        </a>
       </div>
     </nav>
   </header>

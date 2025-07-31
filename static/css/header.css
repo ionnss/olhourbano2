@@ -9,6 +9,15 @@ header .bi {
     font-weight: 700;
     color: #333333;
     margin-left: 0.5rem;
+    display: inline !important;
+}
+
+/* Mobile responsive text */
+@media (max-width: 576px) {
+    .navbar-brand-text {
+        font-size: 1.2rem;
+        margin-left: 0.3rem;
+    }
 }
 
 .navbar-buttons .bi {
