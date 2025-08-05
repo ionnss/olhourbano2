@@ -45,5 +45,7 @@ tmp/
 # Ignore certain files
 secrets/
 
+# Uploaded files (production uploads should not be in version control)
 uploads/*
 !uploads/.gitkeep
+!uploads/README.md

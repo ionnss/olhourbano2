@@ -1,4 +1,29 @@
-/* Header */
+/* Reset only top margin/padding to remove space above header */
+html, body {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+/* Header - Peninsula Card Style */
+header {
+    background-color: #f0f0f0;
+    color: #333333;
+    padding: 1rem 2rem;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    box-shadow: 0px 0px 45px 3px rgba(51, 51, 51, 0.5);
+    transition: all 0.3s ease;
+    position: relative;
+    margin: 0 2rem 6rem 2rem; /* Peninsula style with lateral margins and large bottom margin */
+    z-index: 100;
+}
+
+header:hover {
+    box-shadow: 0px 0px 45px 3px rgba(51, 51, 51, 0.8);
+    transition: all 0.3s ease;
+    transform: translateX(2px);
+}
+
 header .bi {
     color: #333333 !important;
     font-size: 1.2rem;
@@ -12,14 +37,53 @@ header .bi {
     display: inline !important;
 }
 
-/* Mobile responsive text */
-@media (max-width: 576px) {
+.navbar-buttons .bi {
+    font-size: 1.4rem;
+}
+
+.navbar-buttons .btn {
+    transition: all 0.3s ease;
+    border-radius: 15px;
+}
+
+.navbar-buttons .btn:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    transform: scale(1.1);
+}
+
+/* Mobile Header Adjustments */
+@media (max-width: 768px) {
+    /* Ensure no space above header on mobile - only top spacing */
+    html, body {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    
+    header {
+        padding: 1rem 1.5rem;
+        margin: 0 1rem 4rem 1rem; /* Smaller lateral margins, good bottom spacing */
+    }
+    
     .navbar-brand-text {
         font-size: 1.2rem;
         margin-left: 0.3rem;
     }
 }
 
-.navbar-buttons .bi {
-    font-size: 1.4rem;
+@media (max-width: 480px) {
+    /* Ensure no space above header on very small mobile - only top spacing */
+    html, body {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    
+    header {
+        padding: 0.8rem 1rem;
+        border-radius: 0 0 20px 20px;
+        margin: 0 0.5rem 3rem 0.5rem; /* Very small lateral margins for mobile */
+    }
+    
+    .navbar-brand-text {
+        font-size: 1.1rem;
+    }
 }

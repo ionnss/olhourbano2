@@ -1,26 +1,37 @@
 {{define "map_content"}}
 <!-- Floating back button (top left) -->
 <div id="map-back-btn" style="position:fixed;top:18px;left:14px;z-index:1001;display:flex;align-items:center;">
-    <button id="back-btn"
-        hx-get="/?show=feed"
-        hx-target="#body-content"
-        hx-push-url="true"
-        class="btn btn-danger shadow rounded-pill d-flex align-items-center px-3 py-2"
-        style="font-weight:600; letter-spacing:0.5px; font-size:1.08rem; border-radius:999px; box-shadow:0 2px 8px rgba(51,51,51,0.8) !important;"
-    >
-        <i class="bi bi-arrow-left me-2"></i> Voltar ao Feed
-    </button>
-  </div>
+  <button id="back-btn" hx-get="/feed" hx-push-url="true"
+    class="btn shadow rounded-pill d-flex align-items-center px-3 py-2"
+    style="font-weight:600; letter-spacing:0.5px; font-size:1.08rem; border-radius:999px; box-shadow:0 2px 8px rgba(51,51,51,0.8) !important; margin-right:10px; background-color:rgb(51, 51, 51); color:#fff;">
+    <i class="bi bi-arrow-left me-2"></i> Voltar ao Feed
+  </button>
   
-  <!-- Floating logo card (top right) -->
-  <div id="map-logo-card" style="position:fixed;top:18px;right:14px;z-index:1001;display:flex;align-items:center;background:rgb(51, 51, 51);box-shadow:0 2px 8px rgba(51,51,51,0.8);border-radius:14px;padding:8px 16px 8px 10px;gap:10px;">
-    <span style="display:inline-block;width:32px;height:32px;">
-      <svg fill="#fff" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 121.025 121.025" xml:space="preserve"><g><path d="M1.35,64.212c7.9,9.9,31.4,36.3,59.2,36.3c27.8,0,51.3-26.399,59.2-36.3c1.699-2.2,1.699-5.3,0-7.399c-7.9-9.9-31.4-36.3-59.2-36.3c-27.8-0.1-51.3,26.3-59.2,36.2C-0.45,58.913-0.45,62.012,1.35,64.212z M60.55,36.413c13.3,0,24,10.7,24,24s-10.7,24-24,24c-13.3,0-24-10.7-24-24S47.25,36.413,60.55,36.413z"/><circle cx="60.55" cy="60.413" r="12"/></g></svg>
-    </span>
-    <span style="font-weight:700;font-size:1.15rem;color:#fff;letter-spacing:-0.5px;">Olho Urbano</span>
-  </div>
-  
-  <!-- Map -->
-  <div id="map" style="width:100vw;"></div>
+  <button id="filter-btn" hx-get="/feed" hx-push-url="true"
+    class="btn shadow rounded-pill d-flex align-items-center px-3 py-2"
+    style="font-weight:600; letter-spacing:0.5px; font-size:1.08rem; border-radius:999px; box-shadow:0 2px 8px rgba(51,51,51,0.8) !important; background-color:rgb(51, 51, 51); color:#fff;">
+    <i class="bi bi-funnel-fill me-2"></i> Filtros
+  </button>
+</div>
+
+<!-- Floating logo card (top right) -->
+<div id="map-logo-card"
+  style="position:fixed;top:18px;right:14px;z-index:1001;display:flex;align-items:center;background:rgb(51, 51, 51);box-shadow:0 2px 8px rgba(51,51,51,0.8);border-radius:14px;padding:8px 16px 8px 10px;gap:10px;">
+  <span style="display:inline-block;width:32px;height:32px;">
+    <svg fill="#fff" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 121.025 121.025"
+      xml:space="preserve">
+      <g>
+        <path
+          d="M1.35,64.212c7.9,9.9,31.4,36.3,59.2,36.3c27.8,0,51.3-26.399,59.2-36.3c1.699-2.2,1.699-5.3,0-7.399c-7.9-9.9-31.4-36.3-59.2-36.3c-27.8-0.1-51.3,26.3-59.2,36.2C-0.45,58.913-0.45,62.012,1.35,64.212z M60.55,36.413c13.3,0,24,10.7,24,24s-10.7,24-24,24c-13.3,0-24-10.7-24-24S47.25,36.413,60.55,36.413z" />
+        <circle cx="60.55" cy="60.413" r="12" />
+      </g>
+    </svg>
+  </span>
+  <span style="font-weight:700;font-size:1.15rem;color:#fff;letter-spacing:-0.5px;">Olho Urbano</span>
+</div>
+
+<!-- Map -->
+<div id="map" style="width:100vw;"></div>
 
 {{end}}
