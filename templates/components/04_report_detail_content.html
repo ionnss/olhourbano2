@@ -1,0 +1,185 @@
+{{define "report_detail_content"}}
+<div class="report-detail-container">
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Back Button -->
+                <div class="mb-4">
+                    <a href="/feed" class="btn shadow rounded-pill d-flex align-items-center px-3 py-2" 
+                       style="font-weight:600; letter-spacing:0.5px; font-size:1.08rem; border-radius:999px; box-shadow:0 2px 8px rgba(51,51,51,0.8) !important; background-color:rgb(51, 51, 51); color:#fff;">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        Voltar ao Feed
+                    </a>
+                </div>
+
+                <!-- Report Card -->
+                <div class="report-detail-card">
+                    <!-- Report Header -->
+                    <div class="report-detail-header">
+                        <div class="report-category">
+                            <span class="category-icon">{{.Category.Icon}}</span>
+                            <span class="category-name">{{.Category.Name}}</span>
+                        </div>
+                        <div class="report-status">
+                            <span class="status-badge status-{{.Report.Status}}">{{.Report.Status}}</span>
+                        </div>
+                    </div>
+
+                    <!-- Report ID and Date -->
+                    <div class="report-meta-info">
+                        <div class="report-id">
+                            <i class="bi bi-hash text-muted me-2"></i>
+                            <span class="text-muted">Denúncia #{{.ReportID}}</span>
+                        </div>
+                        <div class="report-date">
+                            <i class="bi bi-calendar3 text-muted me-2"></i>
+                            <span class="text-muted">{{.Report.CreatedAt.Format "02/01/2006 às 15:04"}}</span>
+                        </div>
+                        <div class="report-author">
+                            <i class="bi bi-eye-fill text-muted me-2"></i>
+                            <span class="text-muted">OlhoUrbano{{if .HashedCPFDisplay}}{{.HashedCPFDisplay}}{{else}}[Anônimo]{{end}}</span>
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="report-location mb-4">
+                        <h6><i class="bi bi-geo-alt-fill text-muted me-2"></i>Localização</h6>
+                        <p class="location-text">{{.Report.Location}}</p>
+                        {{if and .Report.Latitude .Report.Longitude}}
+                        <div id="mapContainer" class="mt-3">
+                            <div id="map" style="height: 300px; border-radius: 8px;"></div>
+                        </div>
+                        {{end}}
+                    </div>
+
+                    <!-- Description -->
+                    <div class="report-description mb-4">
+                        <h6><i class="bi bi-chat-text-fill text-muted me-2"></i>Descrição</h6>
+                        <p class="description-text">{{.Report.Description}}</p>
+                    </div>
+
+                    <!-- Transport Info (if available) -->
+                    {{if .Report.TransportType}}
+                    <div class="report-transport mb-4">
+                        <h6><i class="bi bi-bus-front text-muted me-2"></i>Informações de Transporte</h6>
+                        <div class="transport-info">
+                            <span class="transport-type">{{.Report.TransportType}}</span>
+                            {{if .Report.TransportData}}
+                            <div class="transport-details mt-2">
+                                <small class="text-muted">{{.Report.TransportData}}</small>
+                            </div>
+                            {{end}}
+                        </div>
+                    </div>
+                    {{end}}
+
+                    <!-- Photos/Videos -->
+                    {{if .Photos}}
+                    <div class="report-media mb-4">
+                        <h6><i class="bi bi-images text-muted me-2"></i>Evidências</h6>
+                        <div class="media-gallery">
+                            {{range $index, $photo := .Photos}}
+                            {{if $photo}}
+                            <div class="media-item" onclick="openFileModal('/{{$photo}}', '{{$photo}}', 'image')" style="cursor: pointer;">
+                                <img src="/{{$photo}}" alt="Evidência {{add $index 1}}" class="media-thumbnail" loading="lazy">
+                                <div class="media-overlay-hover">
+                                    <i class="bi bi-eye-fill"></i>
+                                </div>
+                            </div>
+                            {{end}}
+                            {{end}}
+                        </div>
+                    </div>
+                    {{end}}
+
+                    <!-- Vote Section -->
+                    <div class="report-vote-section">
+                        <div class="vote-action">
+                            <button class="btn action-btn btn-sm vote-btn" data-report-id="{{.ReportID}}">
+                                <i class="bi bi-hand-thumbs-up-fill me-1"></i>
+                                Votar
+                                <span class="vote-shield">
+                                    <span class="vote-count">{{.Report.VoteCount}}</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Report Actions -->
+                    <div class="report-actions mt-4">
+                        <a href="/feed" class="btn action-btn">
+                            <i class="bi bi-list-ul me-2"></i>
+                            Ver Todas as Denúncias
+                        </a>
+                        <a href="/map" class="btn action-btn">
+                            <i class="bi bi-map me-2"></i>
+                            Ver no Mapa
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Google Maps Script -->
+{{if and .Report.Latitude .Report.Longitude}}
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key={{.GoogleMapsAPIKey}}&callback=initReportDetailMap&loading=async&libraries=marker">
+</script>
+<script>
+    let map;
+    let marker;
+    let AdvancedMarkerElement;
+    let PinElement;
+
+    async function initReportDetailMap() {
+        const location = { lat: {{.Report.Latitude}}, lng: {{.Report.Longitude}} };
+        
+        try {
+            // Import the marker library
+            const { AdvancedMarkerElement: AME, PinElement: PE } = await google.maps.importLibrary("marker");
+            AdvancedMarkerElement = AME;
+            PinElement = PE;
+            
+            // Create the map
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: location,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                mapId: '7574fab30cf3c8137d8b0418', // Your custom Map ID linked to olhourbano_map style
+                disableDefaultUI: true,
+                zoomControl: false,
+                mapTypeControl: false,
+                scaleControl: false,
+                streetViewControl: false,
+                rotateControl: false,
+                fullscreenControl: false
+            });
+            
+            // Create pin element for the marker
+            const pinElement = new PinElement({
+                background: '#dc3545', // Red color for report location
+                borderColor: 'white',
+                glyphColor: 'white',
+                scale: 1.2
+            });
+            
+            // Create the marker
+            marker = new AdvancedMarkerElement({
+                position: location,
+                map: map,
+                content: pinElement.element,
+                title: 'Localização da Denúncia'
+            });
+            
+        } catch (error) {
+            console.error('Error creating map:', error);
+        }
+    }
+
+    // Ensure initReportDetailMap is available globally
+    window.initReportDetailMap = initReportDetailMap;
+</script>
+{{end}}
+{{end}} 

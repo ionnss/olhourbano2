@@ -3,20 +3,51 @@ let map;
 let marker;
 let autocomplete;
 let geocoder;
+let AdvancedMarkerElement;
+let PinElement;
+
+// Global validation state
+let cpfVerificationStatus = {
+    verified: false,
+    error: false,
+    message: ''
+};
 
 // Initialize Google Maps
-function initMap() {
+async function initMap() {
     const defaultLocation = { lat: -23.5505, lng: -46.6333 }; // São Paulo
+    
+    // Import the marker library
+    const { AdvancedMarkerElement: AME, PinElement: PE } = await google.maps.importLibrary("marker");
+    AdvancedMarkerElement = AME;
+    PinElement = PE;
     
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 12,
-        center: defaultLocation
+        center: defaultLocation,
+        mapId: '7574fab30cf3c8137d8b0418', // Your custom Map ID linked to olhourbano_map style
+        disableDefaultUI: true,
+        zoomControl: false,
+        mapTypeControl: false,
+        scaleControl: false,
+        streetViewControl: false,
+        rotateControl: false,
+        fullscreenControl: false
     });
     
-    marker = new google.maps.Marker({
+    // Create pin element for the marker
+    const pinElement = new PinElement({
+        background: '#4285F4',
+        borderColor: 'white',
+        glyphColor: 'white',
+        scale: 1.2
+    });
+    
+    marker = new AdvancedMarkerElement({
         position: defaultLocation,
         map: map,
-        draggable: true
+        content: pinElement.element,
+        gmpDraggable: true
     });
     
     geocoder = new google.maps.Geocoder();
@@ -35,14 +66,14 @@ function initMap() {
 
 // Update location from marker position
 function updateLocationFromMarker() {
-    const position = marker.getPosition();
-    updateCoordinates(position.lat(), position.lng());
-    reverseGeocode(position.lat(), position.lng());
+    const position = marker.position;
+    updateCoordinates(position.lat, position.lng);
+    reverseGeocode(position.lat, position.lng);
 }
 
 // Update marker from map click
 function updateMarkerPosition(event) {
-    marker.setPosition(event.latLng);
+    marker.position = event.latLng;
     updateCoordinates(event.latLng.lat(), event.latLng.lng());
     reverseGeocode(event.latLng.lat(), event.latLng.lng());
 }
@@ -53,7 +84,7 @@ function handleAddressSelect() {
     if (place.geometry) {
         map.setCenter(place.geometry.location);
         map.setZoom(17);
-        marker.setPosition(place.geometry.location);
+        marker.position = place.geometry.location;
         updateCoordinates(
             place.geometry.location.lat(),
             place.geometry.location.lng()
@@ -85,6 +116,9 @@ document.addEventListener('DOMContentLoaded', function() {
             let value = e.target.value.replace(/\D/g, '');
             value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
             e.target.value = value;
+            
+            // Reset CPF verification status when CPF changes
+            resetCPFVerificationStatus();
         });
 
         // CPF + Birth date verification
@@ -94,6 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const birthDateInput = document.getElementById('birth_date');
     if (birthDateInput) {
         birthDateInput.addEventListener('blur', verifyCPFWithBirthDate);
+        birthDateInput.addEventListener('input', resetCPFVerificationStatus);
     }
 
     // Email confirmation validation
@@ -164,9 +199,15 @@ document.addEventListener('DOMContentLoaded', function() {
 async function verifyCPFWithBirthDate() {
     const cpf = document.getElementById('cpf').value;
     const birthDate = document.getElementById('birth_date').value;
-    const statusDiv = document.getElementById('cpFVerificationStatus');
+    const statusDiv = document.getElementById('cpfVerificationStatus');
     
     if (!cpf || !birthDate) {
+        return;
+    }
+    
+    // Check if status div exists
+    if (!statusDiv) {
+        console.warn('CPF verification status div not found');
         return;
     }
     
@@ -188,18 +229,40 @@ async function verifyCPFWithBirthDate() {
         const result = await response.json();
         
         if (result.success) {
+            cpfVerificationStatus = {
+                verified: true,
+                error: false,
+                message: 'CPF verificado com sucesso!'
+            };
             showCPFVerificationStatus('CPF verificado com sucesso!', 'success');
         } else {
+            cpfVerificationStatus = {
+                verified: false,
+                error: true,
+                message: result.message || 'CPF inválido ou não encontrado'
+            };
             showCPFVerificationStatus(result.message || 'CPF inválido ou não encontrado', 'error');
         }
     } catch (error) {
         console.error('Error verifying CPF:', error);
+        cpfVerificationStatus = {
+            verified: false,
+            error: true,
+            message: 'Erro ao verificar CPF. Tente novamente.'
+        };
         showCPFVerificationStatus('Erro ao verificar CPF. Tente novamente.', 'error');
     }
 }
 
 function showCPFVerificationStatus(message, type) {
-    const statusDiv = document.getElementById('cpFVerificationStatus');
+    const statusDiv = document.getElementById('cpfVerificationStatus');
+    
+    // Check if status div exists
+    if (!statusDiv) {
+        console.warn('CPF verification status div not found');
+        return;
+    }
+    
     const bootstrapClass = getBootstrapClass(type);
     const icon = getIcon(type);
     
@@ -242,7 +305,7 @@ function getCurrentLocation() {
                 const newPosition = { lat, lng };
                 map.setCenter(newPosition);
                 map.setZoom(16);
-                marker.setPosition(newPosition);
+                marker.position = newPosition;
                 
                 // Update form fields
                 updateCoordinates(lat, lng);
@@ -346,18 +409,143 @@ function updateFileInputText() {
 
 // Form validation
 function validateReportForm(e) {
+    e.preventDefault();
+    
     const submitBtn = document.getElementById('submitBtn');
     const originalText = submitBtn.innerHTML;
     
     // Show loading state
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Enviando...';
+    submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Validando...';
     
-    // Re-enable after a delay (in case of validation errors)
-    setTimeout(() => {
+    // Validate all required fields
+    const validationErrors = [];
+    
+    // 1. Check CPF verification
+    const cpf = document.getElementById('cpf').value;
+    const birthDate = document.getElementById('birth_date').value;
+    
+    if (!cpf || !birthDate) {
+        validationErrors.push('CPF e data de nascimento são obrigatórios');
+    } else if (!cpfVerificationStatus.verified) {
+        if (cpfVerificationStatus.error) {
+            validationErrors.push(`CPF não verificado: ${cpfVerificationStatus.message}`);
+        } else {
+            validationErrors.push('CPF não foi verificado. Preencha CPF e data de nascimento e aguarde a verificação.');
+        }
+    }
+    
+    // 2. Check email fields
+    const email = document.getElementById('email').value;
+    const emailConfirmation = document.getElementById('email_confirmation').value;
+    
+    if (!email) {
+        validationErrors.push('Email é obrigatório');
+    } else if (!isValidEmail(email)) {
+        validationErrors.push('Email inválido');
+    }
+    
+    if (!emailConfirmation) {
+        validationErrors.push('Confirmação de email é obrigatória');
+    } else if (email !== emailConfirmation) {
+        validationErrors.push('Emails não coincidem');
+    }
+    
+    // 3. Check location
+    const latitude = document.getElementById('latitude').value;
+    const longitude = document.getElementById('longitude').value;
+    
+    if (!latitude || !longitude) {
+        validationErrors.push('Localização é obrigatória. Use o mapa para selecionar a localização.');
+    }
+    
+    // 4. Check description
+    const description = document.getElementById('description').value;
+    
+    if (!description) {
+        validationErrors.push('Descrição é obrigatória');
+    } else if (description.length < 10) {
+        validationErrors.push('Descrição deve ter pelo menos 10 caracteres');
+    } else if (description.length > 1000) {
+        validationErrors.push('Descrição deve ter no máximo 1000 caracteres');
+    }
+    
+    // 5. Check transport fields if transport is required
+    const transportType = document.getElementById('transport_type');
+    if (transportType && transportType.value) {
+        const transportFields = document.querySelectorAll('.transport-fields input[required], .transport-fields select[required]');
+        transportFields.forEach(field => {
+            if (!field.value.trim()) {
+                validationErrors.push(`Campo de transporte "${field.getAttribute('placeholder') || field.name}" é obrigatório`);
+            }
+        });
+    }
+    
+    // If there are validation errors, show them and stop submission
+    if (validationErrors.length > 0) {
+        showValidationErrors(validationErrors);
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalText;
-    }, 5000);
+        return false;
+    }
+    
+    // If validation passes, show success message and submit
+    submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Enviando...';
+    
+    // Submit the form
+    const form = document.querySelector('form');
+    if (form) {
+        form.submit();
+    }
+    
+    return true;
+}
+
+// Show validation errors
+function showValidationErrors(errors) {
+    const statusDiv = document.getElementById('cpfVerificationStatus');
+    
+    if (!statusDiv) {
+        console.warn('Validation status div not found');
+        return;
+    }
+    
+    const errorList = errors.map(error => `<li>${error}</li>`).join('');
+    
+    statusDiv.innerHTML = `
+        <div class="alert alert-danger alert-sm mt-2">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>Erros de validação:</strong>
+            <ul class="mb-0 mt-2">
+                ${errorList}
+            </ul>
+        </div>
+    `;
+    statusDiv.style.display = 'block';
+    
+    // Scroll to the error message
+    statusDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// Email validation helper
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Reset CPF verification status
+function resetCPFVerificationStatus() {
+    cpfVerificationStatus = {
+        verified: false,
+        error: false,
+        message: ''
+    };
+    
+    // Hide any existing status messages
+    const statusDiv = document.getElementById('cpfVerificationStatus');
+    if (statusDiv) {
+        statusDiv.style.display = 'none';
+    }
 }
 
 // Transport type change handler

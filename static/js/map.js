@@ -3,15 +3,27 @@ let map;
 let markers = [];
 let infoWindow;
 let clusterer;
+let AdvancedMarkerElement;
+let PinElement;
+let clusterMarkers = [];
+let isClustered = false;
 
 // Initialize the map when the page loads
-function initMap() {
-    console.log('initMap called');
+async function initMap(retryCount = 0) {
+    console.log('initMap called', retryCount > 0 ? `(retry ${retryCount})` : '');
     
     // Check if map container exists
     const mapContainer = document.getElementById('map');
     if (!mapContainer) {
-        console.error('Map container not found');
+        // Maximum retries to prevent infinite loops
+        if (retryCount >= 50) { // 5 seconds maximum (50 * 100ms)
+            console.error('Map container not found after 50 retries. Giving up.');
+            return;
+        }
+        
+        console.log(`Map container not found, retrying in 100ms... (attempt ${retryCount + 1}/50)`);
+        // Retry after a short delay
+        setTimeout(() => initMap(retryCount + 1), 100);
         return;
     }
     
@@ -21,25 +33,24 @@ function initMap() {
     const defaultCenter = { lat: -25.428954, lng: -49.267137 };
     
     try {
+        // Import the marker library
+        const { AdvancedMarkerElement: AME, PinElement: PE } = await google.maps.importLibrary("marker");
+        AdvancedMarkerElement = AME;
+        PinElement = PE;
+        
         // Create the map
         map = new google.maps.Map(mapContainer, {
             zoom: 6,
             center: defaultCenter,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
+            mapId: '7574fab30cf3c8137d8b0418', // Your custom Map ID linked to olhourbano_map style
             disableDefaultUI: true,
             zoomControl: false,
             mapTypeControl: false,
             scaleControl: false,
             streetViewControl: false,
             rotateControl: false,
-            fullscreenControl: false,
-            styles: [
-                {
-                    featureType: 'poi',
-                    elementType: 'labels',
-                    stylers: [{ visibility: 'off' }]
-                }
-            ]
+            fullscreenControl: false
         });
         
         console.log('Map created successfully');
@@ -51,6 +62,10 @@ function initMap() {
         map.addListener('click', function() {
             infoWindow.close();
         });
+        
+        // Add zoom and bounds changed listeners for dynamic clustering
+        map.addListener('zoom_changed', handleMapChange);
+        map.addListener('bounds_changed', handleMapChange);
         
         // Load reports data after a short delay to ensure MarkerClusterer is loaded
         setTimeout(() => {
@@ -202,64 +217,17 @@ function displayReportsOnMap(reports) {
         }
     });
     
-    // Create marker clusterer
-    if (markers.length > 0 && typeof markerClusterer !== 'undefined' && markerClusterer.MarkerClusterer) {
-        try {
-            clusterer = new markerClusterer.MarkerClusterer({
-                map,
-                markers,
-                algorithm: new markerClusterer.SuperClusterAlgorithm({
-                    radius: 100,
-                    maxZoom: 15
-                }),
-                renderer: {
-                    render: ({ count, position }) => {
-                        const clusterIcon = new google.maps.Marker({
-                            position,
-                            icon: {
-                                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                                    <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="20" cy="20" r="18" fill="#326ffe" stroke="white" stroke-width="2"/>
-                                        <text x="20" y="25" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14" font-weight="bold">${count}</text>
-                                    </svg>
-                                `),
-                                scaledSize: new google.maps.Size(40, 40),
-                                anchor: new google.maps.Point(20, 20)
-                            },
-                            label: '',
-                            title: `${count} reports in this area`
-                        });
-                        return clusterIcon;
-                    }
-                }
-            });
-            console.log('Marker clusterer created successfully');
-        } catch (error) {
-            console.error('Error creating marker clusterer:', error);
-            // Fallback: display markers without clustering
-            markers.forEach(marker => {
-                marker.setMap(map);
-            });
-        }
-    } else if (markers.length > 0) {
-        // Fallback: display markers without clustering if MarkerClusterer is not available
-        console.log('MarkerClusterer not available, displaying markers without clustering');
-        markers.forEach(marker => {
-            marker.setMap(map);
-        });
-        
-        // Simple fallback clustering for nearby markers
-        if (markers.length > 1) {
-            console.log('Applying simple fallback clustering');
-            applySimpleClustering();
-        }
+    // Display markers on map with dynamic clustering
+    if (markers.length > 0) {
+        console.log(`Displaying ${markers.length} markers with dynamic clustering`);
+        applyDynamicClustering();
     }
     
     // Fit map to show all markers with padding
     if (markers.length > 0) {
         const bounds = new google.maps.LatLngBounds();
         markers.forEach(marker => {
-            bounds.extend(marker.getPosition());
+            bounds.extend(marker.position);
         });
         
         // Add padding to bounds for better view
@@ -275,14 +243,19 @@ function createMarker(report) {
         lng: parseFloat(report.longitude)
     };
     
-    // Choose marker icon based on category
-    const icon = getMarkerIcon(report.category);
+    // Create pin element with category color
+    const pinElement = new PinElement({
+        background: getCategoryColor(report.category),
+        borderColor: 'white',
+        glyphColor: 'white',
+        scale: 1.2
+    });
     
-    const marker = new google.maps.Marker({
+    const marker = new AdvancedMarkerElement({
         position: position,
         map: map,
-        icon: icon,
-        title: report.description || 'Report'
+        title: report.description || 'Report',
+        content: pinElement.element
     });
     
     // Add click listener to show info window
@@ -293,21 +266,7 @@ function createMarker(report) {
     return marker;
 }
 
-// Get marker icon based on category
-function getMarkerIcon(category) {
-    const iconBase = {
-        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-            <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="16" cy="16" r="14" fill="${getCategoryColor(category)}" stroke="white" stroke-width="2"/>
-                <circle cx="16" cy="16" r="6" fill="white"/>
-            </svg>
-        `),
-        scaledSize: new google.maps.Size(32, 32),
-        anchor: new google.maps.Point(16, 16)
-    };
-    
-    return iconBase;
-}
+
 
 // Get color for category - unique colors for each category
 function getCategoryColor(category) {
@@ -392,6 +351,10 @@ function clearMarkers() {
         marker.setMap(null);
     });
     markers = [];
+    
+    // Also clear cluster markers
+    clearClusterMarkers();
+    isClustered = false;
 }
 
 // Show sample data for demonstration (when API is not available)
@@ -454,73 +417,143 @@ window.addEventListener('resize', function() {
     }
 });
 
-// Simple fallback clustering function
-function applySimpleClustering() {
-    const clusterRadius = 0.01; // About 1km in degrees
-    const clusters = [];
+
+
+// Handle map zoom and bounds changes for dynamic clustering
+function handleMapChange() {
+    if (markers.length > 1) {
+        // Debounce the clustering to avoid too many recalculations
+        clearTimeout(window.clusterTimeout);
+        window.clusterTimeout = setTimeout(() => {
+            applyDynamicClustering();
+        }, 300);
+    }
+}
+
+// Dynamic clustering that responds to zoom and map movement
+function applyDynamicClustering() {
+    const zoom = map.getZoom();
+    const bounds = map.getBounds();
     
-    markers.forEach(marker => {
-        const pos = marker.getPosition();
-        let addedToCluster = false;
+    // Adjust cluster radius based on zoom level
+    let clusterRadius;
+    if (zoom >= 15) {
+        clusterRadius = 0.001; // Very close markers at high zoom
+    } else if (zoom >= 12) {
+        clusterRadius = 0.005; // Close markers at medium-high zoom
+    } else if (zoom >= 9) {
+        clusterRadius = 0.01; // Medium distance at medium zoom
+    } else {
+        clusterRadius = 0.02; // Far distance at low zoom
+    }
+    
+    // Clear existing cluster markers
+    clearClusterMarkers();
+    
+    // Only cluster if we have multiple markers and zoom is low enough
+    if (markers.length > 1 && zoom < 15) {
+        const clusters = [];
         
-        for (let cluster of clusters) {
-            const clusterCenter = cluster.center;
-            const distance = Math.sqrt(
-                Math.pow(pos.lat() - clusterCenter.lat(), 2) + 
-                Math.pow(pos.lng() - clusterCenter.lng(), 2)
-            );
+        markers.forEach(marker => {
+            const pos = marker.position;
+            let addedToCluster = false;
             
-            if (distance < clusterRadius) {
-                cluster.markers.push(marker);
-                cluster.center = new google.maps.LatLng(
-                    (cluster.center.lat() + pos.lat()) / 2,
-                    (cluster.center.lng() + pos.lng()) / 2
+            for (let cluster of clusters) {
+                const clusterCenter = cluster.center;
+                const distance = Math.sqrt(
+                    Math.pow(pos.lat - clusterCenter.lat, 2) + 
+                    Math.pow(pos.lng - clusterCenter.lng, 2)
                 );
-                addedToCluster = true;
-                break;
+                
+                if (distance < clusterRadius) {
+                    cluster.markers.push(marker);
+                    cluster.center = {
+                        lat: (cluster.center.lat + pos.lat) / 2,
+                        lng: (cluster.center.lng + pos.lng) / 2
+                    };
+                    addedToCluster = true;
+                    break;
+                }
             }
-        }
-        
-        if (!addedToCluster) {
-            clusters.push({
-                center: pos,
-                markers: [marker]
-            });
-        }
-    });
-    
-    // Hide individual markers and show clusters
-    markers.forEach(marker => marker.setMap(null));
-    
-    clusters.forEach(cluster => {
-        if (cluster.markers.length === 1) {
-            // Single marker, show it normally
-            cluster.markers[0].setMap(map);
-        } else {
-            // Multiple markers, create a cluster
-            const clusterMarker = new google.maps.Marker({
-                position: cluster.center,
-                map: map,
-                icon: {
-                    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                        <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="20" cy="20" r="18" fill="#326ffe" stroke="white" stroke-width="2"/>
-                            <text x="20" y="25" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14" font-weight="bold">${cluster.markers.length}</text>
-                        </svg>
-                    `),
-                    scaledSize: new google.maps.Size(40, 40),
-                    anchor: new google.maps.Point(20, 20)
-                },
-                title: `${cluster.markers.length} reports in this area`
-            });
             
-            // Add click listener to expand cluster
-            clusterMarker.addListener('click', function() {
-                cluster.markers.forEach(marker => marker.setMap(map));
-                clusterMarker.setMap(null);
-            });
-        }
+            if (!addedToCluster) {
+                clusters.push({
+                    center: pos,
+                    markers: [marker]
+                });
+            }
+        });
+        
+        // Hide individual markers and show clusters
+        markers.forEach(marker => marker.setMap(null));
+        
+        clusters.forEach(cluster => {
+            if (cluster.markers.length === 1) {
+                // Single marker, show it normally
+                cluster.markers[0].setMap(map);
+            } else {
+                // Multiple markers, create a cluster
+                const clusterElement = document.createElement('div');
+                clusterElement.innerHTML = `
+                    <div style="
+                        width: 40px; 
+                        height: 40px; 
+                        background: #326ffe; 
+                        border: 2px solid white; 
+                        border-radius: 50%; 
+                        display: flex; 
+                        align-items: center; 
+                        justify-content: center; 
+                        color: white; 
+                        font-family: Arial, sans-serif; 
+                        font-size: 14px; 
+                        font-weight: bold;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                        cursor: pointer;
+                    ">
+                        ${cluster.markers.length}
+                    </div>
+                `;
+                
+                const clusterMarker = new AdvancedMarkerElement({
+                    position: cluster.center,
+                    map: map,
+                    content: clusterElement,
+                    title: `${cluster.markers.length} reports in this area`
+                });
+                
+                // Store cluster marker for later removal
+                clusterMarkers.push(clusterMarker);
+                
+                // Add click listener to expand cluster
+                clusterMarker.addListener('click', function() {
+                    // Show all individual markers in this cluster
+                    cluster.markers.forEach(marker => marker.setMap(map));
+                    // Remove this cluster marker
+                    clusterMarker.setMap(null);
+                    // Remove from our tracking array
+                    const index = clusterMarkers.indexOf(clusterMarker);
+                    if (index > -1) {
+                        clusterMarkers.splice(index, 1);
+                    }
+                });
+            }
+        });
+        
+        isClustered = true;
+    } else {
+        // Show all individual markers
+        markers.forEach(marker => marker.setMap(map));
+        isClustered = false;
+    }
+}
+
+// Clear all cluster markers
+function clearClusterMarkers() {
+    clusterMarkers.forEach(marker => {
+        marker.setMap(null);
     });
+    clusterMarkers = [];
 }
 
 // Export functions for global access

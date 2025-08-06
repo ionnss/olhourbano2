@@ -57,12 +57,9 @@
     <script src="/static/js/feed.js"></script>
     <script src="/static/js/filter_stats_panel.js"></script>
 
-    <!-- MarkerClusterer Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@googlemaps/markerclusterer@2.0.15/dist/index.min.js"></script>
-
     <!-- Google Maps API - Load after map.js -->
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key={{.GoogleMapsAPIKey}}&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key={{.GoogleMapsAPIKey}}&callback=initMap&loading=async&libraries=marker">
     </script>
 
 </head>

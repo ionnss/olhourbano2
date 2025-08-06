@@ -89,11 +89,11 @@
                             
                             <!-- Location buttons -->
                             <div class="d-flex gap-2 mb-3 flex-wrap">
-                                <button type="button" class="btn btn-outline-primary btn-sm" id="getCurrentLocation">
+                                <button type="button" class="btn btn-primary btn-sm" id="getCurrentLocation">
                                     <i class="bi bi-crosshair me-1"></i>
                                     Minha Localização
                                 </button>
-                                <button type="button" class="btn btn-outline-primary btn-sm" id="toggleMap">
+                                <button type="button" class="btn btn-primary btn-sm" id="toggleMap">
                                     <i class="bi bi-map me-1"></i>
                                     Abrir Mapa
                                 </button>
@@ -105,9 +105,9 @@
             </div>
             
             <!-- Google Maps API -->
-            <script async defer 
-                    src="https://maps.googleapis.com/maps/api/js?key={{.GoogleMapsAPIKey}}&libraries=places&callback=initMap">
-            </script>
+                <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key={{.GoogleMapsAPIKey}}&libraries=places,marker&callback=initMap&loading=async">
+    </script>
                             
                             <!-- Hidden coordinate inputs -->
                             <input type="hidden" id="latitude" name="latitude" value="{{if .FormData}}{{.FormData.Latitude}}{{end}}">

@@ -319,14 +319,44 @@ func ReportDetailHandler(w http.ResponseWriter, r *http.Request) {
 	// Get category info
 	category := config.GetCategory(report.ProblemType)
 
-	data := map[string]interface{}{
-		"ReportID":  reportID,
-		"Report":    report,
-		"Category":  category,
-		"PageTitle": "Denúncia #" + reportIDStr,
+	// Process photos
+	var photos []string
+	if report.PhotoPath != "" {
+		photos = strings.Split(report.PhotoPath, ",")
 	}
 
-	if err := renderTemplate(w, "01_report.html", data); err != nil {
+	// Get first 8 characters of hashed CPF for display
+	hashedCPFDisplay := ""
+	log.Printf("DEBUG: Report %d - Raw HashedCPF: '%s', Length: %d", reportID, report.HashedCPF, len(report.HashedCPF))
+
+	if len(report.HashedCPF) >= 8 {
+		hashedCPFDisplay = report.HashedCPF[:8]
+		log.Printf("DEBUG: Using first 8 chars: '%s'", hashedCPFDisplay)
+	} else if report.HashedCPF != "" {
+		// If hashed CPF is shorter than 8 characters, use what's available
+		hashedCPFDisplay = report.HashedCPF
+		log.Printf("DEBUG: Using full hash (short): '%s'", hashedCPFDisplay)
+	} else {
+		log.Printf("DEBUG: HashedCPF is empty, will show [Anônimo]")
+	}
+
+	// Get Google Maps API key
+	cfg, err := config.Load()
+	if err != nil {
+		log.Printf("Error loading config for Google Maps API key: %v", err)
+	}
+
+	data := map[string]interface{}{
+		"ReportID":         reportID,
+		"Report":           report,
+		"Category":         category,
+		"Photos":           photos,
+		"HashedCPFDisplay": hashedCPFDisplay,
+		"PageTitle":        "Denúncia #" + reportIDStr,
+		"GoogleMapsAPIKey": cfg.GoogleMapsAPIKey,
+	}
+
+	if err := renderTemplate(w, "04_report_detail.html", data); err != nil {
 		log.Printf("Error rendering report detail template: %s", err.Error())
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return

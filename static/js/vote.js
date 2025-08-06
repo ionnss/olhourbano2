@@ -41,7 +41,16 @@ function voteForReport(reportId, buttonElement) {
         if (data.success) {
             // Update vote count on button
             const currentVoteCount = parseInt(data.vote_count) || 0;
-            buttonElement.innerHTML = `<i class="bi bi-hand-thumbs-up-fill me-1"></i> Votar (${currentVoteCount})`;
+            buttonElement.innerHTML = `<i class="bi bi-hand-thumbs-up-fill me-1"></i> Votar <span class="vote-shield"><span class="vote-count">${currentVoteCount}</span></span>`;
+            
+            // Add animation to the shield
+            const shield = buttonElement.querySelector('.vote-shield');
+            if (shield) {
+                shield.classList.add('vote-updated');
+                setTimeout(() => {
+                    shield.classList.remove('vote-updated');
+                }, 300);
+            }
             
             // Show success feedback
             showVoteFeedback(buttonElement, 'Voto registrado!', 'success');

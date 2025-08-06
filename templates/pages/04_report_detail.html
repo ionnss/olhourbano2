@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
     <!-- Title -->
-    <title>Olho Urbano</title>
+    <title>{{.PageTitle}} - Olho Urbano</title>
 
     <!-- Meta tags -->
     <meta name="author" content="Olho Urbano">
@@ -15,11 +15,10 @@
 
     <!-- Description -->
     <meta name="description"
-        content="Plataforma para cidadãos reportarem e acompanharem problemas na infraestrutura, acessibilidade, iluminação pública, 
-        segurança pública, corrupção, meio ambiente, obras, fiscalização de comércio, entre outros.">
+        content="Visualize detalhes da denúncia #{{.ReportID}} no Olho Urbano. Plataforma para cidadãos reportarem e acompanharem problemas na infraestrutura urbana.">
     <meta name="keywords"
         content="denúncia pública, infraestrutura urbana, problemas na cidade, buracos na rua, 
-        iluminação pública, segurança pública, cidadania ativa, corrupção, meio ambiente, obras, fiscalização de comércio, entre outros">
+        iluminação pública, segurança pública, cidadania ativa, corrupção, meio ambiente, obras, fiscalização de comércio">
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" 
@@ -52,27 +51,28 @@
     <link rel="stylesheet" href="/static/css/header.css">
     <link rel="stylesheet" href="/static/css/report.css">
 
-    <!-- Custom JS -->
-    <script src="/static/js/report.js"></script>
-
 </head>
-<body>
+<body class="report-detail-page">
 
     {{template "header" .}}
-    
-    <main>
 
-        {{if eq .Step 1}}
-            {{template "report_categories" .}}
-        {{else if eq .Step 2}}
-            {{template "report_info" .}}
-        {{else if .Success}}
-            {{template "report_success" .}}
-        {{else}}
-            {{template "report_categories" .}}
-        {{end}}
-        
+    <main>
+        {{template "report_detail_content" .}}
     </main>
 
+    <!-- File Modal -->
+    {{template "file_modal" .}}
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" 
+    crossorigin="anonymous"></script>
+
+    <!-- Custom JS (after DOM is loaded) -->
+    <script src="/static/js/vote.js"></script>
+
+    <!-- File Modal JS (after Bootstrap) -->
+    <script src="/static/js/file-modal.js"></script>
+
 </body>
-</html>
+</html> 
