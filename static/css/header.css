@@ -155,3 +155,46 @@ header .bi {
         font-size: 1.15rem;
     }
 }
+
+/* Prevent header buttons from wrapping below logo on very small screens */
+@media (max-width: 382px) {
+    header {
+        padding: 0.6rem 0.8rem;
+        margin: 0 0.3rem 2.5rem 0.3rem;
+    }
+    
+    .navbar-brand-text {
+        font-size: 1rem;
+        margin-left: 0.2rem;
+    }
+    
+    .navbar-brand img {
+        height: 35px !important;
+        width: auto !important;
+        max-height: 35px !important;
+    }
+    
+    .navbar-buttons .bi {
+        font-size: 1rem;
+    }
+    
+    .navbar-buttons .btn {
+        padding: 0.3rem 0.5rem !important;
+        font-size: 0.8rem;
+    }
+    
+    /* Force single line layout */
+    .navbar {
+        flex-wrap: nowrap !important;
+    }
+    
+    .navbar-nav {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+    }
+    
+    .navbar-buttons {
+        flex-shrink: 0 !important;
+        white-space: nowrap !important;
+    }
+}
