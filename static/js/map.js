@@ -2,6 +2,7 @@
 let map;
 let markers = [];
 let infoWindow;
+let clusterer;
 
 // Initialize the map when the page loads
 function initMap() {
@@ -46,13 +47,15 @@ function initMap() {
         // Create info window
         infoWindow = new google.maps.InfoWindow();
         
-        // Load reports data
-        loadReportsOnMap();
-        
         // Add click listener to close info window when clicking on map
         map.addListener('click', function() {
             infoWindow.close();
         });
+        
+        // Load reports data after a short delay to ensure MarkerClusterer is loaded
+        setTimeout(() => {
+            loadReportsOnMap();
+        }, 500);
         
     } catch (error) {
         console.error('Error creating map:', error);
@@ -177,20 +180,80 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Display reports as markers on the map
 function displayReportsOnMap(reports) {
-    // Clear existing markers
+    // Clear existing markers and clusterer
     clearMarkers();
+    
+    console.log('Displaying reports:', reports.length);
+    console.log('MarkerClusterer available:', typeof markerClusterer !== 'undefined');
+    if (typeof markerClusterer !== 'undefined') {
+        console.log('MarkerClusterer.MarkerClusterer available:', typeof markerClusterer.MarkerClusterer !== 'undefined');
+    }
     
     if (!reports || reports.length === 0) {
         console.log('No reports to display');
         return;
     }
     
+    // Create markers for each report
     reports.forEach(report => {
         if (report.latitude && report.longitude) {
             const marker = createMarker(report);
             markers.push(marker);
         }
     });
+    
+    // Create marker clusterer
+    if (markers.length > 0 && typeof markerClusterer !== 'undefined' && markerClusterer.MarkerClusterer) {
+        try {
+            clusterer = new markerClusterer.MarkerClusterer({
+                map,
+                markers,
+                algorithm: new markerClusterer.SuperClusterAlgorithm({
+                    radius: 100,
+                    maxZoom: 15
+                }),
+                renderer: {
+                    render: ({ count, position }) => {
+                        const clusterIcon = new google.maps.Marker({
+                            position,
+                            icon: {
+                                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                                    <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="20" cy="20" r="18" fill="#326ffe" stroke="white" stroke-width="2"/>
+                                        <text x="20" y="25" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14" font-weight="bold">${count}</text>
+                                    </svg>
+                                `),
+                                scaledSize: new google.maps.Size(40, 40),
+                                anchor: new google.maps.Point(20, 20)
+                            },
+                            label: '',
+                            title: `${count} reports in this area`
+                        });
+                        return clusterIcon;
+                    }
+                }
+            });
+            console.log('Marker clusterer created successfully');
+        } catch (error) {
+            console.error('Error creating marker clusterer:', error);
+            // Fallback: display markers without clustering
+            markers.forEach(marker => {
+                marker.setMap(map);
+            });
+        }
+    } else if (markers.length > 0) {
+        // Fallback: display markers without clustering if MarkerClusterer is not available
+        console.log('MarkerClusterer not available, displaying markers without clustering');
+        markers.forEach(marker => {
+            marker.setMap(map);
+        });
+        
+        // Simple fallback clustering for nearby markers
+        if (markers.length > 1) {
+            console.log('Applying simple fallback clustering');
+            applySimpleClustering();
+        }
+    }
     
     // Fit map to show all markers with padding
     if (markers.length > 0) {
@@ -202,8 +265,6 @@ function displayReportsOnMap(reports) {
         // Add padding to bounds for better view
         const padding = { top: 50, right: 50, bottom: 50, left: 50 };
         map.fitBounds(bounds, padding);
-        
-
     }
 }
 
@@ -248,21 +309,29 @@ function getMarkerIcon(category) {
     return iconBase;
 }
 
-// Get color for category
+// Get color for category - unique colors for each category
 function getCategoryColor(category) {
     const colors = {
-        'infraestrutura': '#FF6B6B',
-        'acessibilidade': '#4ECDC4',
-        'iluminacao': '#FFE66D',
-        'seguranca': '#FF8E53',
-        'corrupcao': '#A8E6CF',
-        'meio-ambiente': '#45B7D1',
-        'obras': '#96CEB4',
-        'fiscalizacao': '#FFEAA7',
-        'default': '#6C5CE7'
+        'infraestrutura_mobilidade': '#FF6B6B',      // Red
+        'ciclismo': '#4ECDC4',                       // Teal
+        'acessibilidade': '#FFE66D',                 // Yellow
+        'redes_energeticas_iluminacao_publica': '#FF8E53', // Orange
+        'limpeza': '#A8E6CF',                        // Light Green
+        'saude_publica': '#45B7D1',                  // Blue
+        'seguranca_publica': '#96CEB4',              // Green
+        'meio_ambiente': '#FFEAA7',                  // Light Yellow
+        'equipamentos_publicos': '#DDA0DD',          // Plum
+        'drenagem': '#87CEEB',                       // Sky Blue
+        'obras': '#F0E68C',                          // Khaki
+        'corrupcao_gestao_publica': '#DC143C',       // Crimson
+        'servicos_saude_publica': '#20B2AA',         // Light Sea Green
+        'educacao_publica': '#9370DB',               // Medium Purple
+        'transporte_publico': '#FF6347',             // Tomato
+        'comercio_fiscalizacao': '#32CD32',          // Lime Green
+        'outros': '#6C5CE7'                          // Purple
     };
     
-    return colors[category] || colors.default;
+    return colors[category] || colors['outros'];
 }
 
 // Show info window for a marker
@@ -312,6 +381,13 @@ function createInfoWindowContent(report) {
 
 // Clear all markers from the map
 function clearMarkers() {
+    // Clear marker clusterer if it exists
+    if (clusterer) {
+        clusterer.clearMarkers();
+        clusterer = null;
+    }
+    
+    // Clear individual markers
     markers.forEach(marker => {
         marker.setMap(null);
     });
@@ -323,7 +399,7 @@ function showSampleData() {
     const sampleReports = [
         {
             id: 1,
-            category: 'infraestrutura',
+            category: 'infraestrutura_mobilidade',
             description: 'Buraco na rua que precisa ser consertado',
             address: 'Rua das Flores, 123 - Centro',
             status: 'pending',
@@ -341,12 +417,30 @@ function showSampleData() {
         },
         {
             id: 3,
-            category: 'iluminacao',
+            category: 'redes_energeticas_iluminacao_publica',
             description: 'Poste de luz queimado',
             address: 'Rua XV de Novembro, 789 - Centro',
             status: 'pending',
             latitude: -25.426000,
             longitude: -49.264000
+        },
+        {
+            id: 4,
+            category: 'ciclismo',
+            description: 'Ciclovia com buracos',
+            address: 'Av. Sete de Setembro, 100 - Centro',
+            status: 'pending',
+            latitude: -25.425000,
+            longitude: -49.265000
+        },
+        {
+            id: 5,
+            category: 'limpeza',
+            description: 'Lixo acumulado na calçada',
+            address: 'Rua das Palmeiras, 200 - Batel',
+            status: 'approved',
+            latitude: -25.432000,
+            longitude: -49.268000
         }
     ];
     
@@ -359,6 +453,75 @@ window.addEventListener('resize', function() {
         google.maps.event.trigger(map, 'resize');
     }
 });
+
+// Simple fallback clustering function
+function applySimpleClustering() {
+    const clusterRadius = 0.01; // About 1km in degrees
+    const clusters = [];
+    
+    markers.forEach(marker => {
+        const pos = marker.getPosition();
+        let addedToCluster = false;
+        
+        for (let cluster of clusters) {
+            const clusterCenter = cluster.center;
+            const distance = Math.sqrt(
+                Math.pow(pos.lat() - clusterCenter.lat(), 2) + 
+                Math.pow(pos.lng() - clusterCenter.lng(), 2)
+            );
+            
+            if (distance < clusterRadius) {
+                cluster.markers.push(marker);
+                cluster.center = new google.maps.LatLng(
+                    (cluster.center.lat() + pos.lat()) / 2,
+                    (cluster.center.lng() + pos.lng()) / 2
+                );
+                addedToCluster = true;
+                break;
+            }
+        }
+        
+        if (!addedToCluster) {
+            clusters.push({
+                center: pos,
+                markers: [marker]
+            });
+        }
+    });
+    
+    // Hide individual markers and show clusters
+    markers.forEach(marker => marker.setMap(null));
+    
+    clusters.forEach(cluster => {
+        if (cluster.markers.length === 1) {
+            // Single marker, show it normally
+            cluster.markers[0].setMap(map);
+        } else {
+            // Multiple markers, create a cluster
+            const clusterMarker = new google.maps.Marker({
+                position: cluster.center,
+                map: map,
+                icon: {
+                    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                        <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="20" cy="20" r="18" fill="#326ffe" stroke="white" stroke-width="2"/>
+                            <text x="20" y="25" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14" font-weight="bold">${cluster.markers.length}</text>
+                        </svg>
+                    `),
+                    scaledSize: new google.maps.Size(40, 40),
+                    anchor: new google.maps.Point(20, 20)
+                },
+                title: `${cluster.markers.length} reports in this area`
+            });
+            
+            // Add click listener to expand cluster
+            clusterMarker.addListener('click', function() {
+                cluster.markers.forEach(marker => marker.setMap(map));
+                clusterMarker.setMap(null);
+            });
+        }
+    });
+}
 
 // Export functions for global access
 window.loadReportsOnMap = loadReportsOnMap; 

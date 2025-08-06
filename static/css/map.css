@@ -77,6 +77,28 @@ body {
     padding: 0;
 }
 
+/* Marker cluster styling */
+.gm-style-iw {
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+/* Ensure cluster markers are visible and properly styled */
+.gm-style-marker {
+    cursor: pointer;
+}
+
+/* Custom cluster marker styling */
+.cluster-marker {
+    background: #326ffe;
+    border: 2px solid white;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    line-height: 40px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
 .map-info-window .info-content {
     padding: 15px;
 }

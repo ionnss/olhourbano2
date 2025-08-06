@@ -250,6 +250,53 @@ func GetReportStats(db *sql.DB) (*ReportStats, error) {
 	return stats, nil
 }
 
+// AddVote adds a vote to a report
+func AddVote(db *sql.DB, reportID int, hashedCPF string) error {
+	// First, try to insert the vote
+	_, err := db.Exec(`
+		INSERT INTO votes (report_id, vote_hashed_cpf, created_at)
+		VALUES ($1, $2, NOW())
+		ON CONFLICT (vote_hashed_cpf, report_id) DO NOTHING
+	`, reportID, hashedCPF)
+
+	if err != nil {
+		return fmt.Errorf("error adding vote: %w", err)
+	}
+
+	// Update the vote count in the reports table
+	_, err = db.Exec(`
+		UPDATE reports 
+		SET vote_count = (
+			SELECT COUNT(*) 
+			FROM votes 
+			WHERE report_id = $1
+		)
+		WHERE id = $1
+	`, reportID)
+
+	if err != nil {
+		return fmt.Errorf("error updating vote count: %w", err)
+	}
+
+	return nil
+}
+
+// GetVoteCount returns the vote count for a report
+func GetVoteCount(db *sql.DB, reportID int) (int, error) {
+	var count int
+	err := db.QueryRow(`
+		SELECT vote_count 
+		FROM reports 
+		WHERE id = $1
+	`, reportID).Scan(&count)
+
+	if err != nil {
+		return 0, fmt.Errorf("error getting vote count: %w", err)
+	}
+
+	return count, nil
+}
+
 // GetReportsForMap retrieves reports with location data for map display
 func GetReportsForMap(db *sql.DB, category, status, city string) ([]*models.Report, error) {
 	query := `

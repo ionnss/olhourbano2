@@ -644,8 +644,20 @@
 }
 
 /* Vote button specific styling */
+.vote-btn {
+    position: relative;
+    min-width: 80px;
+}
+
 .vote-btn:hover i {
     color: #28a745 !important;
+}
+
+/* Vote feedback styling */
+.vote-feedback {
+    pointer-events: none;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 /* Mobile responsiveness for report action buttons */

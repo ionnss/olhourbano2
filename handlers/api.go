@@ -2,10 +2,12 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"olhourbano2/db"
 	"olhourbano2/services"
+	"time"
 )
 
 // CPFVerificationRequest represents the incoming JSON request
@@ -127,6 +129,82 @@ type CitiesResponse struct {
 	Success bool     `json:"success"`
 	Message string   `json:"message,omitempty"`
 	Cities  []string `json:"cities,omitempty"`
+}
+
+// VoteRequest represents a vote request
+type VoteRequest struct {
+	ReportID int `json:"report_id"`
+}
+
+// VoteResponse represents the response for voting
+type VoteResponse struct {
+	Success   bool   `json:"success"`
+	Message   string `json:"message,omitempty"`
+	VoteCount int    `json:"vote_count,omitempty"`
+}
+
+// VoteHandler handles voting on reports
+func VoteHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Parse request body
+	var voteReq VoteRequest
+	if err := json.NewDecoder(r.Body).Decode(&voteReq); err != nil {
+		log.Printf("Error decoding vote request: %v", err)
+		response := VoteResponse{
+			Success: false,
+			Message: "Invalid request format",
+		}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Validate report ID
+	if voteReq.ReportID <= 0 {
+		response := VoteResponse{
+			Success: false,
+			Message: "Invalid report ID",
+		}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Get hashed CPF from session or generate a temporary one
+	// For now, we'll use a simple approach - in production, you'd want proper user authentication
+	hashedCPF := "temp_user_" + fmt.Sprintf("%d", time.Now().Unix())
+
+	// Add vote to database
+	err := services.AddVote(db.DB, voteReq.ReportID, hashedCPF)
+	if err != nil {
+		log.Printf("Error adding vote: %v", err)
+		response := VoteResponse{
+			Success: false,
+			Message: "Failed to register vote",
+		}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Get updated vote count
+	voteCount, err := services.GetVoteCount(db.DB, voteReq.ReportID)
+	if err != nil {
+		log.Printf("Error getting vote count: %v", err)
+		// Continue anyway, just return 0 for vote count
+		voteCount = 0
+	}
+
+	response := VoteResponse{
+		Success:   true,
+		Message:   "Vote registered successfully",
+		VoteCount: voteCount,
+	}
+
+	json.NewEncoder(w).Encode(response)
 }
 
 // CitiesHandler handles fetching cities from reports

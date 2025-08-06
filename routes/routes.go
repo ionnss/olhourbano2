@@ -47,6 +47,7 @@ func CreateRoutes() *mux.Router {
 	r.HandleFunc("/api/verify-cpf", handlers.VerifyCPFHandler).Methods("POST")    // CPF verification
 	r.HandleFunc("/api/reports/map", handlers.MapReportsHandler).Methods("GET")   // Map reports data
 	r.HandleFunc("/api/reports/cities", handlers.CitiesHandler).Methods("GET")    // Cities data
+	r.HandleFunc("/api/vote", handlers.VoteHandler).Methods("POST")               // Vote on reports
 
 	r.HandleFunc("/feed", handlers.FeedHandler).Methods("GET")
 	r.HandleFunc("/map", handlers.MapHandler).Methods("GET")
