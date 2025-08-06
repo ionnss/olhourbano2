@@ -1,0 +1,222 @@
+/* Map Page Styles */
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Montserrat', sans-serif;
+}
+
+#map {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* Floating controls styling */
+#map-back-btn {
+    position: fixed;
+    top: 18px;
+    left: 14px;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#map-back-btn .btn {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-size: 1.08rem;
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(51, 51, 51, 0.8) !important;
+    background-color: rgb(51, 51, 51);
+    color: #fff;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+#map-back-btn .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(51, 51, 51, 0.9) !important;
+}
+
+#map-logo-card {
+    position: fixed;
+    bottom: 40px;
+    left: 14px;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    background: rgb(51, 51, 51);
+    box-shadow: 0 4px 16px rgba(51, 51, 51, 0.9);
+    border-radius: 999px;
+    padding: 0.375rem 0.75rem;
+    gap: 10px;
+    transition: all 0.3s ease;
+    width: fit-content;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-size: 1.08rem;
+    color: #fff;
+    border: none;
+}
+
+#map-logo-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(51, 51, 51, 0.9);
+}
+
+/* Map info window styling */
+.map-info-window {
+    font-family: 'Montserrat', sans-serif;
+    max-width: 300px;
+    padding: 0;
+}
+
+.map-info-window .info-content {
+    padding: 15px;
+}
+
+.map-info-window .report-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.map-info-window .report-category {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 8px;
+}
+
+.map-info-window .report-status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.map-info-window .status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.map-info-window .status-approved {
+    background: #d4edda;
+    color: #155724;
+}
+
+.map-info-window .report-address {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.map-info-window .report-description {
+    font-size: 0.9rem;
+    color: #333;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.map-info-window .view-report-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.map-info-window .view-report-btn:hover {
+    background: #0056b3;
+}
+
+/* Filter panel styling */
+#map-filter-panel {
+    font-family: 'Montserrat', sans-serif;
+}
+
+#map-filter-panel h5 {
+    color: #333;
+    font-weight: 600;
+}
+
+#map-filter-panel label {
+    color: #555;
+    font-size: 0.9rem;
+}
+
+#map-filter-panel .form-select {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+}
+
+#map-filter-panel .btn {
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 8px 16px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    #map-back-btn {
+        top: 12px;
+        left: 10px;
+        gap: 8px;
+    }
+    
+    #map-back-btn .btn {
+        font-size: 0.95rem;
+        padding: 8px 12px;
+    }
+    
+    #map-logo-card {
+        position: fixed !important;
+        top: 12px !important;
+        right: 10px !important;
+        left: auto !important;
+        bottom: auto !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #map-back-btn {
+        top: 12px;
+        left: 8px;
+        gap: 6px;
+    }
+    
+    #map-back-btn .btn {
+        font-size: 0.9rem;
+        padding: 6px 10px;
+    }
+    
+    #map-logo-card {
+        position: fixed !important;
+        top: 12px !important;
+        right: 8px !important;
+        left: auto !important;
+        bottom: auto !important;
+    }
+}
+
+@media (max-width: 420px) {
+    #map-logo-card {
+        display: none !important;
+    }
+}

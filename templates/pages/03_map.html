@@ -50,9 +50,17 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/static/css/map.css">
+    <link rel="stylesheet" href="/static/css/filter_stats_panel.css">
 
-    <!-- Custom JS -->
-    <script src="/static/js/olhourbano.js"></script>
+    <!-- Custom JS - Load first to define initMap function -->
+    <script src="/static/js/map.js"></script>
+    <script src="/static/js/feed.js"></script>
+    <script src="/static/js/filter_stats_panel.js"></script>
+
+    <!-- Google Maps API - Load after map.js -->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key={{.GoogleMapsAPIKey}}&callback=initMap">
+    </script>
 
 </head>
 <body>
@@ -61,6 +69,8 @@
 
     {{block "map_content" .}}
     {{end}}
+
+    </main>
 
 </body>
 </html>

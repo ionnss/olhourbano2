@@ -28,3 +28,14 @@ body::after {
     pointer-events: none;
     z-index: -1;
 }
+
+/* Global container constraints for mobile */
+@media (max-width: 768px) {
+    .hero-section,
+    .footer-section,
+    .styled-section {
+        box-sizing: border-box;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+}

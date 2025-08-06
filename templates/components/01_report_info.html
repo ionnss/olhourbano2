@@ -114,16 +114,19 @@
                             <input type="hidden" id="longitude" name="longitude" value="{{if .FormData}}{{.FormData.Longitude}}{{end}}">
                         </div>
                         
+                        <!-- Transport Information -->
+                        {{template "report_transport" .}}
+                        
                         <!-- Files Upload -->
                         <div class="form-section mb-5">
                             <h3 class="section-title">
-                                <i class="bi bi-camera-fill me-2"></i>
+                                <i class="bi bi-file-earmark-arrow-up me-2"></i>
                                 Arquivos e Evidências
                             </h3>
                             
                             <div class="mb-3">
                                 <label for="files" class="form-label">
-                                    Fotos e Documentos
+                                    Fotos, Vídeos e Documentos
                                     <span class="badge bg-secondary ms-1">Máximo {{.MaxFiles}} arquivos</span>
                                 </label>
                                 <div class="custom-file-upload">
@@ -136,11 +139,11 @@
                                 </div>
                                 <div class="form-text">
                                     {{if eq .Category.ID "corrupcao_gestao_publica"}}
-                                    Tipos permitidos: Fotos (JPG, PNG), PDF, DOC, TXT - até {{.MaxFiles}} arquivos
+                                    Tipos permitidos: Fotos (JPG, PNG), Vídeos (MP4, AVI, MOV), PDF, DOC, TXT - até {{.MaxFiles}} arquivos
                                     {{else if eq .Category.ID "outros"}}
-                                    Tipos permitidos: Fotos (JPG, PNG), PDF, DOC, TXT - até {{.MaxFiles}} arquivos
+                                    Tipos permitidos: Fotos (JPG, PNG), Vídeos (MP4, AVI, MOV), PDF, DOC, TXT - até {{.MaxFiles}} arquivos
                                     {{else}}
-                                    Tipos permitidos: Fotos (JPG, PNG, WebP) - até {{.MaxFiles}} arquivos
+                                    Tipos permitidos: Fotos (JPG, PNG, WebP), Vídeos (MP4, AVI, MOV, WebM) - até {{.MaxFiles}} arquivos
                                     {{end}}
                                 </div>
                             </div>

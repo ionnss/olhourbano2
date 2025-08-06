@@ -51,9 +51,21 @@ header .bi {
     transform: scale(1.1);
 }
 
+/* Ensure consistent logo size across all pages */
+.navbar-brand img {
+    height: 50px !important;
+    width: auto !important;
+    max-height: 50px !important;
+}
+
 /* Mobile Header Adjustments */
 @media (max-width: 768px) {
-    /* Ensure no space above header on mobile - only top spacing */
+    /* Override base CSS margin for mobile */
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
     html, body {
         margin-top: 0 !important;
         padding-top: 0 !important;
@@ -62,16 +74,38 @@ header .bi {
     header {
         padding: 1rem 1.5rem;
         margin: 0 1rem 4rem 1rem; /* Smaller lateral margins, good bottom spacing */
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
     }
     
     .navbar-brand-text {
         font-size: 1.2rem;
         margin-left: 0.3rem;
     }
+    
+    /* Ensure consistent logo size on mobile */
+    .navbar-brand img {
+        height: 45px !important;
+        width: auto !important;
+        max-height: 45px !important;
+    }
+    
+    .navbar-buttons .bi {
+        font-size: 1.2rem;
+    }
+    
+    .navbar-buttons .btn {
+        padding: 0.5rem 0.75rem !important;
+    }
 }
 
 @media (max-width: 480px) {
-    /* Ensure no space above header on very small mobile - only top spacing */
+    /* Override base CSS margin for very small mobile */
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
     html, body {
         margin-top: 0 !important;
         padding-top: 0 !important;
@@ -85,5 +119,39 @@ header .bi {
     
     .navbar-brand-text {
         font-size: 1.1rem;
+        margin-left: 0.25rem;
+    }
+    
+    /* Ensure consistent logo size on very small mobile */
+    .navbar-brand img {
+        height: 40px !important;
+        width: auto !important;
+        max-height: 40px !important;
+    }
+    
+    .navbar-buttons .bi {
+        font-size: 1.1rem;
+    }
+    
+    .navbar-buttons .btn {
+        padding: 0.4rem 0.6rem !important;
+    }
+}
+
+/* Ensure header consistency across all pages */
+@media (max-width: 576px) {
+    header {
+        margin: 0 0.75rem 3.5rem 0.75rem;
+        padding: 0.9rem 1.25rem;
+    }
+    
+    .navbar-brand img {
+        height: 42px !important;
+        width: auto !important;
+        max-height: 42px !important;
+    }
+    
+    .navbar-brand-text {
+        font-size: 1.15rem;
     }
 }

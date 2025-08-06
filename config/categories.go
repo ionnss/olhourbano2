@@ -35,12 +35,36 @@ type FormConfigurations struct {
 	} `yaml:"location_required" json:"location_required"`
 }
 
+// TransportField represents a single transport field configuration
+type TransportField struct {
+	Name        string   `yaml:"name" json:"name"`
+	Label       string   `yaml:"label" json:"label"`
+	Type        string   `yaml:"type" json:"type"`
+	Placeholder string   `yaml:"placeholder" json:"placeholder"`
+	Required    bool     `yaml:"required" json:"required"`
+	Options     []string `yaml:"options,omitempty" json:"options,omitempty"`
+}
+
+// TransportType represents a transport type configuration
+type TransportType struct {
+	Name   string           `yaml:"name" json:"name"`
+	Icon   string           `yaml:"icon" json:"icon"`
+	Fields []TransportField `yaml:"fields" json:"fields"`
+}
+
+// TransportConfigurations defines transport-specific configurations
+type TransportConfigurations struct {
+	TransportRequired []string                    `yaml:"transport_required" json:"transport_required"`
+	TransportTypes    map[string]TransportType    `yaml:"transport_types" json:"transport_types"`
+}
+
 // CategoriesConfig holds the complete categories configuration
 type CategoriesConfig struct {
-	Categories           []Category           `yaml:"categories" json:"categories"`
-	Settings             CategorySettings     `yaml:"settings" json:"settings"`
-	LocationRequirements LocationRequirements `yaml:"location_requirements" json:"location_requirements"`
-	FormConfigurations   FormConfigurations   `yaml:"form_configurations" json:"form_configurations"`
+	Categories              []Category              `yaml:"categories" json:"categories"`
+	Settings                CategorySettings        `yaml:"settings" json:"settings"`
+	LocationRequirements    LocationRequirements    `yaml:"location_requirements" json:"location_requirements"`
+	FormConfigurations      FormConfigurations      `yaml:"form_configurations" json:"form_configurations"`
+	TransportConfigurations TransportConfigurations `yaml:"transport_configurations" json:"transport_configurations"`
 }
 
 // Global variable to hold loaded categories
@@ -85,6 +109,29 @@ func (c *CategoriesConfig) IsLocationRequired(categoryID string) bool {
 	return false
 }
 
+// IsTransportRequired checks if a category requires transport information
+func (c *CategoriesConfig) IsTransportRequired(categoryID string) bool {
+	for _, id := range c.TransportConfigurations.TransportRequired {
+		if id == categoryID {
+			return true
+		}
+	}
+	return false
+}
+
+// GetTransportTypes returns all available transport types
+func (c *CategoriesConfig) GetTransportTypes() map[string]TransportType {
+	return c.TransportConfigurations.TransportTypes
+}
+
+// GetTransportType returns a specific transport type by key
+func (c *CategoriesConfig) GetTransportType(transportType string) *TransportType {
+	if transportType, exists := c.TransportConfigurations.TransportTypes[transportType]; exists {
+		return &transportType
+	}
+	return nil
+}
+
 // GetCategories returns all available categories
 func (c *CategoriesConfig) GetCategories() []Category {
 	return c.Categories
@@ -119,4 +166,28 @@ func IsLocationRequiredGlobal(categoryID string) bool {
 		return false
 	}
 	return CategoriesData.IsLocationRequired(categoryID)
+}
+
+// IsTransportRequiredGlobal checks if transport is required for a category
+func IsTransportRequiredGlobal(categoryID string) bool {
+	if CategoriesData == nil {
+		return false
+	}
+	return CategoriesData.IsTransportRequired(categoryID)
+}
+
+// GetTransportTypesGlobal returns all transport types from global config
+func GetTransportTypesGlobal() map[string]TransportType {
+	if CategoriesData == nil {
+		return map[string]TransportType{}
+	}
+	return CategoriesData.GetTransportTypes()
+}
+
+// GetTransportTypeGlobal returns a specific transport type from global config
+func GetTransportTypeGlobal(transportType string) *TransportType {
+	if CategoriesData == nil {
+		return nil
+	}
+	return CategoriesData.GetTransportType(transportType)
 }

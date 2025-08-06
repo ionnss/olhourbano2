@@ -18,10 +18,10 @@ categories:
     icon: "♿"
     description: "Problemas de acessibilidade para pessoas com deficiência"
 
-  - id: "iluminacao_publica"
-    name: "Iluminação Pública"
-    icon: "💡"
-    description: "Problemas com iluminação pública"
+  - id: "redes_energeticas_iluminacao_publica"
+    name: "Redes Elétricas e/ou Iluminação Pública"
+    icon: "🔌"
+    description: "Problemas com redes elétricas e/ou iluminação pública"
 
   - id: "limpeza"
     name: "Limpeza Urbana & Lixo"
@@ -117,3 +117,95 @@ form_configurations:
     address_required: true
     coordinates_required: true
     show_on_public_map: true
+
+# Transport-specific configurations
+transport_configurations:
+  # Categories that require transport information
+  transport_required:
+    - "transporte_publico"
+    - "infraestrutura_mobilidade"
+  
+  # Transport types and their fields
+  transport_types:
+    bus:
+      name: "Ônibus"
+      icon: "🚌"
+      fields:
+        - name: "bus_number"
+          label: "Número do Ônibus"
+          type: "text"
+          placeholder: "Ex: 1234"
+          required: false
+        - name: "bus_line"
+          label: "Linha do Ônibus"
+          type: "text"
+          placeholder: "Ex: Centro - Zona Sul"
+          required: false
+        - name: "bus_stop"
+          label: "Ponto/Parada"
+          type: "text"
+          placeholder: "Ex: Ponto Central"
+          required: false
+        - name: "bus_company"
+          label: "Empresa"
+          type: "text"
+          placeholder: "Ex: Empresa de Transporte"
+          required: false
+    
+    metro:
+      name: "Metrô"
+      icon: "🚇"
+      fields:
+        - name: "metro_line"
+          label: "Linha do Metrô"
+          type: "text"
+          placeholder: "Ex: Linha Azul"
+          required: false
+        - name: "metro_station"
+          label: "Estação"
+          type: "text"
+          placeholder: "Ex: Estação Central"
+          required: false
+        - name: "metro_wagon"
+          label: "Número do Vagão"
+          type: "text"
+          placeholder: "Ex: 123"
+          required: false
+        - name: "metro_card"
+          label: "Tipo de Cartão"
+          type: "select"
+          options:
+            - "Bilhete Único"
+            - "Vale-Transporte"
+            - "Outro"
+          required: false
+    
+    train:
+      name: "Trem"
+      icon: "🚂"
+      fields:
+        - name: "train_line"
+          label: "Linha do Trem"
+          type: "text"
+          placeholder: "Ex: Linha 1"
+          required: false
+        - name: "train_station"
+          label: "Estação"
+          type: "text"
+          placeholder: "Ex: Estação Central"
+          required: false
+        - name: "train_wagon"
+          label: "Número do Vagão"
+          type: "text"
+          placeholder: "Ex: 123"
+          required: false
+    
+    other:
+      name: "Outro"
+      icon: "🚗"
+      fields:
+        - name: "transport_details"
+          label: "Detalhes do Transporte"
+          type: "textarea"
+          placeholder: "Descreva detalhes específicos do transporte..."
+          required: false

@@ -3,14 +3,17 @@ package handlers
 import (
 	"fmt"
 	"net/http"
-	"text/template"
+	"html/template"
 )
 
 // renderTemplate is a shared utility function for rendering page templates
 // It parses all component templates first, then the specific page template
 func renderTemplate(w http.ResponseWriter, pageName string, data interface{}) error {
+	// Create template with functions
+	tmpl := template.New("").Funcs(TemplateFuncs())
+	
 	// Parse all component templates first
-	tmpl, err := template.ParseGlob("./templates/components/*.html")
+	tmpl, err := tmpl.ParseGlob("./templates/components/*.html")
 	if err != nil {
 		return fmt.Errorf("error parsing component templates: %w", err)
 	}

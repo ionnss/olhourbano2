@@ -1,22 +1,17 @@
 {{define "map_content"}}
 <!-- Floating back button (top left) -->
 <div id="map-back-btn" style="position:fixed;top:18px;left:14px;z-index:1001;display:flex;align-items:center;">
-  <button id="back-btn" hx-get="/feed" hx-push-url="true"
+  <button id="back-btn" onclick="window.location.href='/feed'"
     class="btn shadow rounded-pill d-flex align-items-center px-3 py-2"
     style="font-weight:600; letter-spacing:0.5px; font-size:1.08rem; border-radius:999px; box-shadow:0 2px 8px rgba(51,51,51,0.8) !important; margin-right:10px; background-color:rgb(51, 51, 51); color:#fff;">
     <i class="bi bi-arrow-left me-2"></i> Voltar ao Feed
   </button>
   
-  <button id="filter-btn" hx-get="/feed" hx-push-url="true"
-    class="btn shadow rounded-pill d-flex align-items-center px-3 py-2"
-    style="font-weight:600; letter-spacing:0.5px; font-size:1.08rem; border-radius:999px; box-shadow:0 2px 8px rgba(51,51,51,0.8) !important; background-color:rgb(51, 51, 51); color:#fff;">
-    <i class="bi bi-funnel-fill me-2"></i> Filtros
-  </button>
+  
 </div>
 
-<!-- Floating logo card (top right) -->
-<div id="map-logo-card"
-  style="position:fixed;top:18px;right:14px;z-index:1001;display:flex;align-items:center;background:rgb(51, 51, 51);box-shadow:0 2px 8px rgba(51,51,51,0.8);border-radius:14px;padding:8px 16px 8px 10px;gap:10px;">
+<!-- Logo card (bottom left) -->
+<div id="map-logo-card">
   <span style="display:inline-block;width:32px;height:32px;">
     <svg fill="#fff" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 121.025 121.025"
@@ -32,6 +27,9 @@
 </div>
 
 <!-- Map -->
-<div id="map" style="width:100vw;"></div>
+<div id="map" style="width:100vw; height:100vh;"></div>
+
+<!-- Filter stats panel -->
+{{template "filter_stats_panel" .}}
 
 {{end}}

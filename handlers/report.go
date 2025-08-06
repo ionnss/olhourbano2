@@ -73,15 +73,19 @@ func ReportStep2Handler(w http.ResponseWriter, r *http.Request) {
 		locationRequired := config.IsLocationRequiredGlobal(categoryID)
 		maxFiles := models.GetMaxFiles(categoryID)
 		allowedTypes := models.GetAllowedFileTypes(categoryID)
+		transportRequired := config.IsTransportRequiredGlobal(categoryID)
+		transportTypes := config.GetTransportTypesGlobal()
 
 		data := map[string]interface{}{
-			"Step":             2,
-			"Category":         category,
-			"LocationRequired": locationRequired,
-			"PageTitle":        "Nova Denúncia - " + category.Name,
-			"MaxFiles":         maxFiles,
-			"AllowedTypes":     allowedTypes,
-			"GoogleMapsAPIKey": getGoogleMapsAPIKey(),
+			"Step":              2,
+			"Category":          category,
+			"LocationRequired":  locationRequired,
+			"TransportRequired": transportRequired,
+			"TransportTypes":    transportTypes,
+			"PageTitle":         "Nova Denúncia - " + category.Name,
+			"MaxFiles":          maxFiles,
+			"AllowedTypes":      allowedTypes,
+			"GoogleMapsAPIKey":  getGoogleMapsAPIKey(),
 		}
 
 		if err := renderTemplate(w, "01_report.html", data); err != nil {
@@ -129,27 +133,77 @@ func handleReportSubmission(w http.ResponseWriter, r *http.Request, category *co
 		return
 	}
 
+	// Extract transport data if required
+	var transportType string
+	var transportData *models.TransportData
+
+	if config.IsTransportRequiredGlobal(category.ID) {
+		transportType = r.FormValue("transport_type")
+
+		// Only create transport data if transport type is selected
+		if transportType != "" {
+			transportData = &models.TransportData{}
+
+			switch transportType {
+			case "bus":
+				transportData.BusNumber = r.FormValue("bus_number")
+				transportData.BusLine = r.FormValue("bus_line")
+				transportData.BusStop = r.FormValue("bus_stop")
+				transportData.BusCompany = r.FormValue("bus_company")
+			case "metro":
+				transportData.MetroLine = r.FormValue("metro_line")
+				transportData.MetroStation = r.FormValue("metro_station")
+				transportData.MetroWagon = r.FormValue("metro_wagon")
+				transportData.MetroCard = r.FormValue("metro_card")
+			case "train":
+				transportData.TrainLine = r.FormValue("train_line")
+				transportData.TrainStation = r.FormValue("train_station")
+				transportData.TrainWagon = r.FormValue("train_wagon")
+			case "other":
+				transportData.TransportDetails = r.FormValue("transport_details")
+			}
+
+			// Check if any transport data was actually provided
+			hasData := false
+			if transportData.BusNumber != "" || transportData.BusLine != "" || transportData.BusStop != "" || transportData.BusCompany != "" ||
+				transportData.MetroLine != "" || transportData.MetroStation != "" || transportData.MetroWagon != "" || transportData.MetroCard != "" ||
+				transportData.TrainLine != "" || transportData.TrainStation != "" || transportData.TrainWagon != "" ||
+				transportData.TransportDetails != "" {
+				hasData = true
+			}
+
+			// If no meaningful data was provided, set transportData to nil
+			if !hasData {
+				transportData = nil
+			}
+		}
+	}
+
 	// Validate form data
 	validationErrors := services.ValidateForm(category.ID, cpf, birthDate, email, emailConfirmation, location, description, latitude, longitude)
 	if len(validationErrors) > 0 {
 		// Return to form with errors
 		data := map[string]interface{}{
-			"Step":             2,
-			"Category":         category,
-			"LocationRequired": config.IsLocationRequiredGlobal(category.ID),
-			"PageTitle":        "Nova Denúncia - " + category.Name,
-			"MaxFiles":         models.GetMaxFiles(category.ID),
-			"AllowedTypes":     models.GetAllowedFileTypes(category.ID),
-			"GoogleMapsAPIKey": getGoogleMapsAPIKey(),
-			"Errors":           validationErrors,
+			"Step":              2,
+			"Category":          category,
+			"LocationRequired":  config.IsLocationRequiredGlobal(category.ID),
+			"TransportRequired": config.IsTransportRequiredGlobal(category.ID),
+			"TransportTypes":    config.GetTransportTypesGlobal(),
+			"PageTitle":         "Nova Denúncia - " + category.Name,
+			"MaxFiles":          models.GetMaxFiles(category.ID),
+			"AllowedTypes":      models.GetAllowedFileTypes(category.ID),
+			"GoogleMapsAPIKey":  getGoogleMapsAPIKey(),
+			"Errors":            validationErrors,
 			"FormData": map[string]interface{}{
-				"CPF":         cpf,
-				"BirthDate":   birthDate,
-				"Email":       email,
-				"Location":    location,
-				"Description": description,
-				"Latitude":    latitude,
-				"Longitude":   longitude,
+				"CPF":           cpf,
+				"BirthDate":     birthDate,
+				"Email":         email,
+				"Location":      location,
+				"Description":   description,
+				"Latitude":      latitude,
+				"Longitude":     longitude,
+				"TransportType": transportType,
+				"TransportData": transportData,
 			},
 		}
 
@@ -182,15 +236,25 @@ func handleReportSubmission(w http.ResponseWriter, r *http.Request, category *co
 
 	// Create report record
 	report := &models.Report{
-		ProblemType: category.ID,
-		HashedCPF:   services.HashCPF(cpf),
-		BirthDate:   birthDate, // Store birth date (will be hashed in production)
-		Email:       email,
-		Location:    location,
-		Latitude:    latitude,
-		Longitude:   longitude,
-		Description: description,
-		PhotoPath:   strings.Join(uploadedFiles, ","), // Store multiple paths comma-separated
+		ProblemType:   category.ID,
+		HashedCPF:     services.HashCPF(cpf),
+		BirthDate:     birthDate, // Store birth date (will be hashed in production)
+		Email:         email,
+		Location:      location,
+		Latitude:      latitude,
+		Longitude:     longitude,
+		Description:   description,
+		PhotoPath:     strings.Join(uploadedFiles, ","), // Store multiple paths comma-separated
+		TransportType: transportType,
+	}
+
+	// Set transport data if available
+	if transportData != nil {
+		err = report.SetTransportData(transportData)
+		if err != nil {
+			log.Printf("Error setting transport data: %v", err)
+			// Continue without transport data rather than failing
+		}
 	}
 
 	// Save to database

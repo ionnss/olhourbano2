@@ -1,3 +1,57 @@
 {{define "feed_pagination"}}
+{{if and .Reports .TotalPages}}
+<div class="feed-pagination mt-4">
+    <nav aria-label="Navegação de páginas">
+        <ul class="pagination justify-content-center">
+            <!-- Previous Page -->
+            {{if .HasPrev}}
+            <li class="page-item">
+                <a class="page-link" href="?page={{.PrevPage}}{{if .Category}}&category={{.Category}}{{end}}{{if .Status}}&status={{.Status}}{{end}}{{if .Sort}}&sort={{.Sort}}{{end}}">
+                    <i class="bi bi-chevron-left"></i>
+                    Anterior
+                </a>
+            </li>
+            {{else}}
+            <li class="page-item disabled">
+                <span class="page-link">
+                    <i class="bi bi-chevron-left"></i>
+                    Anterior
+                </span>
+            </li>
+            {{end}}
 
+            <!-- Current Page Info -->
+            <li class="page-item active">
+                <span class="page-link">
+                    Página {{.Page}} de {{.TotalPages}}
+                </span>
+            </li>
+
+            <!-- Next Page -->
+            {{if .HasNext}}
+            <li class="page-item">
+                <a class="page-link" href="?page={{.NextPage}}{{if .Category}}&category={{.Category}}{{end}}{{if .Status}}&status={{.Status}}{{end}}{{if .Sort}}&sort={{.Sort}}{{end}}">
+                    Próxima
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+            {{else}}
+            <li class="page-item disabled">
+                <span class="page-link">
+                    Próxima
+                    <i class="bi bi-chevron-right"></i>
+                </span>
+            </li>
+            {{end}}
+        </ul>
+    </nav>
+
+    <!-- Page Info -->
+    <div class="pagination-info text-center text-muted mt-2">
+        <small>
+            {{.TotalReports}} denúncias no total
+        </small>
+    </div>
+</div>
+{{end}}
 {{end}}

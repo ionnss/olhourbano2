@@ -1,0 +1,103 @@
+{{define "report_transport"}}
+{{if .TransportRequired}}
+<div class="transport-section mb-4">
+    <h5 class="mb-3">
+        <i class="bi bi-bus-front"></i>
+        Informações do Transporte
+    </h5>
+    
+    <div class="mb-3">
+        <label for="transport_type" class="form-label">Tipo de Transporte</label>
+        <select class="form-select" id="transport_type" name="transport_type" required>
+            <option value="">Selecione o tipo de transporte</option>
+            {{range $key, $transportType := .TransportTypes}}
+            <option value="{{$key}}" data-icon="{{$transportType.Icon}}">
+                {{$transportType.Icon}} {{$transportType.Name}}
+            </option>
+            {{end}}
+        </select>
+    </div>
+
+    <!-- Bus Fields -->
+    <div id="bus-fields" class="transport-fields" style="display: none;">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="bus_number" class="form-label">Número do Ônibus</label>
+                <input type="text" class="form-control" id="bus_number" name="bus_number" placeholder="Ex: 1234">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="bus_line" class="form-label">Linha do Ônibus</label>
+                <input type="text" class="form-control" id="bus_line" name="bus_line" placeholder="Ex: Centro - Zona Sul">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="bus_stop" class="form-label">Ponto/Parada</label>
+                <input type="text" class="form-control" id="bus_stop" name="bus_stop" placeholder="Ex: Ponto Central">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="bus_company" class="form-label">Empresa</label>
+                <input type="text" class="form-control" id="bus_company" name="bus_company" placeholder="Ex: Empresa de Transporte">
+            </div>
+        </div>
+    </div>
+
+    <!-- Metro Fields -->
+    <div id="metro-fields" class="transport-fields" style="display: none;">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="metro_line" class="form-label">Linha do Metrô</label>
+                <input type="text" class="form-control" id="metro_line" name="metro_line" placeholder="Ex: Linha Azul">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="metro_station" class="form-label">Estação</label>
+                <input type="text" class="form-control" id="metro_station" name="metro_station" placeholder="Ex: Estação Central">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="metro_wagon" class="form-label">Número do Vagão</label>
+                <input type="text" class="form-control" id="metro_wagon" name="metro_wagon" placeholder="Ex: 123">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="metro_card" class="form-label">Tipo de Cartão</label>
+                <select class="form-select" id="metro_card" name="metro_card">
+                    <option value="">Selecione o tipo</option>
+                    <option value="Bilhete Único">Bilhete Único</option>
+                    <option value="Vale-Transporte">Vale-Transporte</option>
+                    <option value="Outro">Outro</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Train Fields -->
+    <div id="train-fields" class="transport-fields" style="display: none;">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="train_line" class="form-label">Linha do Trem</label>
+                <input type="text" class="form-control" id="train_line" name="train_line" placeholder="Ex: Linha 1">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="train_station" class="form-label">Estação</label>
+                <input type="text" class="form-control" id="train_station" name="train_station" placeholder="Ex: Estação Central">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="train_wagon" class="form-label">Número do Vagão</label>
+                <input type="text" class="form-control" id="train_wagon" name="train_wagon" placeholder="Ex: 123">
+            </div>
+        </div>
+    </div>
+
+    <!-- Other Transport Fields -->
+    <div id="other-fields" class="transport-fields" style="display: none;">
+        <div class="mb-3">
+            <label for="transport_details" class="form-label">Detalhes do Transporte</label>
+            <textarea class="form-control" id="transport_details" name="transport_details" rows="3" placeholder="Descreva detalhes específicos do transporte..."></textarea>
+        </div>
+    </div>
+</div>
+{{end}}
+{{end}} 

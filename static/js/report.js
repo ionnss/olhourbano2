@@ -99,52 +99,52 @@ document.addEventListener('DOMContentLoaded', function() {
     // Email confirmation validation
     const emailConfirmation = document.getElementById('email_confirmation');
     if (emailConfirmation) {
-        emailConfirmation.addEventListener('blur', function() {
+        emailConfirmation.addEventListener('input', function() {
             const email = document.getElementById('email').value;
             const confirmation = this.value;
             
-            if (email && confirmation && email !== confirmation) {
-                this.setCustomValidity('Emails não conferem');
-                this.classList.add('is-invalid');
+            if (confirmation && email !== confirmation) {
+                this.setCustomValidity('Os emails não coincidem');
             } else {
                 this.setCustomValidity('');
-                this.classList.remove('is-invalid');
             }
         });
     }
 
     // Character counter for description
-    const description = document.getElementById('description');
-    if (description) {
-        description.addEventListener('input', function() {
-            document.getElementById('charCount').textContent = this.value.length;
+    const descriptionTextarea = document.getElementById('description');
+    if (descriptionTextarea) {
+        descriptionTextarea.addEventListener('input', function() {
+            const charCount = document.getElementById('charCount');
+            const length = this.value.length;
+            charCount.textContent = length;
+            
+            if (length < 10) {
+                charCount.style.color = '#dc3545';
+            } else if (length > 900) {
+                charCount.style.color = '#ffc107';
+            } else {
+                charCount.style.color = '#6c757d';
+            }
         });
-        
-        // Initial count
-        if (description.value) {
-            document.getElementById('charCount').textContent = description.value.length;
-        }
     }
 
-    // File preview and custom upload button
-    const filesInput = document.getElementById('files');
-    if (filesInput) {
-        filesInput.addEventListener('change', handleFilePreview);
-    }
-    
-    // Initialize custom file input text
-    updateFileInputText();
-
-    // Get current location button
-    const getCurrentLocationBtn = document.getElementById('getCurrentLocation');
-    if (getCurrentLocationBtn) {
-        getCurrentLocationBtn.addEventListener('click', getCurrentLocation);
+    // File upload handling
+    const fileInput = document.getElementById('files');
+    if (fileInput) {
+        fileInput.addEventListener('change', handleFilePreview);
     }
 
-    // Toggle map button
+    // Map toggle
     const toggleMapBtn = document.getElementById('toggleMap');
     if (toggleMapBtn) {
         toggleMapBtn.addEventListener('click', toggleMap);
+    }
+
+    // Current location
+    const currentLocationBtn = document.getElementById('getCurrentLocation');
+    if (currentLocationBtn) {
+        currentLocationBtn.addEventListener('click', getCurrentLocation);
     }
 
     // Form validation
@@ -152,20 +152,28 @@ document.addEventListener('DOMContentLoaded', function() {
     if (reportForm) {
         reportForm.addEventListener('submit', validateReportForm);
     }
+
+    // Transport type selection
+    const transportTypeSelect = document.getElementById('transport_type');
+    if (transportTypeSelect) {
+        transportTypeSelect.addEventListener('change', handleTransportTypeChange);
+    }
 });
 
-// Verify CPF with birth date using CPFHub API
+// CPF + Birth date verification
 async function verifyCPFWithBirthDate() {
-    const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
+    const cpf = document.getElementById('cpf').value;
     const birthDate = document.getElementById('birth_date').value;
+    const statusDiv = document.getElementById('cpFVerificationStatus');
     
-    if (cpf.length !== 11 || !birthDate) {
+    if (!cpf || !birthDate) {
         return;
     }
-
+    
+    // Clear previous status
+    statusDiv.style.display = 'none';
+    
     try {
-        showCPFVerificationStatus('Verificando CPF...', 'info');
-
         const response = await fetch('/api/verify-cpf', {
             method: 'POST',
             headers: {
@@ -176,67 +184,50 @@ async function verifyCPFWithBirthDate() {
                 birth_date: birthDate
             })
         });
-
+        
         const result = await response.json();
-
-        if (result.valid) {
-            showCPFVerificationStatus('CPF verificado com sucesso', 'success');
-            document.getElementById('cpf').classList.remove('is-invalid');
-            document.getElementById('cpf').classList.add('is-valid');
+        
+        if (result.success) {
+            showCPFVerificationStatus('CPF verificado com sucesso!', 'success');
         } else {
-            showCPFVerificationStatus('CPF ou data de nascimento inválidos', 'error');
-            document.getElementById('cpf').classList.remove('is-valid');
-            document.getElementById('cpf').classList.add('is-invalid');
+            showCPFVerificationStatus(result.message || 'CPF inválido ou não encontrado', 'error');
         }
     } catch (error) {
-        console.error('Erro na verificação do CPF:', error);
-        showCPFVerificationStatus('Erro na verificação. Tente novamente.', 'warning');
+        console.error('Error verifying CPF:', error);
+        showCPFVerificationStatus('Erro ao verificar CPF. Tente novamente.', 'error');
     }
 }
 
-// Show CPF verification status
 function showCPFVerificationStatus(message, type) {
-    // Remove existing status
-    const existingStatus = document.querySelector('.cpf-verification-status');
-    if (existingStatus) {
-        existingStatus.remove();
-    }
-
-    // Create status element
-    const statusDiv = document.createElement('div');
-    statusDiv.className = `cpf-verification-status alert alert-${getBootstrapClass(type)} alert-sm mt-2`;
-    statusDiv.innerHTML = `<i class="fas fa-${getIcon(type)} me-2"></i>${message}`;
-
-    // Insert after CPF input
-    const cpfInput = document.getElementById('cpf');
-    cpfInput.parentNode.appendChild(statusDiv);
-
-    // Auto-remove after 5 seconds for non-error messages
-    if (type !== 'error') {
-        setTimeout(() => {
-            statusDiv.remove();
-        }, 5000);
-    }
+    const statusDiv = document.getElementById('cpFVerificationStatus');
+    const bootstrapClass = getBootstrapClass(type);
+    const icon = getIcon(type);
+    
+    statusDiv.innerHTML = `
+        <div class="alert ${bootstrapClass} alert-sm mt-2">
+            <i class="${icon} me-2"></i>
+            ${message}
+        </div>
+    `;
+    statusDiv.style.display = 'block';
 }
 
 function getBootstrapClass(type) {
-    const classes = {
-        'info': 'info',
-        'success': 'success',
-        'error': 'danger',
-        'warning': 'warning'
-    };
-    return classes[type] || 'info';
+    switch (type) {
+        case 'success': return 'alert-success';
+        case 'error': return 'alert-danger';
+        case 'warning': return 'alert-warning';
+        default: return 'alert-info';
+    }
 }
 
 function getIcon(type) {
-    const icons = {
-        'info': 'info-circle',
-        'success': 'check-circle',
-        'error': 'exclamation-triangle',
-        'warning': 'exclamation-circle'
-    };
-    return icons[type] || 'info-circle';
+    switch (type) {
+        case 'success': return 'bi bi-check-circle-fill';
+        case 'error': return 'bi bi-x-circle-fill';
+        case 'warning': return 'bi bi-exclamation-triangle-fill';
+        default: return 'bi bi-info-circle-fill';
+    }
 }
 
 // Get current location
@@ -246,25 +237,24 @@ function getCurrentLocation() {
             function(position) {
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
-                const location = { lat, lng };
                 
-                map.setCenter(location);
-                map.setZoom(17);
-                marker.setPosition(location);
+                // Update map and marker
+                const newPosition = { lat, lng };
+                map.setCenter(newPosition);
+                map.setZoom(16);
+                marker.setPosition(newPosition);
+                
+                // Update form fields
                 updateCoordinates(lat, lng);
                 reverseGeocode(lat, lng);
-                
-                // Show map if hidden
-                document.getElementById('mapContainer').style.display = 'block';
-                const toggleBtn = document.getElementById('toggleMap');
-                toggleBtn.innerHTML = '<i class="fas fa-eye-slash me-1"></i>Ocultar Mapa';
             },
             function(error) {
-                alert('Erro ao obter localização: ' + error.message);
+                console.error('Error getting location:', error);
+                alert('Erro ao obter localização. Verifique se você permitiu o acesso à localização.');
             }
         );
     } else {
-        alert('Geolocalização não é suportada neste navegador.');
+        alert('Geolocalização não é suportada pelo seu navegador.');
     }
 }
 
@@ -275,78 +265,116 @@ function toggleMap() {
     
     if (mapContainer.style.display === 'none') {
         mapContainer.style.display = 'block';
-        toggleBtn.innerHTML = '<i class="fas fa-eye-slash me-1"></i>Ocultar Mapa';
-        google.maps.event.trigger(map, 'resize');
+        toggleBtn.innerHTML = '<i class="bi bi-map me-1"></i>Fechar Mapa';
+        // Trigger resize to ensure map renders correctly
+        setTimeout(() => {
+            if (map) {
+                google.maps.event.trigger(map, 'resize');
+            }
+        }, 100);
     } else {
         mapContainer.style.display = 'none';
-        toggleBtn.innerHTML = '<i class="fas fa-map me-1"></i>Abrir Mapa';
+        toggleBtn.innerHTML = '<i class="bi bi-map me-1"></i>Abrir Mapa';
     }
 }
 
 // Handle file preview
 function handleFilePreview() {
-    const fileList = document.getElementById('fileList');
+    const fileInput = document.getElementById('files');
     const filePreview = document.getElementById('filePreview');
-    const files = this.files;
+    const fileList = document.getElementById('fileList');
     
-    if (files.length > 0) {
+    if (fileInput.files.length > 0) {
+        filePreview.classList.remove('d-none');
         fileList.innerHTML = '';
-        Array.from(files).forEach((file, index) => {
+        
+        Array.from(fileInput.files).forEach((file, index) => {
             const fileItem = document.createElement('div');
-            fileItem.className = 'mb-2 p-2 border rounded bg-white d-flex justify-content-between align-items-center';
+            fileItem.className = 'd-flex align-items-center mb-2';
+            
+            // Get appropriate icon based on file type
+            const icon = getFileIcon(file.type);
+            
             fileItem.innerHTML = `
-                <div>
-                    <i class="fas fa-file me-2"></i>
-                    <strong>${file.name}</strong>
-                    <span class="text-muted ms-2">(${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
-                </div>
-                <span class="badge bg-primary">${file.type}</span>
+                <i class="${icon} me-2"></i>
+                <span class="flex-grow-1">${file.name}</span>
+                <small class="text-muted">(${(file.size / 1024 / 1024).toFixed(2)} MB)</small>
             `;
             fileList.appendChild(fileItem);
         });
-        filePreview.classList.remove('d-none');
+        
+        updateFileInputText();
     } else {
         filePreview.classList.add('d-none');
+        updateFileInputText();
+    }
+}
+
+// Get appropriate icon for file type
+function getFileIcon(fileType) {
+    if (fileType.startsWith('image/')) {
+        return 'bi bi-image';
+    } else if (fileType.startsWith('video/')) {
+        return 'bi bi-camera-video';
+    } else if (fileType === 'application/pdf') {
+        return 'bi bi-file-pdf';
+    } else if (fileType === 'text/plain') {
+        return 'bi bi-file-text';
+    } else if (fileType.includes('word') || fileType.includes('document')) {
+        return 'bi bi-file-word';
+    } else {
+        return 'bi bi-file-earmark';
     }
 }
 
 // Update file input text
 function updateFileInputText() {
     const fileInput = document.getElementById('files');
-    const fileText = document.querySelector('.file-upload-text');
+    const fileUploadText = document.querySelector('.file-upload-text');
     
-    if (fileInput && fileText) {
-        fileInput.addEventListener('change', function() {
-            const fileCount = this.files.length;
-            if (fileCount > 0) {
-                if (fileCount === 1) {
-                    fileText.textContent = `1 arquivo selecionado`;
-                } else {
-                    fileText.textContent = `${fileCount} arquivos selecionados`;
-                }
-            } else {
-                fileText.textContent = 'Selecionar Arquivos';
-            }
-        });
+    if (fileInput.files.length > 0) {
+        const fileNames = Array.from(fileInput.files).map(file => file.name);
+        if (fileNames.length === 1) {
+            fileUploadText.textContent = fileNames[0];
+        } else {
+            fileUploadText.textContent = `${fileNames.length} arquivos selecionados`;
+        }
+    } else {
+        fileUploadText.textContent = 'Selecionar Arquivos';
     }
 }
 
-// Validate report form
+// Form validation
 function validateReportForm(e) {
-    const lat = document.getElementById('latitude').value;
-    const lng = document.getElementById('longitude').value;
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.innerHTML;
     
-    if (!lat || !lng || lat == '0' || lng == '0') {
-        e.preventDefault();
-        alert('Por favor, defina a localização usando o mapa ou GPS.');
-        return false;
-    }
+    // Show loading state
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Enviando...';
+    
+    // Re-enable after a delay (in case of validation errors)
+    setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+    }, 5000);
+}
 
-    // Check CPF verification status
-    const cpfInput = document.getElementById('cpf');
-    if (cpfInput.classList.contains('is-invalid')) {
-        e.preventDefault();
-        alert('Por favor, verifique se o CPF e data de nascimento estão corretos.');
-        return false;
+// Transport type change handler
+function handleTransportTypeChange() {
+    const transportType = this.value;
+    const transportFields = document.querySelectorAll('.transport-fields');
+    
+    // Hide all transport field sections
+    transportFields.forEach(field => {
+        field.style.display = 'none';
+    });
+    
+    // Show the selected transport type fields
+    if (transportType) {
+        const selectedFields = document.getElementById(transportType + '-fields');
+        if (selectedFields) {
+            selectedFields.style.display = 'block';
+        }
     }
 }

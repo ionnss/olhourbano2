@@ -1,0 +1,95 @@
+{{define "feed_report"}}
+<div class="report-card" data-report-id="{{.ID}}">
+    <div class="report-card-header">
+        <div class="report-category">
+            <span class="category-icon">{{.CategoryIcon}}</span>
+            <span class="category-name">{{.CategoryName}}</span>
+        </div>
+        <div class="report-status">
+            <span class="status-badge status-{{.Status}}">{{.StatusText}}</span>
+        </div>
+    </div>
+
+    <div class="report-card-body">
+        <!-- Location -->
+        <div class="report-location mb-3">
+            <i class="bi bi-geo-alt-fill text-muted me-2"></i>
+            <span class="location-text">{{.Location}}</span>
+        </div>
+
+        <!-- Description -->
+        <div class="report-description mb-3">
+            <p class="description-text">{{.Description}}</p>
+        </div>
+
+        <!-- Transport Info (if available) -->
+        {{if .TransportType}}
+        <div class="report-transport mb-3">
+            <div class="transport-info">
+                <i class="bi bi-bus-front text-muted me-2"></i>
+                <span class="transport-type">{{.TransportTypeName}}</span>
+                {{if .TransportDetails}}
+                <div class="transport-details mt-1">
+                    <small class="text-muted">{{.TransportDetails}}</small>
+                </div>
+                {{end}}
+            </div>
+        </div>
+        {{end}}
+
+        <!-- Photos/Videos Preview -->
+        {{if and .PhotoPath (gt (len .Photos) 0)}}
+        <div class="report-media mb-3">
+            <div class="media-preview">
+                {{range $index, $photo := .Photos}}
+                {{if and $photo (lt $index 3)}}
+                <div class="media-item" onclick="openFileModal('/{{$photo}}', '{{$photo}}', 'image')" style="cursor: pointer;">
+                    <img src="/{{$photo}}" alt="Evidência {{add $index 1}}" class="media-thumbnail" loading="lazy">
+                    <div class="media-overlay-hover">
+                        <i class="bi bi-eye-fill"></i>
+                    </div>
+                </div>
+                {{end}}
+                {{end}}
+                {{if gt (len .Photos) 3}}
+                <div class="media-overlay" data-photos="{{join .Photos ','}}" data-report-id="{{.ID}}" onclick="openFileGallery(this)" style="cursor: pointer;">
+                    <span class="overlay-text">+{{subtract (len .Photos) 3}}</span>
+                    <div class="media-overlay-hover">
+                        <i class="bi bi-images"></i>
+                    </div>
+                </div>
+                {{end}}
+            </div>
+        </div>
+        {{end}}
+    </div>
+
+    <div class="report-card-footer">
+        <div class="report-meta">
+            <div class="meta-item">
+                <i class="bi bi-calendar3 text-muted me-1"></i>
+                <span class="meta-text">{{.CreatedAt}}</span>
+            </div>
+            <div class="meta-item">
+                <i class="bi bi-hand-thumbs-up text-muted me-1"></i>
+                <span class="meta-text">{{.VoteCount}} votos</span>
+            </div>
+            <div class="meta-item">
+                <i class="bi bi-eye-fill text-muted me-1"></i>
+                <span class="meta-text">OlhoUrbano{{.HashedCPFDisplay}}</span>
+            </div>
+        </div>
+
+        <div class="report-actions">
+            <a href="/report/{{.ID}}" class="btn action-btn btn-sm">
+                <i class="bi bi-eye-fill me-1"></i>
+                Ver Detalhes
+            </a>
+            <button class="btn action-btn btn-sm vote-btn" data-report-id="{{.ID}}">
+                <i class="bi bi-hand-thumbs-up-fill me-1"></i>
+                Votar
+            </button>
+        </div>
+    </div>
+</div>
+{{end}}

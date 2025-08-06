@@ -69,8 +69,6 @@
             {{template "report_info" .}}
         {{else if .Success}}
             {{template "report_success" .}}
-        {{else if .Report}}
-            {{template "report_detail" .}}
         {{else}}
             {{template "report_categories" .}}
         {{end}}

@@ -1,6 +1,13 @@
 # Golang image
 FROM golang:1.24.4
 
+# Install system dependencies for file processing
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    imagemagick \
+    qpdf \
+    && rm -rf /var/lib/apt/lists/*
+
 # Work directory
 WORKDIR /olhourbano2
 

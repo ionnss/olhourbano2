@@ -9,11 +9,29 @@ main {
         margin: 1rem;
         padding: 0;
     }
+    
+    /* Ensure hero and footer sections have proper spacing on mobile */
+    .hero-section,
+    .footer-section {
+        margin-left: 2rem;
+        margin-right: 2rem;
+        width: calc(100% - 4rem);
+        max-width: calc(100% - 4rem);
+    }
 }
 
 @media (max-width: 480px) {
     body {
         margin: 1rem;
+    }
+    
+    /* Ensure hero and footer sections have proper spacing on small mobile */
+    .hero-section,
+    .footer-section {
+        margin-left: 1.5rem;
+        margin-right: 1.5rem;
+        width: calc(100% - 3rem);
+        max-width: calc(100% - 3rem);
     }
 }
 
@@ -30,31 +48,7 @@ main {
 
 
 
-/* Mobile Header Adjustments */
-@media (max-width: 768px) {
-    .navbar-brand img {
-        height: 40px !important;
-    }
-    
-    .navbar-brand-text {
-        font-size: 1.1rem;
-        margin-left: 0.3rem;
-    }
-    
-    .navbar-buttons .bi {
-        font-size: 1.1rem;
-    }
-    
-    .navbar-buttons .btn {
-        padding: 0.4rem !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .navbar-brand-text {
-        display: none;
-    }
-}
+/* Mobile Header Adjustments - Removed to avoid conflicts with header.css */
 
 /* Common Section Styling */
 .styled-section {
@@ -96,6 +90,9 @@ main {
     overflow: hidden;
     box-shadow: 5px 5px 8px 0 rgba(51, 51, 51, 0.8);
     padding: 2rem;
+    /* Ensure hero section doesn't expand beyond container */
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .hero-section::before {

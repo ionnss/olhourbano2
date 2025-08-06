@@ -1,0 +1,29 @@
+{{define "feed_content"}}
+<div class="feed-container">
+    <div class="container my-4">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+
+                <!-- Filters Section -->
+                {{template "filter_stats_panel" .}}
+
+                <!-- Reports Section -->
+                {{template "feed_reports" .}}
+
+                <!-- Pagination -->
+                {{template "feed_pagination" .}}
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="feed-sidebar">
+                    <!-- Sidebar content can be added here if needed -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{{end}} 

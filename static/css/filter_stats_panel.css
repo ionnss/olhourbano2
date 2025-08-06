@@ -1,0 +1,150 @@
+/* Filter Stats Panel Component Styles */
+
+/* Corner button styling */
+#feed-corner-button {
+    position: fixed !important;
+    top: 140px !important;
+    right: 0 !important;
+    z-index: 1001 !important;
+    transition: right 0.3s ease;
+}
+
+#feed-corner-button .btn {
+    transition: all 0.3s ease;
+}
+
+#feed-corner-button .btn:hover {
+    background-color: rgb(51, 51, 51) !important;
+    transform: translateY(-2px);
+    box-shadow: -4px 4px 12px rgba(51, 51, 51, 0.9) !important;
+    color: #fff !important;
+}
+
+#feed-corner-button .btn:hover i {
+    color: #28a745 !important;
+}
+
+/* Lateral panel styling */
+#lateral-panel {
+    font-family: 'Montserrat', sans-serif;
+}
+
+#lateral-panel h5,
+#lateral-panel h6 {
+    color: #333;
+    font-weight: 600;
+}
+
+#lateral-panel label {
+    color: #555;
+    font-size: 0.9rem;
+}
+
+#lateral-panel .form-select {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+}
+
+#lateral-panel .btn {
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 8px 16px;
+}
+
+/* Mobile bottom panel styling */
+#mobile-bottom-panel {
+    font-family: 'Montserrat', sans-serif;
+}
+
+#mobile-bottom-panel h5,
+#mobile-bottom-panel h6 {
+    color: #333;
+    font-weight: 600;
+}
+
+#mobile-bottom-panel label {
+    color: #555;
+    font-size: 0.9rem;
+}
+
+#mobile-bottom-panel .form-select {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+}
+
+#mobile-bottom-panel .btn {
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 8px 16px;
+}
+
+/* Statistics cards styling */
+.stats-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #007bff;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    #feed-corner-button {
+        top: auto !important;
+        bottom: 80px !important;
+    }
+    
+    #feed-corner-button .btn {
+        width: 45px !important;
+        height: 45px !important;
+        border-radius: 12px 0 0 12px !important;
+    }
+    
+    #mobile-bottom-panel {
+        height: 85vh !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #feed-corner-button {
+        top: auto !important;
+        bottom: 70px !important;
+    }
+    
+    #feed-corner-button .btn {
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 12px 0 0 12px !important;
+    }
+    
+    #mobile-bottom-panel {
+        height: 90vh !important;
+    }
+} 

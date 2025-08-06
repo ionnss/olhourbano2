@@ -45,6 +45,8 @@ func CreateRoutes() *mux.Router {
 	// API routes
 	r.HandleFunc("/api/googlemaps", handlers.GoogleMapsAPIHandler).Methods("GET") // Google Maps config
 	r.HandleFunc("/api/verify-cpf", handlers.VerifyCPFHandler).Methods("POST")    // CPF verification
+	r.HandleFunc("/api/reports/map", handlers.MapReportsHandler).Methods("GET")   // Map reports data
+	r.HandleFunc("/api/reports/cities", handlers.CitiesHandler).Methods("GET")    // Cities data
 
 	r.HandleFunc("/feed", handlers.FeedHandler).Methods("GET")
 	r.HandleFunc("/map", handlers.MapHandler).Methods("GET")

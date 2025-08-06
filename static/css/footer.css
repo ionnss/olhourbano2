@@ -112,6 +112,10 @@
     .footer-section {
         padding: 1.5rem;
         margin-top: 1.5rem;
+        margin-left: 2rem;
+        margin-right: 2rem;
+        width: calc(100% - 4rem);
+        max-width: calc(100% - 4rem);
     }
     
     .footer-section .container {
@@ -135,5 +139,9 @@
     .footer-section {
         padding: 1rem;
         border-radius: 20px 20px 0 0;
+        margin-left: 1.5rem;
+        margin-right: 1.5rem;
+        width: calc(100% - 3rem);
+        max-width: calc(100% - 3rem);
     }
 }

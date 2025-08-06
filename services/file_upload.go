@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"mime/multipart"
+	"olhourbano2/models"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -13,7 +14,7 @@ import (
 )
 
 const (
-	MaxFileSize = 10 * 1024 * 1024 // 10MB
+	MaxFileSize = 50 * 1024 * 1024 // 50MB for videos
 	UploadDir   = "./uploads"
 )
 
@@ -35,13 +36,14 @@ func ProcessFileUpload(file multipart.File, header *multipart.FileHeader, catego
 	}
 
 	// Validate file size
-	if header.Size > MaxFileSize {
-		result.Error = fmt.Errorf("arquivo muito grande. Máximo permitido: 10MB")
+	maxSize := getMaxFileSize(category, result.ContentType)
+	if header.Size > maxSize {
+		result.Error = fmt.Errorf("arquivo muito grande. Máximo permitido: %dMB", maxSize/(1024*1024))
 		return result, result.Error
 	}
 
-	// Validate file type
-	if !isFileTypeAllowed(category, result.ContentType) {
+	// Validate file type using models package
+	if !models.IsFileTypeAllowed(category, result.ContentType) {
 		result.Error = fmt.Errorf("tipo de arquivo não permitido para esta categoria")
 		return result, result.Error
 	}
@@ -92,38 +94,15 @@ func ProcessFileUpload(file multipart.File, header *multipart.FileHeader, catego
 	return result, nil
 }
 
-// isFileTypeAllowed checks if file type is allowed (using our models function)
-func isFileTypeAllowed(category, contentType string) bool {
-	// Import from models package would be better, but for simplicity:
-	allowedTypes := map[string][]string{
-		"default": {
-			"image/jpeg", "image/jpg", "image/png", "image/webp",
-		},
-		"corrupcao_gestao_publica": {
-			"image/jpeg", "image/jpg", "image/png", "image/webp",
-			"application/pdf", "text/plain",
-			"application/msword",
-			"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-		},
-		"outros": {
-			"image/jpeg", "image/jpg", "image/png", "image/webp",
-			"application/pdf", "text/plain",
-			"application/msword",
-			"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-		},
+// getMaxFileSize returns the maximum file size based on file type and category
+func getMaxFileSize(category, contentType string) int64 {
+	// Videos get larger size limit
+	if strings.HasPrefix(contentType, "video/") {
+		return 50 * 1024 * 1024 // 50MB for videos
 	}
-
-	categoryTypes, exists := allowedTypes[category]
-	if !exists {
-		categoryTypes = allowedTypes["default"]
-	}
-
-	for _, allowedType := range categoryTypes {
-		if allowedType == contentType {
-			return true
-		}
-	}
-	return false
+	
+	// Default size for other files
+	return 10 * 1024 * 1024 // 10MB
 }
 
 // generateFileHash generates a unique hash for the filename
@@ -139,6 +118,8 @@ func cleanFileMetadata(inputPath, outputPath, contentType string) error {
 		return cleanImageMetadata(inputPath, outputPath)
 	case contentType == "application/pdf":
 		return cleanPDFMetadata(inputPath, outputPath)
+	case strings.HasPrefix(contentType, "video/"):
+		return cleanVideoMetadata(inputPath, outputPath)
 	default:
 		// For other file types, just copy the file
 		return copyFile(inputPath, outputPath)
@@ -168,6 +149,26 @@ func cleanPDFMetadata(inputPath, outputPath string) error {
 
 	// Use qpdf to clean metadata
 	cmd := exec.Command("qpdf", "--linearize", "--deterministic-id", inputPath, outputPath)
+	return cmd.Run()
+}
+
+// cleanVideoMetadata removes metadata from video files using ffmpeg
+func cleanVideoMetadata(inputPath, outputPath string) error {
+	// Check if ffmpeg is available
+	if _, err := exec.LookPath("ffmpeg"); err != nil {
+		// Fallback: just copy the file if ffmpeg is not available
+		return copyFile(inputPath, outputPath)
+	}
+
+	// Use ffmpeg to strip metadata and re-encode
+	cmd := exec.Command("ffmpeg", 
+		"-i", inputPath,
+		"-map_metadata", "-1",  // Remove all metadata
+		"-c:v", "copy",         // Copy video stream without re-encoding
+		"-c:a", "copy",         // Copy audio stream without re-encoding
+		"-y",                   // Overwrite output file
+		outputPath)
+	
 	return cmd.Run()
 }
 
@@ -206,6 +207,18 @@ func GetFileExtension(contentType string) string {
 		return ".doc"
 	case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
 		return ".docx"
+	case "video/mp4":
+		return ".mp4"
+	case "video/avi":
+		return ".avi"
+	case "video/mov":
+		return ".mov"
+	case "video/wmv":
+		return ".wmv"
+	case "video/flv":
+		return ".flv"
+	case "video/webm":
+		return ".webm"
 	default:
 		return ""
 	}

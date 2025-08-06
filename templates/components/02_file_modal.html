@@ -1,0 +1,46 @@
+{{define "file_modal"}}
+<!-- File Viewer Modal -->
+<div class="modal fade" id="fileModal" tabindex="-1" aria-labelledby="fileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileModalLabel">
+                    <i class="bi bi-file-earmark me-2"></i>
+                    Visualizar Arquivo
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="file-viewer">
+                    <!-- Image Viewer -->
+                    <div id="imageViewer" class="file-content" style="display: none;">
+                        <img id="modalImage" src="" alt="Imagem" class="img-fluid rounded">
+                    </div>
+                    
+                    <!-- Video Viewer -->
+                    <div id="videoViewer" class="file-content" style="display: none;">
+                        <video id="modalVideo" controls class="w-100 rounded">
+                            <source id="videoSource" src="" type="">
+                            Seu navegador não suporta vídeos.
+                        </video>
+                    </div>
+                    
+                    <!-- PDF Viewer -->
+                    <div id="pdfViewer" class="file-content" style="display: none;">
+                        <iframe id="pdfFrame" src="" width="100%" height="500px" frameborder="0"></iframe>
+                    </div>
+                    
+                    <!-- Document Viewer (fallback) -->
+                    <div id="documentViewer" class="file-content" style="display: none;">
+                        <div class="document-placeholder text-center p-4">
+                            <i class="bi bi-file-earmark-text display-1 text-muted mb-3"></i>
+                            <h5 class="text-muted">Documento</h5>
+                            <p class="text-muted mb-3">Este arquivo não pode ser visualizado diretamente.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{end}} 
