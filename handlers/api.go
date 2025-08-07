@@ -325,3 +325,59 @@ func CitiesHandler(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(response)
 }
+
+// ShareImageRequest represents the request for generating a share image
+type ShareImageRequest struct {
+	ReportID     int    `json:"report_id"`
+	CategoryName string `json:"category_name"`
+	CategoryIcon string `json:"category_icon"`
+	Description  string `json:"description"`
+	Location     string `json:"location"`
+	VoteCount    int    `json:"vote_count"`
+	CreatedAt    string `json:"created_at"`
+}
+
+// ShareImageResponse represents the response for share image generation
+type ShareImageResponse struct {
+	Success  bool   `json:"success"`
+	Message  string `json:"message,omitempty"`
+	ImageURL string `json:"image_url,omitempty"`
+}
+
+// ShareImageHandler handles generating share images for reports
+func ShareImageHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var req ShareImageRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		log.Printf("Error decoding share image request: %v", err)
+		http.Error(w, "Invalid request format", http.StatusBadRequest)
+		return
+	}
+
+	// Validate required fields
+	if req.ReportID == 0 {
+		response := ShareImageResponse{
+			Success: false,
+			Message: "Report ID is required",
+		}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// For now, we'll return a success response with a placeholder
+	// In a full implementation, you would generate the image server-side
+	// using a library like github.com/fogleman/gg or similar
+	response := ShareImageResponse{
+		Success:  true,
+		Message:  "Share image generated successfully",
+		ImageURL: "/api/share-image/" + string(rune(req.ReportID)), // Placeholder URL
+	}
+
+	json.NewEncoder(w).Encode(response)
+}

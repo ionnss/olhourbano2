@@ -135,12 +135,16 @@
                         </div>
                     </div>
 
-                    <!-- Report Actions - Map button -->
+                    <!-- Report Actions - Map and Share buttons -->
                     <div class="report-actions mt-4 mb-4">
                         <a href="/map{{if and .Report.Latitude .Report.Longitude}}?focus_lat={{.Report.Latitude}}&focus_lng={{.Report.Longitude}}&focus_id={{.ReportID}}{{end}}" class="action-btn">
                             <i class="bi bi-map me-2"></i>
                             Ver no Mapa
                         </a>
+                        <button class="action-btn share-btn" onclick="shareReport()" data-report-id="{{.ReportID}}">
+                            <i class="bi bi-share me-2" style="color: #ffffff !important;"></i>
+                            Compartilhar
+                        </button>
                     </div>
 
                     <!-- Comments Section -->
