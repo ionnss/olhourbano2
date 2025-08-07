@@ -1,5 +1,12 @@
 /* Filter Stats Panel Component Styles */
 
+/* Z-Index Hierarchy:
+ * - Map: 1
+ * - Back button & Logo card: 1001
+ * - Mobile overlay: 1001
+ * - Filter panels: 1002 (above back button)
+ */
+
 /* Corner button styling */
 #feed-corner-button {
     position: fixed !important;
@@ -27,6 +34,7 @@
 /* Lateral panel styling */
 #lateral-panel {
     font-family: 'Montserrat', sans-serif;
+    z-index: 1002 !important; /* Higher than back button (1001) */
 }
 
 #lateral-panel h5,
@@ -56,6 +64,7 @@
 /* Mobile bottom panel styling */
 #mobile-bottom-panel {
     font-family: 'Montserrat', sans-serif;
+    z-index: 1002 !important; /* Higher than back button (1001) */
 }
 
 #mobile-bottom-panel h5,
