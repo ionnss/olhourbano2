@@ -7,6 +7,7 @@ import (
 	"olhourbano2/config"
 	"olhourbano2/db"
 	"olhourbano2/routes"
+	"olhourbano2/services"
 	"os"
 	"strconv"
 )
@@ -89,6 +90,14 @@ func main() {
 			fmt.Println("All migrations are valid")
 			return
 
+		case "update:cities":
+			fmt.Println("Updating existing reports with city data...")
+			if err := services.UpdateExistingReportsWithCity(db.DB); err != nil {
+				log.Fatalf("Error updating reports with city data: %v\n", err)
+			}
+			fmt.Println("Successfully updated reports with city data")
+			return
+
 		default:
 			fmt.Printf("Unknown command: %s\n", os.Args[1])
 			fmt.Println("Available commands:")
@@ -96,6 +105,7 @@ func main() {
 			fmt.Println("  migrate:status    - Show migration status")
 			fmt.Println("  migrate:rollback <version> - Rollback to specific version")
 			fmt.Println("  migrate:validate  - Validate migration files")
+			fmt.Println("  update:cities     - Update existing reports with city data")
 			return
 		}
 	}

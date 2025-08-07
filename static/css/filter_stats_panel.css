@@ -91,6 +91,52 @@
     padding: 8px 16px;
 }
 
+/* Professional Stats Cards Styling */
+#lateral-panel .stats-card,
+#mobile-bottom-panel .stats-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+#lateral-panel .stats-card:hover,
+#mobile-bottom-panel .stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* Gradient card hover effects */
+#lateral-panel .stats-card[style*="linear-gradient"]:hover,
+#mobile-bottom-panel .stats-card[style*="linear-gradient"]:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+}
+
+/* Resolution rate card specific styling */
+#lateral-panel .stats-card[style*="background:#f8f9fa"]:hover,
+#mobile-bottom-panel .stats-card[style*="background:#f8f9fa"]:hover {
+    background: #ffffff !important;
+    border-color: #007bff !important;
+    box-shadow: 0 4px 15px rgba(0,123,255,0.15);
+}
+
+/* Progress bar animation */
+#lateral-panel .stats-card[style*="background:#f8f9fa"] div[style*="background:linear-gradient(90deg, #28a745, #20c997)"] {
+    animation: progressFill 1.5s ease-out;
+}
+
+#mobile-bottom-panel .stats-card[style*="background:#f8f9fa"] div[style*="background:linear-gradient(90deg, #28a745, #20c997)"] {
+    animation: progressFill 1.5s ease-out;
+}
+
+@keyframes progressFill {
+    from {
+        width: 0% !important;
+    }
+    to {
+        width: 50% !important;
+    }
+}
+
 /* Statistics cards styling */
 .stats-card {
     background: #f8f9fa;
@@ -139,6 +185,19 @@
     #mobile-bottom-panel {
         height: 85vh !important;
     }
+    
+    /* Mobile stats card adjustments */
+    #mobile-bottom-panel .stats-card {
+        margin-bottom: 10px;
+    }
+    
+    #mobile-bottom-panel .stats-card[style*="linear-gradient"] {
+        padding: 14px !important;
+    }
+    
+    #mobile-bottom-panel .stats-card[style*="linear-gradient"] div[style*="font-size:2rem"] {
+        font-size: 1.8rem !important;
+    }
 }
 
 @media (max-width: 480px) {
@@ -155,5 +214,18 @@
     
     #mobile-bottom-panel {
         height: 90vh !important;
+    }
+    
+    /* Small mobile stats card adjustments */
+    #mobile-bottom-panel .stats-card[style*="linear-gradient"] {
+        padding: 12px !important;
+    }
+    
+    #mobile-bottom-panel .stats-card[style*="linear-gradient"] div[style*="font-size:2rem"] {
+        font-size: 1.6rem !important;
+    }
+    
+    #mobile-bottom-panel .stats-card[style*="linear-gradient"] div[style*="font-size:0.85rem"] {
+        font-size: 0.8rem !important;
     }
 } 

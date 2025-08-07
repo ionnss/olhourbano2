@@ -17,9 +17,12 @@ type ReportStats struct {
 
 // CreateReport inserts a new report into the database
 func CreateReport(db *sql.DB, report *models.Report) (int, error) {
+	// Extract city name from location for better filtering
+	city := extractCityFromLocation(report.Location)
+
 	query := `
-		INSERT INTO reports (problem_type, hashed_cpf, birth_date, email, location, latitude, longitude, description, photo_path, transport_type, transport_data, created_at, vote_count, status)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+		INSERT INTO reports (problem_type, hashed_cpf, birth_date, email, location, city, latitude, longitude, description, photo_path, transport_type, transport_data, created_at, vote_count, status)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
 		RETURNING id
 	`
 
@@ -44,6 +47,7 @@ func CreateReport(db *sql.DB, report *models.Report) (int, error) {
 		report.BirthDate,
 		report.Email,
 		report.Location,
+		city,
 		report.Latitude,
 		report.Longitude,
 		report.Description,
@@ -65,7 +69,7 @@ func CreateReport(db *sql.DB, report *models.Report) (int, error) {
 // GetReportByID retrieves a report by its ID
 func GetReportByID(db *sql.DB, id int) (*models.Report, error) {
 	query := `
-		SELECT id, problem_type, hashed_cpf, birth_date, email, location, latitude, longitude, description, photo_path, transport_type, transport_data, created_at, vote_count, status
+		SELECT id, problem_type, hashed_cpf, birth_date, email, location, city, latitude, longitude, description, photo_path, transport_type, transport_data, created_at, vote_count, status
 		FROM reports
 		WHERE id = $1
 	`
@@ -80,6 +84,7 @@ func GetReportByID(db *sql.DB, id int) (*models.Report, error) {
 		&report.BirthDate,
 		&report.Email,
 		&report.Location,
+		&report.City,
 		&report.Latitude,
 		&report.Longitude,
 		&report.Description,
@@ -111,7 +116,7 @@ func GetReports(db *sql.DB, page int, category, status, city string, limit int) 
 	offset := (page - 1) * limit
 
 	query := `
-		SELECT id, problem_type, hashed_cpf, birth_date, email, location, latitude, longitude, description, photo_path, transport_type, transport_data, created_at, vote_count, status
+		SELECT id, problem_type, hashed_cpf, birth_date, email, location, city, latitude, longitude, description, photo_path, transport_type, transport_data, created_at, vote_count, status
 		FROM reports
 		WHERE 1=1
 	`
@@ -132,7 +137,7 @@ func GetReports(db *sql.DB, page int, category, status, city string, limit int) 
 
 	if city != "" {
 		argCount++
-		query += fmt.Sprintf(" AND location ILIKE $%d", argCount)
+		query += fmt.Sprintf(" AND city ILIKE $%d", argCount)
 		args = append(args, "%"+city+"%")
 	}
 
@@ -162,6 +167,7 @@ func GetReports(db *sql.DB, page int, category, status, city string, limit int) 
 			&report.BirthDate,
 			&report.Email,
 			&report.Location,
+			&report.City,
 			&report.Latitude,
 			&report.Longitude,
 			&report.Description,
@@ -210,7 +216,7 @@ func GetTotalReports(db *sql.DB, category, status, city string) (int, error) {
 
 	if city != "" {
 		argCount++
-		query += fmt.Sprintf(" AND location ILIKE $%d", argCount)
+		query += fmt.Sprintf(" AND city ILIKE $%d", argCount)
 		args = append(args, "%"+city+"%")
 	}
 
@@ -316,7 +322,7 @@ func HasUserVoted(db *sql.DB, reportID int, hashedCPF string) (bool, error) {
 // GetReportsForMap retrieves reports with location data for map display
 func GetReportsForMap(db *sql.DB, category, status, city string) ([]*models.Report, error) {
 	query := `
-		SELECT id, problem_type, hashed_cpf, birth_date, email, location, latitude, longitude, description, photo_path, transport_type, transport_data, created_at, vote_count, status
+		SELECT id, problem_type, hashed_cpf, birth_date, email, location, city, latitude, longitude, description, photo_path, transport_type, transport_data, created_at, vote_count, status
 		FROM reports
 		WHERE latitude IS NOT NULL AND longitude IS NOT NULL AND latitude != 0 AND longitude != 0
 	`
@@ -337,7 +343,7 @@ func GetReportsForMap(db *sql.DB, category, status, city string) ([]*models.Repo
 
 	if city != "" {
 		argCount++
-		query += fmt.Sprintf(" AND location ILIKE $%d", argCount)
+		query += fmt.Sprintf(" AND city ILIKE $%d", argCount)
 		args = append(args, "%"+city+"%")
 	}
 
@@ -361,6 +367,7 @@ func GetReportsForMap(db *sql.DB, category, status, city string) ([]*models.Repo
 			&report.BirthDate,
 			&report.Email,
 			&report.Location,
+			&report.City,
 			&report.Latitude,
 			&report.Longitude,
 			&report.Description,
@@ -389,8 +396,41 @@ func GetReportsForMap(db *sql.DB, category, status, city string) ([]*models.Repo
 	return reports, nil
 }
 
-// GetCitiesFromReports retrieves unique cities from reports
+// GetCitiesFromReports retrieves unique cities from reports using reverse geocoding
 func GetCitiesFromReports(db *sql.DB) ([]string, error) {
+	// First, try to get cities from a dedicated city column if it exists
+	// This is more efficient than reverse geocoding every time
+	query := `
+		SELECT DISTINCT city 
+		FROM reports 
+		WHERE city IS NOT NULL AND city != '' 
+		ORDER BY city
+	`
+
+	rows, err := db.Query(query)
+	if err != nil {
+		// If city column doesn't exist, fall back to extracting from location
+		return getCitiesFromLocation(db)
+	}
+	defer rows.Close()
+
+	var cities []string
+	for rows.Next() {
+		var city string
+		err := rows.Scan(&city)
+		if err != nil {
+			return nil, err
+		}
+		if city != "" && !contains(cities, city) {
+			cities = append(cities, city)
+		}
+	}
+
+	return cities, nil
+}
+
+// getCitiesFromLocation extracts cities from location field as fallback
+func getCitiesFromLocation(db *sql.DB) ([]string, error) {
 	query := `
 		SELECT DISTINCT location 
 		FROM reports 
@@ -412,17 +452,119 @@ func GetCitiesFromReports(db *sql.DB) ([]string, error) {
 			return nil, err
 		}
 
-		// Extract city name from location (assuming format like "Street, City, State")
-		parts := strings.Split(location, ",")
-		if len(parts) >= 2 {
-			city := strings.TrimSpace(parts[len(parts)-2]) // Second to last part is usually city
-			if city != "" && !contains(cities, city) {
-				cities = append(cities, city)
-			}
+		// Try to extract city name from location using multiple strategies
+		city := extractCityFromLocation(location)
+		if city != "" && !contains(cities, city) {
+			cities = append(cities, city)
 		}
 	}
 
 	return cities, nil
+}
+
+// extractCityFromLocation tries to extract city name from location string
+func extractCityFromLocation(location string) string {
+	if location == "" {
+		return ""
+	}
+
+	// Remove common suffixes that might interfere
+	location = strings.ReplaceAll(location, " - Brasil", "")
+	location = strings.ReplaceAll(location, ", Brazil", "")
+	location = strings.ReplaceAll(location, ", Brasil", "")
+
+	// Split by comma and clean up
+	parts := strings.Split(location, ",")
+	if len(parts) < 2 {
+		return ""
+	}
+
+	// For Brazilian addresses, the city is usually the part that contains " - " followed by state
+	// Format: "Street, Number - Neighborhood, City - State, CEP"
+	for i := len(parts) - 1; i >= 0; i-- {
+		part := strings.TrimSpace(parts[i])
+
+		// Skip empty parts
+		if part == "" {
+			continue
+		}
+
+		// Skip parts that look like postal codes (CEP)
+		if isPostalCode(part) {
+			continue
+		}
+
+		// Look for parts that contain " - " which usually indicates "City - State"
+		if strings.Contains(part, " - ") {
+			subParts := strings.Split(part, " - ")
+			if len(subParts) >= 2 {
+				cityPart := strings.TrimSpace(subParts[0])
+				statePart := strings.TrimSpace(subParts[1])
+
+				// If the second part looks like a state abbreviation, the first part is the city
+				if isStateAbbreviation(statePart) && len(cityPart) > 2 {
+					return cityPart
+				}
+			}
+		}
+
+		// Skip parts that look like state abbreviations
+		if isStateAbbreviation(part) {
+			continue
+		}
+
+		// Skip parts that are too short (likely not city names)
+		if len(part) < 3 {
+			continue
+		}
+
+		// If we haven't found a city yet and this part doesn't look like a postal code or state,
+		// and it's not the first part (which is usually the street), it might be the city
+		if i > 0 && !isPostalCode(part) && !isStateAbbreviation(part) && len(part) >= 3 {
+			// Check if this part contains a state abbreviation that should be removed
+			if strings.Contains(part, " - ") {
+				subParts := strings.Split(part, " - ")
+				if len(subParts) >= 2 {
+					cityPart := strings.TrimSpace(subParts[0])
+					statePart := strings.TrimSpace(subParts[1])
+
+					// If the second part looks like a state abbreviation, return just the city part
+					if isStateAbbreviation(statePart) && len(cityPart) > 2 {
+						return cityPart
+					}
+				}
+			}
+			return part
+		}
+	}
+
+	return ""
+}
+
+// isPostalCode checks if a string looks like a Brazilian postal code
+func isPostalCode(s string) bool {
+	// Remove non-digits
+	digits := strings.ReplaceAll(s, "-", "")
+	digits = strings.ReplaceAll(digits, " ", "")
+
+	// Brazilian CEP format: 5 digits + 3 digits (optional)
+	return len(digits) == 8 || len(digits) == 5
+}
+
+// isStateAbbreviation checks if a string looks like a Brazilian state abbreviation
+func isStateAbbreviation(s string) bool {
+	stateAbbreviations := []string{
+		"AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA",
+		"MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN",
+		"RS", "RO", "RR", "SC", "SP", "SE", "TO",
+	}
+
+	for _, abbr := range stateAbbreviations {
+		if strings.EqualFold(s, abbr) {
+			return true
+		}
+	}
+	return false
 }
 
 // Helper function to check if slice contains string
@@ -433,4 +575,43 @@ func contains(slice []string, item string) bool {
 		}
 	}
 	return false
+}
+
+// UpdateExistingReportsWithCity extracts and updates city field for existing reports
+func UpdateExistingReportsWithCity(db *sql.DB) error {
+	query := `
+		UPDATE reports 
+		SET city = $1
+		WHERE id = $2
+	`
+
+	// Get all reports that have location data
+	rows, err := db.Query(`
+		SELECT id, location 
+		FROM reports 
+		WHERE location IS NOT NULL AND location != ''
+	`)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id int
+		var location string
+		err := rows.Scan(&id, &location)
+		if err != nil {
+			return err
+		}
+
+		city := extractCityFromLocation(location)
+		if city != "" {
+			_, err = db.Exec(query, city, id)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }

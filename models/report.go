@@ -13,6 +13,7 @@ type Report struct {
 	BirthDate     string          `json:"-" db:"birth_date"` // Don't expose in JSON
 	Email         string          `json:"email" db:"email"`
 	Location      string          `json:"location" db:"location"`
+	City          string          `json:"city" db:"city"`
 	Latitude      float64         `json:"latitude" db:"latitude"`
 	Longitude     float64         `json:"longitude" db:"longitude"`
 	Description   string          `json:"description" db:"description"`
