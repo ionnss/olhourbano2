@@ -331,7 +331,14 @@ func ReportDetailHandler(w http.ResponseWriter, r *http.Request) {
 	// Process photos
 	var photos []string
 	if report.PhotoPath != "" {
-		photos = strings.Split(report.PhotoPath, ",")
+		// Split by comma and trim whitespace
+		rawPhotos := strings.Split(report.PhotoPath, ",")
+		for _, photo := range rawPhotos {
+			trimmed := strings.TrimSpace(photo)
+			if trimmed != "" {
+				photos = append(photos, trimmed)
+			}
+		}
 	}
 
 	// Get first 8 characters of hashed CPF for display

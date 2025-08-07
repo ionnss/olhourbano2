@@ -15,6 +15,11 @@
 		root * /olhourbano2/uploads
 		file_server
 	}
+	handle /thumbnails/* {
+		uri strip_prefix /thumbnails
+		root * /olhourbano2/uploads/thumbnails
+		file_server
+	}
 	handle /robots.txt {
 		root * /olhourbano2/static
 		file_server

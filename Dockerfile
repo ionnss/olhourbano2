@@ -8,6 +8,9 @@ RUN apt-get update && apt-get install -y \
     qpdf \
     && rm -rf /var/lib/apt/lists/*
 
+# Fix ImageMagick policy to allow PDF processing
+RUN sed -i 's/<policy domain="coder" rights="none" pattern="PDF" \/>/<policy domain="coder" rights="read|write" pattern="PDF" \/>/' /etc/ImageMagick-6/policy.xml
+
 # Work directory
 WORKDIR /olhourbano2
 

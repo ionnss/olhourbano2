@@ -339,35 +339,51 @@ function createMediaGallery(photos, reportId) {
     
     let mediaHtml = '<div class="report-media mb-3"><div class="media-preview">';
     
-    // Show up to 3 photos
-    const maxVisible = 3;
-    const visiblePhotos = photos.slice(0, maxVisible);
+    // Show all photos
+    const visiblePhotos = photos;
     
     visiblePhotos.forEach((photo, index) => {
         const fileType = getFileTypeFromPath(photo);
-        mediaHtml += `
-            <div class="media-item" onclick="openFileModal('/${photo}', '${photo}', '${fileType}')" style="cursor: pointer;">
-                <img src="/${photo}" alt="Evidência ${index + 1}" class="media-thumbnail" loading="lazy">
-                <div class="media-overlay-hover">
-                    <i class="bi bi-eye-fill"></i>
+        const thumbnailSrc = getThumbnailSrc(photo);
+        const isImage = fileType === 'image';
+        
+        if (isImage) {
+            // Image file - show actual image
+            mediaHtml += `
+                <div class="media-item" onclick="openFileModal('/${photo}', '${photo}', '${fileType}')" style="cursor: pointer;">
+                    <img src="/${photo}" alt="Evidência ${index + 1}" class="media-thumbnail" loading="lazy">
+                    <div class="media-overlay-hover">
+                        <i class="bi bi-eye-fill"></i>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        } else if (thumbnailSrc) {
+            // Has thumbnail - show thumbnail
+            mediaHtml += `
+                <div class="media-item" onclick="openFileModal('/${photo}', '${photo}', '${fileType}')" style="cursor: pointer;">
+                    <img src="${thumbnailSrc}" alt="Evidência ${index + 1}" class="media-thumbnail" loading="lazy">
+                    <div class="media-overlay-hover">
+                        <i class="bi bi-eye-fill"></i>
+                    </div>
+                </div>
+            `;
+        } else {
+            // No thumbnail - show icon
+            const iconClass = getFileTypeIcon(fileType);
+            mediaHtml += `
+                <div class="media-item" onclick="openFileModal('/${photo}', '${photo}', '${fileType}')" style="cursor: pointer;">
+                    <div class="media-thumbnail media-icon-thumbnail">
+                        <i class="bi ${iconClass}"></i>
+                    </div>
+                    <div class="media-overlay-hover">
+                        <i class="bi bi-eye-fill"></i>
+                    </div>
+                </div>
+            `;
+        }
     });
     
-    // Show "more" overlay if there are additional photos
-    if (photos.length > maxVisible) {
-        const remainingCount = photos.length - maxVisible;
-        const allPhotos = photos.join(',');
-        mediaHtml += `
-            <div class="media-overlay" data-photos="${allPhotos}" data-report-id="${reportId}" onclick="openFileGallery(this)" style="cursor: pointer;">
-                <span class="overlay-text">+${remainingCount}</span>
-                <div class="media-overlay-hover">
-                    <i class="bi bi-images"></i>
-                </div>
-            </div>
-        `;
-    }
+    // No more overlay needed since we show all photos
     
     mediaHtml += '</div></div>';
     return mediaHtml;
@@ -385,6 +401,37 @@ function getFileTypeFromPath(filePath) {
         return 'pdf';
     } else {
         return 'document';
+    }
+}
+
+// Helper function to get thumbnail source URL
+function getThumbnailSrc(filePath) {
+    if (!filePath) return null;
+    
+    const filename = filePath.split('/').pop();
+    const extension = filename.split('.').pop().toLowerCase();
+    
+    // Only generate thumbnail for videos and PDFs
+    if (['mp4', 'webm', 'avi', 'mov', 'pdf'].includes(extension)) {
+        const hash = filename.replace('.' + extension, '');
+        return `/thumbnails/${hash}_thumb.jpg`;
+    }
+    
+    return null;
+}
+
+// Helper function to get file type icon
+function getFileTypeIcon(fileType) {
+    switch (fileType) {
+        case 'image':
+            return 'bi-image';
+        case 'video':
+            return 'bi-camera-video';
+        case 'pdf':
+            return 'bi-file-pdf';
+        case 'document':
+        default:
+            return 'bi-file-earmark';
     }
 }
 

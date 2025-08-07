@@ -107,8 +107,30 @@ function showVideoViewer(filePath) {
 function showPdfViewer(filePath) {
     const pdfViewer = document.getElementById('pdfViewer');
     const pdfFrame = document.getElementById('pdfFrame');
+    const pdfDownloadLink = document.getElementById('pdfDownloadLink');
     
+    // Set PDF source
     pdfFrame.src = filePath;
+    pdfDownloadLink.href = filePath;
+    
+    // Check if mobile device
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+        // On mobile, try to open PDF in new tab or download
+        setTimeout(() => {
+            // Check if iframe loaded successfully
+            pdfFrame.onload = function() {
+                // PDF loaded successfully
+            };
+            pdfFrame.onerror = function() {
+                // PDF failed to load, show download option
+                pdfFrame.style.display = 'none';
+                document.querySelector('.pdf-fallback').style.display = 'block';
+            };
+        }, 2000);
+    }
+    
     pdfViewer.style.display = 'block';
 }
 

@@ -136,7 +136,14 @@ func processReportsForTemplate(reports []*models.Report) []map[string]interface{
 		// Process photos
 		var photos []string
 		if report.PhotoPath != "" {
-			photos = strings.Split(report.PhotoPath, ",")
+			// Split by comma and trim whitespace
+			rawPhotos := strings.Split(report.PhotoPath, ",")
+			for _, photo := range rawPhotos {
+				trimmed := strings.TrimSpace(photo)
+				if trimmed != "" {
+					photos = append(photos, trimmed)
+				}
+			}
 		}
 
 		// Process transport info
