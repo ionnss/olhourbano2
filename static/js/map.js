@@ -268,29 +268,124 @@ function createMarker(report) {
 
 
 
-// Get color for category - unique colors for each category
+// Get color for category - unique colors for each category with semantic meaning
 function getCategoryColor(category) {
     const colors = {
-        'infraestrutura_mobilidade': '#FF6B6B',      // Red
-        'ciclismo': '#4ECDC4',                       // Teal
-        'acessibilidade': '#FFE66D',                 // Yellow
-        'redes_energeticas_iluminacao_publica': '#FF8E53', // Orange
-        'limpeza': '#A8E6CF',                        // Light Green
-        'saude_publica': '#45B7D1',                  // Blue
-        'seguranca_publica': '#96CEB4',              // Green
-        'meio_ambiente': '#FFEAA7',                  // Light Yellow
-        'equipamentos_publicos': '#DDA0DD',          // Plum
-        'drenagem': '#87CEEB',                       // Sky Blue
-        'obras': '#F0E68C',                          // Khaki
-        'corrupcao_gestao_publica': '#DC143C',       // Crimson
-        'servicos_saude_publica': '#20B2AA',         // Light Sea Green
-        'educacao_publica': '#9370DB',               // Medium Purple
-        'transporte_publico': '#FF6347',             // Tomato
-        'comercio_fiscalizacao': '#32CD32',          // Lime Green
-        'outros': '#6C5CE7'                          // Purple
+        // Infrastructure & Transport - Orange/Red tones for construction/danger
+        'infraestrutura_mobilidade': '#FF5722',      // Deep Orange (construction)
+        'obras': '#FF9800',                          // Orange (construction/warning)
+        'transporte_publico': '#2196F3',             // Blue (reliability/transport)
+        
+        // Green/Nature categories - Green tones
+        'ciclismo': '#4CAF50',                       // Green (bike lanes/eco)
+        'meio_ambiente': '#2E7D32',                  // Dark Green (nature)
+        'limpeza': '#8BC34A',                        // Light Green (clean/fresh)
+        
+        // Accessibility & Health - Blue/Purple for care/assistance
+        'acessibilidade': '#9C27B0',                 // Purple (accessibility/inclusion)
+        'saude_publica': '#F44336',                  // Red (health/emergency)
+        'servicos_saude_publica': '#E91E63',         // Pink (health services)
+        
+        // Security & Safety - Red/Dark tones
+        'seguranca_publica': '#795548',              // Brown (security/authority)
+        'corrupcao_gestao_publica': '#424242',       // Dark Gray (corruption/serious)
+        
+        // Utilities - Yellow/Amber for energy/utilities
+        'redes_energeticas_iluminacao_publica': '#FFC107', // Amber (electricity/light)
+        'drenagem': '#00BCD4',                       // Cyan (water/drainage)
+        
+        // Public Services - Professional blues/teals
+        'equipamentos_publicos': '#607D8B',          // Blue Gray (public infrastructure)
+        'educacao_publica': '#3F51B5',               // Indigo (education/knowledge)
+        'comercio_fiscalizacao': '#FF7043',          // Deep Orange (business/inspection)
+        
+        // Default - Neutral purple
+        'outros': '#9E9E9E'                          // Gray (neutral/other)
     };
     
     return colors[category] || colors['outros'];
+}
+
+// Get category info (icon and name) for display
+function getCategoryInfo(category) {
+    const categoryMap = {
+        'infraestrutura_mobilidade': { icon: '🚧', name: 'Infraestrutura e Mobilidade' },
+        'ciclismo': { icon: '🚲', name: 'Ciclismo' },
+        'acessibilidade': { icon: '♿', name: 'Acessibilidade' },
+        'redes_energeticas_iluminacao_publica': { icon: '🔌', name: 'Redes Elétricas e/ou Iluminação Pública' },
+        'limpeza': { icon: '♻️', name: 'Limpeza Urbana & Lixo' },
+        'saude_publica': { icon: '🚑', name: 'Saúde Pública' },
+        'seguranca_publica': { icon: '🚨', name: 'Segurança Pública' },
+        'meio_ambiente': { icon: '🌳', name: 'Meio Ambiente' },
+        'equipamentos_publicos': { icon: '🏚️', name: 'Estruturas Públicas' },
+        'drenagem': { icon: '🌧️', name: 'Drenagem' },
+        'obras': { icon: '🧱', name: 'Obras' },
+        'corrupcao_gestao_publica': { icon: '🏛️', name: 'Corrupção e Má Gestão Pública' },
+        'servicos_saude_publica': { icon: '🏥', name: 'Serviços de Saúde Pública' },
+        'educacao_publica': { icon: '🎓', name: 'Educação Pública' },
+        'transporte_publico': { icon: '🚌', name: 'Transporte Público' },
+        'comercio_fiscalizacao': { icon: '🏪', name: 'Comércio e Fiscalização' },
+        'outros': { icon: '❓', name: 'Outros' }
+    };
+    
+    return categoryMap[category] || { icon: '❓', name: 'Categoria Desconhecida' };
+}
+
+// Create media gallery for info window
+function createMediaGallery(photos, reportId) {
+    if (!photos || photos.length === 0) {
+        return '';
+    }
+    
+    let mediaHtml = '<div class="report-media mb-3"><div class="media-preview">';
+    
+    // Show up to 3 photos
+    const maxVisible = 3;
+    const visiblePhotos = photos.slice(0, maxVisible);
+    
+    visiblePhotos.forEach((photo, index) => {
+        const fileType = getFileTypeFromPath(photo);
+        mediaHtml += `
+            <div class="media-item" onclick="openFileModal('/${photo}', '${photo}', '${fileType}')" style="cursor: pointer;">
+                <img src="/${photo}" alt="Evidência ${index + 1}" class="media-thumbnail" loading="lazy">
+                <div class="media-overlay-hover">
+                    <i class="bi bi-eye-fill"></i>
+                </div>
+            </div>
+        `;
+    });
+    
+    // Show "more" overlay if there are additional photos
+    if (photos.length > maxVisible) {
+        const remainingCount = photos.length - maxVisible;
+        const allPhotos = photos.join(',');
+        mediaHtml += `
+            <div class="media-overlay" data-photos="${allPhotos}" data-report-id="${reportId}" onclick="openFileGallery(this)" style="cursor: pointer;">
+                <span class="overlay-text">+${remainingCount}</span>
+                <div class="media-overlay-hover">
+                    <i class="bi bi-images"></i>
+                </div>
+            </div>
+        `;
+    }
+    
+    mediaHtml += '</div></div>';
+    return mediaHtml;
+}
+
+// Helper function to determine file type from path
+function getFileTypeFromPath(filePath) {
+    const extension = filePath.split('.').pop().toLowerCase();
+    
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
+        return 'image';
+    } else if (['mp4', 'webm', 'avi', 'mov'].includes(extension)) {
+        return 'video';
+    } else if (extension === 'pdf') {
+        return 'pdf';
+    } else {
+        return 'document';
+    }
 }
 
 // Show info window for a marker
@@ -300,12 +395,23 @@ function showInfoWindow(marker, report) {
     infoWindow.setContent(content);
     infoWindow.open(map, marker);
     
-    // Add event listener to "View Report" button
+    // Add event listeners after a short delay to ensure DOM is ready
     setTimeout(() => {
+        // View Report button
         const viewBtn = document.querySelector('.view-report-btn');
         if (viewBtn) {
             viewBtn.addEventListener('click', function() {
                 window.location.href = `/report/${report.id}`;
+            });
+        }
+        
+        // Vote button - manually attach event since it's dynamically created
+        const voteBtn = document.querySelector('.vote-btn-map');
+        if (voteBtn && typeof showVoteVerificationModal === 'function') {
+            voteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const reportId = this.getAttribute('data-report-id');
+                showVoteVerificationModal(reportId, this);
             });
         }
     }, 100);
@@ -314,25 +420,68 @@ function showInfoWindow(marker, report) {
 // Create info window content
 function createInfoWindowContent(report) {
     const statusClass = report.status === 'approved' ? 'status-approved' : 'status-pending';
-    const statusText = report.status === 'approved' ? 'APROVADA' : 'PENDENTE';
+    const statusText = report.status === 'approved' ? 'Resolvida' : 'Pendente';
+    
+    // Get category info - this would ideally come from the API response
+    // For now, using a mapping similar to the backend
+    const categoryInfo = getCategoryInfo(report.category);
+    
+    // Format the author display
+    const authorDisplay = report.hashed_cpf ? `OlhoUrbano${report.hashed_cpf}` : 'OlhoUrbanoAnônimo';
+    
+    // Format date - already formatted by backend
+    const reportDate = report.created_at || 'Data não disponível';
     
     return `
         <div class="map-info-window">
-            <div class="info-content">
-                <div class="report-title">${report.category || 'Denúncia'}</div>
+            <div class="map-info-header">
                 <div class="report-category">
-                    <i class="bi bi-tag-fill"></i>
-                    <span>${report.category || 'Categoria não especificada'}</span>
+                    <span class="category-icon">${categoryInfo.icon}</span>
+                    <span class="category-name">${categoryInfo.name}</span>
                 </div>
-                <div class="report-status ${statusClass}">${statusText}</div>
-                <div class="report-address">
-                    <i class="bi bi-geo-alt-fill"></i>
-                    ${report.address || 'Endereço não especificado'}
+                <div class="report-status">
+                    <span class="status-badge status-${report.status}">${statusText}</span>
                 </div>
-                <div class="report-description">
-                    ${report.description || 'Descrição não disponível'}
+            </div>
+            
+            <div class="map-info-body">
+                <div class="report-location mb-2">
+                    <i class="bi bi-geo-alt-fill text-muted me-1"></i>
+                    <span class="location-text">${report.address || 'Endereço não especificado'}</span>
                 </div>
-                <button class="view-report-btn">Ver Denúncia</button>
+                
+                <div class="report-description mb-3">
+                    <p class="description-text">${report.description || 'Descrição não disponível'}</p>
+                </div>
+                
+                ${createMediaGallery(report.photos, report.id)}
+            </div>
+            
+            <div class="map-info-footer">
+                <div class="report-meta">
+                    <div class="meta-item">
+                        <i class="bi bi-calendar3 text-muted me-1"></i>
+                        <span class="meta-text">${reportDate}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="bi bi-eye-fill text-muted me-1"></i>
+                        <span class="meta-text">${authorDisplay}</span>
+                    </div>
+                </div>
+                
+                <div class="map-info-actions">
+                    <button class="view-report-btn">
+                        <i class="bi bi-eye-fill me-1"></i>
+                        Ver Detalhes
+                    </button>
+                    <button class="vote-btn vote-btn-map" data-report-id="${report.id}">
+                        <i class="bi bi-hand-thumbs-up-fill me-1"></i>
+                        Votar
+                        <span class="vote-shield">
+                            <span class="vote-count">${report.vote_count || 0}</span>
+                        </span>
+                    </button>
+                </div>
             </div>
         </div>
     `;

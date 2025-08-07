@@ -150,3 +150,14 @@ func ValidateForm(category, cpf, birthDate, email, emailConfirmation, location, 
 
 	return errors
 }
+
+// ValidateFiles validates that at least one file is uploaded for a report
+func ValidateFiles(fileCount int) []string {
+	var errors []string
+
+	if fileCount == 0 {
+		errors = append(errors, "Pelo menos um arquivo (foto, vídeo ou documento) é obrigatório para comprovar a denúncia")
+	}
+
+	return errors
+}

@@ -2,12 +2,11 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"olhourbano2/db"
 	"olhourbano2/services"
-	"time"
+	"strings"
 )
 
 // CPFVerificationRequest represents the incoming JSON request
@@ -25,13 +24,17 @@ type MapReportsResponse struct {
 
 // MapReportData represents a report for the map
 type MapReportData struct {
-	ID          int     `json:"id"`
-	Category    string  `json:"category"`
-	Description string  `json:"description"`
-	Address     string  `json:"address"`
-	Status      string  `json:"status"`
-	Latitude    float64 `json:"latitude"`
-	Longitude   float64 `json:"longitude"`
+	ID          int      `json:"id"`
+	Category    string   `json:"category"`
+	Description string   `json:"description"`
+	Address     string   `json:"address"`
+	Status      string   `json:"status"`
+	Latitude    float64  `json:"latitude"`
+	Longitude   float64  `json:"longitude"`
+	VoteCount   int      `json:"vote_count"`
+	CreatedAt   string   `json:"created_at"`
+	HashedCPF   string   `json:"hashed_cpf"`
+	Photos      []string `json:"photos"`
 }
 
 // VerifyCPFHandler handles CPF verification with birth date
@@ -104,6 +107,31 @@ func MapReportsHandler(w http.ResponseWriter, r *http.Request) {
 	mapReports := make([]MapReportData, 0, len(reports))
 	for _, report := range reports {
 		if report.Latitude != 0 && report.Longitude != 0 {
+			// Format date for display
+			createdAt := report.CreatedAt.Format("02/01/2006")
+
+			// Get first 8 characters of hashed CPF for display
+			hashedCPFDisplay := ""
+			if len(report.HashedCPF) >= 8 {
+				hashedCPFDisplay = report.HashedCPF[:8]
+			} else if report.HashedCPF != "" {
+				hashedCPFDisplay = report.HashedCPF
+			}
+
+			// Process photos
+			var photos []string
+			if report.PhotoPath != "" {
+				photos = strings.Split(report.PhotoPath, ",")
+				// Clean up any empty strings
+				var cleanedPhotos []string
+				for _, photo := range photos {
+					if strings.TrimSpace(photo) != "" {
+						cleanedPhotos = append(cleanedPhotos, strings.TrimSpace(photo))
+					}
+				}
+				photos = cleanedPhotos
+			}
+
 			mapReports = append(mapReports, MapReportData{
 				ID:          report.ID,
 				Category:    report.ProblemType,
@@ -112,6 +140,10 @@ func MapReportsHandler(w http.ResponseWriter, r *http.Request) {
 				Status:      report.Status,
 				Latitude:    report.Latitude,
 				Longitude:   report.Longitude,
+				VoteCount:   report.VoteCount,
+				CreatedAt:   createdAt,
+				HashedCPF:   hashedCPFDisplay,
+				Photos:      photos,
 			})
 		}
 	}
@@ -133,7 +165,9 @@ type CitiesResponse struct {
 
 // VoteRequest represents a vote request
 type VoteRequest struct {
-	ReportID int `json:"report_id"`
+	ReportID  int    `json:"report_id"`
+	CPF       string `json:"cpf"`
+	BirthDate string `json:"birth_date"`
 }
 
 // VoteResponse represents the response for voting
@@ -174,12 +208,68 @@ func VoteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get hashed CPF from session or generate a temporary one
-	// For now, we'll use a simple approach - in production, you'd want proper user authentication
-	hashedCPF := "temp_user_" + fmt.Sprintf("%d", time.Now().Unix())
+	// Validate CPF and birth date
+	if voteReq.CPF == "" || voteReq.BirthDate == "" {
+		response := VoteResponse{
+			Success: false,
+			Message: "CPF and birth date are required",
+		}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
 
-	// Add vote to database
-	err := services.AddVote(db.DB, voteReq.ReportID, hashedCPF)
+	// Hash the CPF to check for existing votes BEFORE API verification
+	hashedCPF := services.HashCPF(voteReq.CPF)
+
+	// Check if user has already voted for this report
+	hasVoted, err := services.HasUserVoted(db.DB, voteReq.ReportID, hashedCPF)
+	if err != nil {
+		log.Printf("Error checking if user has voted: %v", err)
+		response := VoteResponse{
+			Success: false,
+			Message: "Failed to check vote status",
+		}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	if hasVoted {
+		// User has already voted - return current vote count without API call
+		voteCount, err := services.GetVoteCount(db.DB, voteReq.ReportID)
+		if err != nil {
+			log.Printf("Error getting vote count for duplicate vote: %v", err)
+			voteCount = 0
+		}
+
+		response := VoteResponse{
+			Success:   false,
+			Message:   "Você já votou neste relatório anteriormente",
+			VoteCount: voteCount,
+		}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Verify CPF with birth date (only if user hasn't voted)
+	result, err := services.VerifyCPFWithBirthDate(voteReq.CPF, voteReq.BirthDate)
+	if err != nil {
+		log.Printf("Error verifying CPF for vote: %v", err)
+		// Fallback to mock verification for development
+		result = services.MockCPFVerification(voteReq.CPF, voteReq.BirthDate)
+		log.Printf("Using mock CPF verification for vote (development)")
+	}
+
+	if !result.Valid {
+		response := VoteResponse{
+			Success: false,
+			Message: "CPF inválido ou não encontrado. Verifique os dados informados.",
+		}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Add vote to database (hashedCPF already calculated above)
+	err = services.AddVote(db.DB, voteReq.ReportID, hashedCPF)
 	if err != nil {
 		log.Printf("Error adding vote: %v", err)
 		response := VoteResponse{

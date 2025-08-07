@@ -297,6 +297,22 @@ func GetVoteCount(db *sql.DB, reportID int) (int, error) {
 	return count, nil
 }
 
+// HasUserVoted checks if a user (by hashed CPF) has already voted for a specific report
+func HasUserVoted(db *sql.DB, reportID int, hashedCPF string) (bool, error) {
+	var count int
+	err := db.QueryRow(`
+		SELECT COUNT(*) 
+		FROM votes 
+		WHERE report_id = $1 AND vote_hashed_cpf = $2
+	`, reportID, hashedCPF).Scan(&count)
+
+	if err != nil {
+		return false, fmt.Errorf("error checking if user has voted: %w", err)
+	}
+
+	return count > 0, nil
+}
+
 // GetReportsForMap retrieves reports with location data for map display
 func GetReportsForMap(db *sql.DB, category, status, city string) ([]*models.Report, error) {
 	query := `

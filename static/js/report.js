@@ -10,7 +10,9 @@ let PinElement;
 let cpfVerificationStatus = {
     verified: false,
     error: false,
-    message: ''
+    message: '',
+    lastVerifiedCPF: '',
+    lastVerifiedBirthDate: ''
 };
 
 // Initialize Google Maps
@@ -211,6 +213,23 @@ async function verifyCPFWithBirthDate() {
         return;
     }
     
+    // Check if this CPF and birth date combination has already been verified
+    if (cpfVerificationStatus.verified && 
+        cpfVerificationStatus.lastVerifiedCPF === cpf && 
+        cpfVerificationStatus.lastVerifiedBirthDate === birthDate) {
+        // Already verified - just show the success status
+        showCPFVerificationStatus('CPF verificado com sucesso!', 'success');
+        return;
+    }
+    
+    // If CPF or birth date changed, reset verification status
+    if (cpfVerificationStatus.lastVerifiedCPF !== cpf || 
+        cpfVerificationStatus.lastVerifiedBirthDate !== birthDate) {
+        cpfVerificationStatus.verified = false;
+        cpfVerificationStatus.error = false;
+        cpfVerificationStatus.message = '';
+    }
+    
     // Clear previous status
     statusDiv.style.display = 'none';
     
@@ -232,14 +251,18 @@ async function verifyCPFWithBirthDate() {
             cpfVerificationStatus = {
                 verified: true,
                 error: false,
-                message: 'CPF verificado com sucesso!'
+                message: 'CPF verificado com sucesso!',
+                lastVerifiedCPF: cpf,
+                lastVerifiedBirthDate: birthDate
             };
             showCPFVerificationStatus('CPF verificado com sucesso!', 'success');
         } else {
             cpfVerificationStatus = {
                 verified: false,
                 error: true,
-                message: result.message || 'CPF inválido ou não encontrado'
+                message: result.message || 'CPF inválido ou não encontrado',
+                lastVerifiedCPF: '',
+                lastVerifiedBirthDate: ''
             };
             showCPFVerificationStatus(result.message || 'CPF inválido ou não encontrado', 'error');
         }
@@ -248,7 +271,9 @@ async function verifyCPFWithBirthDate() {
         cpfVerificationStatus = {
             verified: false,
             error: true,
-            message: 'Erro ao verificar CPF. Tente novamente.'
+            message: 'Erro ao verificar CPF. Tente novamente.',
+            lastVerifiedCPF: '',
+            lastVerifiedBirthDate: ''
         };
         showCPFVerificationStatus('Erro ao verificar CPF. Tente novamente.', 'error');
     }
@@ -427,11 +452,22 @@ function validateReportForm(e) {
     
     if (!cpf || !birthDate) {
         validationErrors.push('CPF e data de nascimento são obrigatórios');
-    } else if (!cpfVerificationStatus.verified) {
-        if (cpfVerificationStatus.error) {
-            validationErrors.push(`CPF não verificado: ${cpfVerificationStatus.message}`);
-        } else {
-            validationErrors.push('CPF não foi verificado. Preencha CPF e data de nascimento e aguarde a verificação.');
+    } else {
+        // Check if verification is needed for current CPF/birth date combination
+        const needsVerification = !cpfVerificationStatus.verified || 
+                                cpfVerificationStatus.lastVerifiedCPF !== cpf || 
+                                cpfVerificationStatus.lastVerifiedBirthDate !== birthDate;
+        
+        if (needsVerification) {
+            if (cpfVerificationStatus.error && 
+                cpfVerificationStatus.lastVerifiedCPF === cpf && 
+                cpfVerificationStatus.lastVerifiedBirthDate === birthDate) {
+                // Last verification attempt failed for these exact values
+                validationErrors.push(`CPF não verificado: ${cpfVerificationStatus.message}`);
+            } else {
+                // Need to verify these new values
+                validationErrors.push('CPF não foi verificado. Clique em "Verificar CPF" e aguarde a verificação.');
+            }
         }
     }
     
@@ -479,6 +515,12 @@ function validateReportForm(e) {
                 validationErrors.push(`Campo de transporte "${field.getAttribute('placeholder') || field.name}" é obrigatório`);
             }
         });
+    }
+    
+    // 6. Check file uploads - at least one file is required
+    const fileInput = document.getElementById('files');
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        validationErrors.push('Pelo menos um arquivo (foto, vídeo ou documento) é obrigatório para comprovar a denúncia');
     }
     
     // If there are validation errors, show them and stop submission
@@ -538,7 +580,9 @@ function resetCPFVerificationStatus() {
     cpfVerificationStatus = {
         verified: false,
         error: false,
-        message: ''
+        message: '',
+        lastVerifiedCPF: '',
+        lastVerifiedBirthDate: ''
     };
     
     // Hide any existing status messages

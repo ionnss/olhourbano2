@@ -106,6 +106,7 @@ func FeedHandler(w http.ResponseWriter, r *http.Request) {
 		"Resolved":       stats.Resolved,
 		"Pending":        pendingReports,
 		"ResolutionRate": resolutionRate,
+		"CurrentPage":    "feed",
 	}
 
 	if err := renderTemplate(w, "02_feed.html", data); err != nil {

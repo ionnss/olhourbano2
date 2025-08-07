@@ -126,11 +126,11 @@
                             
                             <div class="mb-3">
                                 <label for="files" class="form-label">
-                                    Fotos, Vídeos e Documentos
+                                    Fotos, Vídeos e Documentos *
                                     <span class="badge bg-secondary ms-1">Máximo {{.MaxFiles}} arquivos</span>
                                 </label>
                                 <div class="custom-file-upload">
-                                    <input type="file" class="d-none" id="files" name="files" multiple 
+                                    <input type="file" class="d-none" id="files" name="files" multiple required
                                            accept="{{range $i, $type := .AllowedTypes}}{{if $i}},{{end}}{{$type}}{{end}}">
                                     <label for="files" class="file-upload-btn btn btn-outline-secondary w-100 text-start">
                                         <i class="bi bi-cloud-upload me-2"></i>
@@ -138,6 +138,8 @@
                                     </label>
                                 </div>
                                 <div class="form-text">
+                                    <i class="bi bi-exclamation-triangle text-warning me-1"></i>
+                                    <strong>Obrigatório:</strong> Pelo menos um arquivo deve ser enviado para comprovar a denúncia.<br>
                                     {{if eq .Category.ID "corrupcao_gestao_publica"}}
                                     Tipos permitidos: Fotos (JPG, PNG), Vídeos (MP4, AVI, MOV), PDF, DOC, TXT - até {{.MaxFiles}} arquivos
                                     {{else if eq .Category.ID "outros"}}

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"mime/multipart"
 	"net/http"
 	"olhourbano2/config"
 	"olhourbano2/db"
@@ -181,6 +182,15 @@ func handleReportSubmission(w http.ResponseWriter, r *http.Request, category *co
 
 	// Validate form data
 	validationErrors := services.ValidateForm(category.ID, cpf, birthDate, email, emailConfirmation, location, description, latitude, longitude)
+
+	// Validate file uploads - check if at least one file is provided
+	files := r.MultipartForm.File["files"]
+	if files == nil {
+		files = make([]*multipart.FileHeader, 0)
+	}
+	fileValidationErrors := services.ValidateFiles(len(files))
+	validationErrors = append(validationErrors, fileValidationErrors...)
+
 	if len(validationErrors) > 0 {
 		// Return to form with errors
 		data := map[string]interface{}{
@@ -216,7 +226,6 @@ func handleReportSubmission(w http.ResponseWriter, r *http.Request, category *co
 
 	// Process file uploads
 	var uploadedFiles []string
-	files := r.MultipartForm.File["files"]
 
 	for _, fileHeader := range files {
 		file, err := fileHeader.Open()

@@ -100,7 +100,7 @@ func getMaxFileSize(category, contentType string) int64 {
 	if strings.HasPrefix(contentType, "video/") {
 		return 50 * 1024 * 1024 // 50MB for videos
 	}
-	
+
 	// Default size for other files
 	return 10 * 1024 * 1024 // 10MB
 }
@@ -161,14 +161,14 @@ func cleanVideoMetadata(inputPath, outputPath string) error {
 	}
 
 	// Use ffmpeg to strip metadata and re-encode
-	cmd := exec.Command("ffmpeg", 
+	cmd := exec.Command("ffmpeg",
 		"-i", inputPath,
-		"-map_metadata", "-1",  // Remove all metadata
-		"-c:v", "copy",         // Copy video stream without re-encoding
-		"-c:a", "copy",         // Copy audio stream without re-encoding
-		"-y",                   // Overwrite output file
+		"-map_metadata", "-1", // Remove all metadata
+		"-c:v", "copy", // Copy video stream without re-encoding
+		"-c:a", "copy", // Copy audio stream without re-encoding
+		"-y", // Overwrite output file
 		outputPath)
-	
+
 	return cmd.Run()
 }
 

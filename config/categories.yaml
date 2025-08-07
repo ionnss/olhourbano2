@@ -6,90 +6,160 @@ categories:
   - id: "infraestrutura_mobilidade"
     name: "Infraestrutura e Mobilidade"
     icon: "🚧"
+    color: "#FF5722"  # Deep Orange (construction)
     description: "Problemas com ruas, calçadas, sinalizações e transporte"
 
   - id: "ciclismo"
     name: "Ciclismo"
     icon: "🚲"
+    color: "#4CAF50"  # Green (bike lanes/eco)
     description: "Problemas relacionados à infraestrutura cicloviária"
 
   - id: "acessibilidade"
     name: "Acessibilidade"
     icon: "♿"
+    color: "#9C27B0"  # Purple (accessibility/inclusion)
     description: "Problemas de acessibilidade para pessoas com deficiência"
 
   - id: "redes_energeticas_iluminacao_publica"
     name: "Redes Elétricas e/ou Iluminação Pública"
     icon: "🔌"
+    color: "#FFC107"  # Amber (electricity/light)
     description: "Problemas com redes elétricas e/ou iluminação pública"
 
   - id: "limpeza"
     name: "Limpeza Urbana & Lixo"
     icon: "♻️"
+    color: "#8BC34A"  # Light Green (clean/fresh)
     description: "Problemas com lixo, coleta e limpeza urbana"
 
   - id: "saude_publica"
     name: "Saúde Pública"
     icon: "🚑"
+    color: "#F44336"  # Red (health/emergency)
     description: "Problemas relacionados à saúde pública"
 
   - id: "seguranca_publica"
     name: "Segurança Pública"
     icon: "🚨"
+    color: "#795548"  # Brown (security/authority)
     description: "Problemas relacionados à segurança pública urbana"
 
   - id: "meio_ambiente"
     name: "Meio Ambiente"
     icon: "🌳"
+    color: "#2E7D32"  # Dark Green (nature)
     description: "Problemas ambientais e áreas verdes públicas"
 
   - id: "equipamentos_publicos"
     name: "Estruturas Públicas"
     icon: "🏚️"
+    color: "#607D8B"  # Blue Gray (public infrastructure)
     description: "Problemas com estruturas e equipamentos públicos"
 
   - id: "drenagem"
     name: "Drenagem"
     icon: "🌧️"
+    color: "#00BCD4"  # Cyan (water/drainage)
     description: "Problemas com drenagem e alagamentos"
 
   - id: "obras"
     name: "Obras"
     icon: "🧱"
+    color: "#FF9800"  # Orange (construction/warning)
     description: "Problemas relacionados a obras e regularização"
 
   - id: "corrupcao_gestao_publica"
     name: "Corrupção e Má Gestão Pública"
     icon: "🏛️"
+    color: "#424242"  # Dark Gray (corruption/serious)
     description: "Denúncias de corrupção e má gestão pública"
 
   - id: "servicos_saude_publica"
     name: "Serviços de Saúde Pública"
     icon: "🏥"
+    color: "#E91E63"  # Pink (health services)
     description: "Problemas com atendimento e serviços de saúde pública"
 
   - id: "educacao_publica"
     name: "Educação Pública"
     icon: "🎓"
+    color: "#3F51B5"  # Indigo (education/knowledge)
     description: "Problemas com ensino e infraestrutura educacional"
 
   - id: "transporte_publico"
     name: "Transporte Público"
     icon: "🚌"
+    color: "#2196F3"  # Blue (reliability/transport)
     description: "Problemas com ônibus e transporte coletivo"
 
   - id: "comercio_fiscalizacao"
     name: "Comércio e Fiscalização"
     icon: "🏪"
+    color: "#FF7043"  # Deep Orange (business/inspection)
     description: "Problemas com estabelecimentos comerciais e fiscalização dos mesmos"
 
   - id: "outros"
     name: "Outros"
     icon: "❓"
+    color: "#9E9E9E"  # Gray (neutral/other)
     description: "Problemas que não se encaixam nas categorias acima"
 
 settings:
   require_subcategory: false
+
+# Color scheme configuration for map pins and UI elements
+color_scheme:
+  # Color groups with semantic meaning
+  groups:
+    infrastructure:
+      name: "Infrastructure & Construction"
+      description: "Orange/Red tones for construction, danger, and infrastructure work"
+      colors:
+        - "#FF5722"  # infraestrutura_mobilidade
+        - "#FF9800"  # obras
+        - "#FF7043"  # comercio_fiscalizacao
+    
+    environment:
+      name: "Environment & Nature"
+      description: "Green tones for environmental and nature-related categories"
+      colors:
+        - "#4CAF50"  # ciclismo
+        - "#2E7D32"  # meio_ambiente
+        - "#8BC34A"  # limpeza
+    
+    health_accessibility:
+      name: "Health & Accessibility"
+      description: "Red/Purple tones for health, care, and accessibility services"
+      colors:
+        - "#9C27B0"  # acessibilidade
+        - "#F44336"  # saude_publica
+        - "#E91E63"  # servicos_saude_publica
+    
+    utilities:
+      name: "Utilities & Infrastructure"
+      description: "Amber/Cyan tones for utilities like electricity and water"
+      colors:
+        - "#FFC107"  # redes_energeticas_iluminacao_publica
+        - "#00BCD4"  # drenagem
+    
+    public_services:
+      name: "Public Services & Governance"
+      description: "Blue/Gray tones for public services, education, and governance"
+      colors:
+        - "#2196F3"  # transporte_publico
+        - "#607D8B"  # equipamentos_publicos
+        - "#3F51B5"  # educacao_publica
+        - "#795548"  # seguranca_publica
+        - "#424242"  # corrupcao_gestao_publica
+        - "#9E9E9E"  # outros
+  
+  # Color accessibility guidelines
+  guidelines:
+    contrast_ratio: 4.5  # WCAG AA standard
+    colorblind_safe: true
+    distinct_colors: true
+    semantic_meaning: true
 
 location_requirements:
   location_required:

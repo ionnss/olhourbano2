@@ -1,0 +1,81 @@
+{{define "vote_verification_modal"}}
+<!-- Vote Verification Modal -->
+<div class="modal fade" id="voteVerificationModal" tabindex="-1" aria-labelledby="voteVerificationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="voteVerificationModalLabel">
+                    <i class="bi bi-shield-check me-2"></i>
+                    Verificação para Votar
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Para garantir que cada voto seja único e válido, precisamos verificar sua identidade.
+                </div>
+                
+                <form id="voteVerificationForm">
+                    <input type="hidden" id="voteReportId" name="report_id">
+                    
+                    <!-- CPF Field -->
+                    <div class="mb-3">
+                        <label for="voteCpf" class="form-label">
+                            <i class="bi bi-person-badge me-1"></i>
+                            CPF
+                        </label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="voteCpf" 
+                               name="cpf" 
+                               placeholder="000.000.000-00"
+                               maxlength="14"
+                               required>
+                        <div class="form-text">
+                            <i class="bi bi-shield-lock-fill text-success me-1"></i>
+                            Será verificado com o CPFHub para validação e não será armazenado
+                        </div>
+                    </div>
+                    
+                    <!-- Birth Date Field -->
+                    <div class="mb-3">
+                        <label for="voteBirthDate" class="form-label">
+                            <i class="bi bi-calendar-event me-1"></i>
+                            Data de Nascimento
+                        </label>
+                        <input type="date" 
+                               class="form-control" 
+                               id="voteBirthDate" 
+                               name="birth_date" 
+                               required>
+                        <div class="form-text">
+                            Data de nascimento registrada no CPF
+                        </div>
+                    </div>
+                    
+                    <!-- Verification Status -->
+                    <div id="voteVerificationStatus" class="mb-3" style="display: none;">
+                        <div class="verification-status">
+                            <div class="spinner-border spinner-border-sm me-2" role="status">
+                                <span class="visually-hidden">Verificando...</span>
+                            </div>
+                            <span id="voteVerificationMessage">Verificando CPF...</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="submitVoteBtn" onclick="submitVote()">
+                    <i class="bi bi-check-circle me-1"></i>
+                    Confirmar Voto
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{{end}} 

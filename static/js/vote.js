@@ -1,4 +1,4 @@
-// Vote functionality for report voting
+// Vote functionality for report voting with CPF verification
 document.addEventListener('DOMContentLoaded', function() {
     // Add click event listeners to all vote buttons
     const voteButtons = document.querySelectorAll('.vote-btn');
@@ -13,27 +13,73 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Call vote function
-            voteForReport(reportId, this);
+            // Show CPF verification modal instead of voting directly
+            showVoteVerificationModal(reportId, this);
         });
     });
+
+    // Add CPF formatting to vote modal
+    const voteCpfInput = document.getElementById('voteCpf');
+    if (voteCpfInput) {
+        voteCpfInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+            if (value.length <= 11) {
+                // Format as XXX.XXX.XXX-XX
+                value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                value = value.replace(/(\d{3})(\d{3})(\d{3})/, '$1.$2.$3');
+                value = value.replace(/(\d{3})(\d{3})/, '$1.$2');
+                e.target.value = value;
+            }
+        });
+    }
 });
 
-// Function to vote for a report
-function voteForReport(reportId, buttonElement) {
-    // Show loading state
-    const originalText = buttonElement.innerHTML;
-    buttonElement.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Votando...';
-    buttonElement.disabled = true;
+// Function to show the vote verification modal
+function showVoteVerificationModal(reportId, buttonElement) {
+    // Store the button element for later use
+    window.currentVoteButton = buttonElement;
     
-    // Make API call to vote
+    // Set the report ID in the modal
+    document.getElementById('voteReportId').value = reportId;
+    
+    // Clear previous form data
+    document.getElementById('voteCpf').value = '';
+    document.getElementById('voteBirthDate').value = '';
+    
+    // Hide verification status
+    document.getElementById('voteVerificationStatus').style.display = 'none';
+    
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('voteVerificationModal'));
+    modal.show();
+}
+
+// Function to submit vote after CPF verification
+function submitVote() {
+    const reportId = document.getElementById('voteReportId').value;
+    const cpf = document.getElementById('voteCpf').value;
+    const birthDate = document.getElementById('voteBirthDate').value;
+    
+    // Validate form
+    if (!cpf || !birthDate) {
+        showVoteVerificationStatus('Por favor, preencha todos os campos.', 'error');
+        return;
+    }
+    
+    // Show loading state
+    showVoteVerificationStatus('Verificando CPF...', 'loading');
+    document.getElementById('submitVoteBtn').disabled = true;
+    
+    // Make API call to vote with CPF verification
     fetch('/api/vote', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            report_id: reportId
+            report_id: parseInt(reportId),
+            cpf: cpf,
+            birth_date: birthDate
         })
     })
     .then(response => response.json())
@@ -41,6 +87,8 @@ function voteForReport(reportId, buttonElement) {
         if (data.success) {
             // Update vote count on button
             const currentVoteCount = parseInt(data.vote_count) || 0;
+            const buttonElement = window.currentVoteButton;
+            
             buttonElement.innerHTML = `<i class="bi bi-hand-thumbs-up-fill me-1"></i> Votar <span class="vote-shield"><span class="vote-count">${currentVoteCount}</span></span>`;
             
             // Add animation to the shield
@@ -52,31 +100,65 @@ function voteForReport(reportId, buttonElement) {
                 }, 300);
             }
             
-            // Show success feedback
-            showVoteFeedback(buttonElement, 'Voto registrado!', 'success');
+            // Show success message and close modal
+            showVoteVerificationStatus('Voto registrado com sucesso!', 'success');
+            setTimeout(() => {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('voteVerificationModal'));
+                modal.hide();
+            }, 1500);
+            
         } else {
             // Show error message
-            showVoteFeedback(buttonElement, data.message || 'Erro ao votar', 'error');
-            
-            // Restore original text
-            buttonElement.innerHTML = originalText;
+            showVoteVerificationStatus(data.message || 'Erro ao votar', 'error');
         }
     })
     .catch(error => {
         console.error('Error voting:', error);
-        
-        // Show error feedback
-        showVoteFeedback(buttonElement, 'Erro de conexão', 'error');
-        
-        // Restore original text
-        buttonElement.innerHTML = originalText;
+        showVoteVerificationStatus('Erro de conexão', 'error');
     })
     .finally(() => {
-        buttonElement.disabled = false;
+        document.getElementById('submitVoteBtn').disabled = false;
     });
 }
 
-// Function to show vote feedback
+// Function to show verification status in modal
+function showVoteVerificationStatus(message, type) {
+    const statusDiv = document.getElementById('voteVerificationStatus');
+    const messageSpan = document.getElementById('voteVerificationMessage');
+    
+    statusDiv.style.display = 'block';
+    
+    // Remove existing classes
+    statusDiv.className = 'mb-3';
+    
+    // Add appropriate classes based on type
+    if (type === 'loading') {
+        statusDiv.innerHTML = `
+            <div class="verification-status">
+                <div class="spinner-border spinner-border-sm me-2" role="status">
+                    <span class="visually-hidden">Verificando...</span>
+                </div>
+                <span id="voteVerificationMessage">${message}</span>
+            </div>
+        `;
+    } else if (type === 'success') {
+        statusDiv.innerHTML = `
+            <div class="verification-status success">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <span id="voteVerificationMessage">${message}</span>
+            </div>
+        `;
+    } else if (type === 'error') {
+        statusDiv.innerHTML = `
+            <div class="verification-status error">
+                <i class="bi bi-exclamation-circle-fill text-danger me-2"></i>
+                <span id="voteVerificationMessage">${message}</span>
+            </div>
+        `;
+    }
+}
+
+// Function to show vote feedback (for backward compatibility)
 function showVoteFeedback(buttonElement, message, type) {
     // Create feedback element
     const feedback = document.createElement('div');
@@ -129,5 +211,6 @@ function showVoteFeedback(buttonElement, message, type) {
 }
 
 // Export functions for global access
-window.voteForReport = voteForReport;
-window.showVoteFeedback = showVoteFeedback; 
+window.showVoteFeedback = showVoteFeedback;
+window.showVoteVerificationModal = showVoteVerificationModal;
+window.submitVote = submitVote; 

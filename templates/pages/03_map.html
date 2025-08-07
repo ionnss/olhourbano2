@@ -23,13 +23,13 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" 
-    href="/static/resources/circular_eye.png">
+    href="/static/resource/circular_eye.png">
     <link rel="icon" type="image/png" sizes="32x32" 
-    href="/static/resources/circular_eye.png">
+    href="/static/resource/circular_eye.png">
     <link rel="icon" type="image/png" sizes="16x16" 
-    href="/static/resources/circular_eye.png">
+    href="/static/resource/circular_eye.png">
     <link rel="apple-touch-icon" sizes="180x180" 
-    href="/static/resources/circular_eye.png">
+    href="/static/resource/circular_eye.png">
 
     <!-- Bootstrap 5.3.7 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" 
@@ -51,11 +51,19 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/static/css/map.css">
     <link rel="stylesheet" href="/static/css/filter_stats_panel.css">
+    <link rel="stylesheet" href="/static/css/modal.css">
 
-    <!-- Custom JS - Load first to define initMap function -->
+    <!-- Bootstrap JS - Load FIRST before custom scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" 
+    crossorigin="anonymous"></script>
+
+    <!-- Custom JS - Load after Bootstrap -->
     <script src="/static/js/map.js"></script>
     <script src="/static/js/feed.js"></script>
     <script src="/static/js/filter_stats_panel.js"></script>
+    <script src="/static/js/vote.js"></script>
+    <script src="/static/js/file-modal.js"></script>
 
     <!-- Google Maps API - Load after map.js -->
     <script async defer
