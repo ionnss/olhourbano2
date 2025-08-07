@@ -5,6 +5,14 @@ body {
     padding: 0;
     overflow: hidden;
     font-family: 'Montserrat', sans-serif;
+    /* Prevent zoom gestures on the entire page */
+    touch-action: pan-x pan-y;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #map {
@@ -14,6 +22,14 @@ body {
     top: 0;
     left: 0;
     z-index: 1;
+    /* Prevent zoom gestures on the map container */
+    touch-action: pan-x pan-y;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 /* Floating controls styling */

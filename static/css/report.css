@@ -2,16 +2,212 @@
    REPORT PAGES STYLING
    ==================================== */
 
+/* Standalone report page layout */
+.report-page {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Override base.css body margin for report pages */
+body.report-page {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #f0f0f0;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.report-main {
+    padding: 0;
+    margin: 0;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* Hide any browser UI elements */
+.report-page::-webkit-scrollbar {
+    display: none;
+}
+
+.report-page {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Ensure full screen coverage */
+.report-page * {
+    box-sizing: border-box;
+}
+
+/* Override Bootstrap container styles for report pages */
+.report-page .container {
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.report-page .row {
+    margin: 0 !important;
+}
+
+.report-page .col-lg-10 {
+    padding: 0 !important;
+}
+
+/* Hide any potential header/footer elements */
+.report-page header,
+.report-page footer,
+.report-page nav {
+    display: none !important;
+}
+
+/* Allow normal scrolling */
+.report-page {
+    overflow: auto;
+}
+
+.report-page .report-main {
+    overflow: auto;
+}
+
 /* ====================================
    CATEGORIES PAGE (STEP 1)
    ==================================== */
 
-
+/* Desktop layout - removed fixed positioning and viewport sizes */
+@media (min-width: 769px) {
+    .report-categories-container {
+        background: #f0f0f0;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100%;
+        max-width: none !important;
+    }
+    
+    .report-categories-container .row {
+        margin: 0;
+        width: 100%;
+    }
+    
+    .report-categories-container .col-lg-10 {
+        padding: 0;
+        max-width: 100%;
+        flex: 0 0 100%;
+        width: 100%;
+    }
+    
+    .report-categories-container .styled-section {
+        background: white;
+        border-radius: 0;
+        margin: 0;
+        width: 100%;
+        box-shadow: none;
+        padding: 2rem;
+    }
+    
+    .report-info-container {
+        background: #f0f0f0;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100%;
+        max-width: none !important;
+    }
+    
+    .report-info-container .row {
+        margin: 0;
+        width: 100%;
+    }
+    
+    .report-info-container .col-lg-10 {
+        padding: 0;
+        max-width: 100%;
+        flex: 0 0 100%;
+        width: 100%;
+    }
+    
+    .report-info-container .styled-section {
+        background: white;
+        border-radius: 0 !important;
+        margin: 0;
+        width: 100%;
+        box-shadow: none;
+        padding: 2rem;
+    }
+    
+    /* Success page layout */
+    .success-content {
+        background: #f0f0f0;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+    
+    .success-content .row {
+        margin: 0;
+        width: 100%;
+    }
+    
+    .success-content .col-lg-10 {
+        padding: 0;
+        max-width: 100%;
+        flex: 0 0 100%;
+        width: 100%;
+    }
+    
+    .success-content .styled-section {
+        background: white;
+        border-radius: 0;
+        margin: 0;
+        width: 100%;
+        box-shadow: none;
+        padding: 2rem;
+    }
+}
 
 /* Categories Grid Layout */
 
 .report-categories-container {
     padding-bottom: 6rem !important;
+}
+
+/* Ensure containers fill the entire viewport */
+.report-categories-container,
+.report-info-container,
+.success-content {
+    min-height: 100vh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Ensure styled sections fill the container */
+.report-categories-container .styled-section,
+.report-info-container .styled-section,
+.success-content .styled-section {
+    width: 100%;
+    margin: 0;
+    padding: 2rem;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* Mobile padding adjustments */
+@media (max-width: 768px) {
+    .report-categories-container .styled-section,
+    .report-info-container .styled-section,
+    .success-content .styled-section {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .report-categories-container .styled-section,
+    .report-info-container .styled-section,
+    .success-content .styled-section {
+        padding: 1rem;
+    }
 }
 
 .categories-grid {
@@ -523,10 +719,10 @@
 /* Categories Page Mobile */
 @media (max-width: 768px) {
     /* Hide header and adjust body when categories container is visible */
-    body {
+    body.report-page {
         margin: 0 !important;
         padding: 0 !important;
-        overflow: hidden;
+        overflow: auto;
     }
     
     main {
@@ -534,20 +730,13 @@
         margin: 0 !important;
     }
     
-    /* Full screen categories page like report info */
+    /* Categories page mobile layout */
     .report-categories-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 1000;
         background: #f0f0f0;
-        overflow-y: auto;
         margin: 0 !important;
         padding: 0 !important;
-        width: 100vw !important;
-        height: 100vh !important;
+        width: 100%;
+        max-width: none !important;
     }
     
     .report-categories-container .row {
@@ -672,32 +861,25 @@
 
 /* Form Page Mobile */
 @media (max-width: 768px) {
-    /* Hide header when report-info-container is present */
-    .report-info-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 1000;
-        background: #f0f0f0;
-        overflow-y: auto;
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100vw !important;
-        height: 100vh !important;
-    }
-    
     /* Hide header and adjust body when report info container is visible */
-    body {
+    body.report-page {
         margin: 0 !important;
         padding: 0 !important;
-        overflow: hidden;
+        overflow: auto;
     }
     
     main {
         padding: 0 !important;
         margin: 0 !important;
+    }
+    
+    /* Report info container mobile layout */
+    .report-info-container {
+        background: #f0f0f0;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100%;
+        max-width: none !important;
     }
     
     .report-info-container .row {
@@ -712,11 +894,16 @@
         width: 100%;
     }
     
+    /* Ensure no horizontal overflow */
+    .report-info-container * {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
     .report-info-container .styled-section {
         padding: 1.5rem;
-        border-radius: 0;
+        border-radius: 0 !important;
         margin: 0;
-        min-height: 100vh;
         width: 100%;
         box-shadow: none;
     }
@@ -747,7 +934,7 @@
 @media (max-width: 480px) {
     .report-info-container .styled-section {
         padding: 1rem;
-        border-radius: 0;
+        border-radius: 0 !important;
     }
     
     #map {
@@ -765,6 +952,36 @@
 
 /* Success Page Mobile */
 @media (max-width: 768px) {
+    /* Success page mobile layout */
+    .success-content {
+        background: #f0f0f0;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+    
+    .success-content .row {
+        margin: 0;
+        width: 100%;
+        min-height: 100vh;
+    }
+    
+    .success-content .col-lg-10 {
+        padding: 0;
+        max-width: 100%;
+        flex: 0 0 100%;
+        width: 100%;
+    }
+    
+    .success-content .styled-section {
+        background: white;
+        border-radius: 0;
+        margin: 0;
+        width: 100%;
+        box-shadow: none;
+        padding: 1.5rem;
+    }
+    
     .success-icon i {
         font-size: 4rem;
     }
@@ -1409,7 +1626,7 @@
     color: #28a745 !important;
 }
 
-/* Mobile bottom spacing for category selection */
+/* Mobile bottom spacing for category selection and report info */
 .mobile-bottom-spacing {
     height: 0;
 }
@@ -1423,6 +1640,23 @@
 @media (max-width: 480px) {
     .mobile-bottom-spacing {
         height: 120px;
+    }
+}
+
+/* Report info page bottom spacing */
+.report-info-bottom-spacing {
+    height: 0;
+}
+
+@media (max-width: 768px) {
+    .report-info-bottom-spacing {
+        height: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .report-info-bottom-spacing {
+        height: 150px;
     }
 }
 
