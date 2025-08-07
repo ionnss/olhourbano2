@@ -19,55 +19,94 @@ function createShareModal() {
     const reportUrl = `https://olhourbano.com.br/report/${reportId}`;
     
     modal.innerHTML = `
-        <div class="share-modal-content">
-            <button class="share-modal-close" onclick="closeShareModal()">
+        <div class="share-modal-content" style="
+            max-width: 95vw;
+            max-height: 90vh;
+            width: 400px;
+            margin: 20px;
+            overflow-y: auto;
+            border-radius: 16px;
+        ">
+            <button class="share-modal-close" onclick="closeShareModal()" style="
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                background: #f8f9fa;
+                border: none;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                font-size: 18px;
+                color: #666;
+                z-index: 10;
+            ">
                 <i class="bi bi-x"></i>
             </button>
             
-            <div class="share-modal-header">
-                <h4>Compartilhar Denúncia</h4>
-                <p>Escolha como você quer compartilhar esta denúncia</p>
+            <div class="share-modal-header" style="
+                padding: 25px 20px 15px 20px;
+                text-align: center;
+            ">
+                <h4 style="
+                    margin: 0 0 8px 0;
+                    font-size: 20px;
+                    font-weight: 600;
+                    color: #333;
+                ">Compartilhar Denúncia</h4>
+                <p style="
+                    margin: 0;
+                    font-size: 14px;
+                    color: #666;
+                    line-height: 1.4;
+                ">Escolha como você quer compartilhar esta denúncia</p>
             </div>
             
             <!-- Link Display Box with Copy Functionality -->
             <div style="
                 background: white;
-                padding: 15px;
-                border-radius: 8px;
+                padding: 20px;
+                border-radius: 12px;
                 border: 1px solid #e9ecef;
-                margin: 20px 0;
+                margin: 0 20px 20px 20px;
             ">
                 <div style="
-                    font-size: 12px;
+                    font-size: 13px;
                     color: #666;
-                    margin-bottom: 8px;
+                    margin-bottom: 10px;
                     font-weight: 500;
                 ">Link da Denúncia:</div>
                 <div style="
                     display: flex;
                     align-items: center;
-                    gap: 8px;
+                    gap: 10px;
                 ">
                     <div style="
                         flex: 1;
-                        font-size: 14px;
+                        font-size: 13px;
                         color: #333;
                         word-break: break-all;
                         font-family: 'Courier New', monospace;
                         background: #f8f9fa;
-                        padding: 10px 12px;
-                        border-radius: 6px;
+                        padding: 12px 14px;
+                        border-radius: 8px;
                         border: none;
                         outline: none;
                         cursor: text;
                         user-select: all;
+                        min-height: 44px;
+                        display: flex;
+                        align-items: center;
                     " onclick="copyShareLink()" title="Clique para copiar">${reportUrl}</div>
                     <button style="
                         background: white;
                         color: #666;
                         border: 1px solid #dee2e6;
-                        padding: 10px 12px;
-                        border-radius: 6px;
+                        padding: 12px 14px;
+                        border-radius: 8px;
                         cursor: pointer;
                         font-size: 14px;
                         font-weight: 500;
@@ -75,16 +114,24 @@ function createShareModal() {
                         display: flex;
                         align-items: center;
                         justify-content: center;
-                        min-width: 44px;
-                        height: 44px;
+                        min-width: 48px;
+                        height: 48px;
+                        flex-shrink: 0;
                     " onclick="copyShareLink()" title="Copiar link">
                         <i class="bi bi-clipboard" style="font-size: 16px;"></i>
                     </button>
                 </div>
             </div>
             
-            <div class="share-preview" id="sharePreview">
-                <p>Gerando preview...</p>
+            <div class="share-preview" id="sharePreview" style="
+                padding: 0 20px 20px 20px;
+            ">
+                <p style="
+                    text-align: center;
+                    color: #666;
+                    font-size: 14px;
+                    margin: 0;
+                ">Gerando preview...</p>
             </div>
         </div>
     `;
@@ -102,8 +149,30 @@ function showShareModal() {
     // Generate share image
     generateShareImage();
     
-    shareModal.style.display = 'block';
+    // Add mobile-specific styles
+    shareModal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        padding: 10px;
+        box-sizing: border-box;
+    `;
+    
     document.body.style.overflow = 'hidden';
+    
+    // Add touch event handling for mobile
+    shareModal.addEventListener('touchstart', function(e) {
+        if (e.target === shareModal) {
+            closeShareModal();
+        }
+    });
 }
 
 // Close share modal
@@ -111,6 +180,13 @@ function closeShareModal() {
     if (shareModal) {
         shareModal.style.display = 'none';
         document.body.style.overflow = 'auto';
+        
+        // Remove touch event listener
+        shareModal.removeEventListener('touchstart', function(e) {
+            if (e.target === shareModal) {
+                closeShareModal();
+            }
+        });
     }
 }
 
