@@ -1,6 +1,43 @@
 // Filter and Statistics Panel functionality
 // This file handles the lateral panel, mobile panel, and statistics modal
 
+// Function to update map links with current filters
+function updateMapLinksWithFilters() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const category = urlParams.get('category');
+    const status = urlParams.get('status');
+    const city = urlParams.get('city');
+    const sort = urlParams.get('sort') || 'recent';
+    
+    // Build filter parameters
+    const params = [];
+    if (category) params.push(`category=${encodeURIComponent(category)}`);
+    if (status) params.push(`status=${encodeURIComponent(status)}`);
+    if (city) params.push(`city=${encodeURIComponent(city)}`);
+    if (sort && sort !== 'recent') params.push(`sort=${encodeURIComponent(sort)}`);
+    
+    const filterString = params.length > 0 ? '?' + params.join('&') : '';
+    
+    // Check if we're on the map page
+    const isMapPage = window.location.pathname === '/map';
+    
+    if (isMapPage) {
+        // On map page: update feed links with current filters
+        const feedLinks = document.querySelectorAll('a[href="/feed"]');
+        feedLinks.forEach(link => {
+            link.href = `/feed${filterString}`;
+        });
+        console.log('Updated feed links with filters:', `/feed${filterString}`);
+    } else {
+        // On feed page: update map links with current filters
+        const mapLinks = document.querySelectorAll('a[href="/map"]');
+        mapLinks.forEach(link => {
+            link.href = `/map${filterString}`;
+        });
+        console.log('Updated map links with filters:', `/map${filterString}`);
+    }
+}
+
 // Lateral panel functionality
 function toggleLateralPanel() {
     console.log('toggleLateralPanel called');
@@ -21,6 +58,9 @@ function toggleLateralPanel() {
         console.log('Opening panel');
         lateralPanel.style.right = '0px';
         cornerButton.style.right = '400px';
+        
+        // Populate filters when opening panel
+        populateFilterPanelWithCurrentFilters();
         
         // Prevent immediate closing by adding a small delay
         setTimeout(() => {
@@ -45,6 +85,9 @@ function toggleMobilePanel() {
         mobilePanel.style.bottom = '0px';
         mobileOverlay.style.display = 'block';
         cornerButton.style.display = 'none';
+        
+        // Populate filters when opening panel
+        populateFilterPanelWithCurrentFilters();
     }
 }
 
@@ -66,6 +109,11 @@ function clearLateralFilters() {
     document.getElementById('lateral-status').value = '';
     document.getElementById('lateral-city').value = '';
     document.getElementById('lateral-sort').value = 'recent';
+    
+    // If on map page, apply the cleared filters
+    if (window.location.pathname === '/map') {
+        handleMapFilterSubmission('lateral');
+    }
 }
 
 // Clear mobile panel filters
@@ -74,6 +122,11 @@ function clearMobileFilters() {
     document.getElementById('mobile-status').value = '';
     document.getElementById('mobile-city').value = '';
     document.getElementById('mobile-sort').value = 'recent';
+    
+    // If on map page, apply the cleared filters
+    if (window.location.pathname === '/map') {
+        handleMapFilterSubmission('mobile');
+    }
 }
 
 // Close panels when clicking outside
@@ -137,6 +190,12 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('mobilePanel found:', !!mobilePanel);
     console.log('cornerButton found:', !!cornerButton);
     
+    // Update map links with current filters
+    updateMapLinksWithFilters();
+    
+    // Populate filter panel with current URL parameters
+    populateFilterPanelWithCurrentFilters();
+    
     // Set progress bar width from data attribute
     const progressBars = document.querySelectorAll('.progress-bar[data-width]');
     progressBars.forEach(bar => {
@@ -144,11 +203,18 @@ document.addEventListener('DOMContentLoaded', function() {
         bar.style.width = width + '%';
     });
     
+    // Check if we're on the map page
+    const isMapPage = window.location.pathname === '/map';
+    
     // Lateral panel form
     const lateralForm = document.getElementById('lateral-filter-form');
     if (lateralForm) {
         lateralForm.addEventListener('submit', function(e) {
-            // Form will submit normally
+            if (isMapPage) {
+                e.preventDefault();
+                handleMapFilterSubmission('lateral');
+            }
+            // On feed page, let it submit normally
         });
     }
     
@@ -156,7 +222,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobileForm = document.getElementById('mobile-filter-form');
     if (mobileForm) {
         mobileForm.addEventListener('submit', function(e) {
-            // Form will submit normally
+            if (isMapPage) {
+                e.preventDefault();
+                handleMapFilterSubmission('mobile');
+            }
+            // On feed page, let it submit normally
         });
     }
     
@@ -173,6 +243,82 @@ document.addEventListener('DOMContentLoaded', function() {
         if (lateralPanel) lateralPanel.style.right = '-400px';
     }
 });
+
+// Populate filter panel with current URL parameters
+function populateFilterPanelWithCurrentFilters() {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    const category = urlParams.get('category');
+    const status = urlParams.get('status');
+    const city = urlParams.get('city');
+    const sort = urlParams.get('sort') || 'recent';
+    
+    // Populate lateral panel filters
+    const lateralCategory = document.getElementById('lateral-category');
+    const lateralStatus = document.getElementById('lateral-status');
+    const lateralCity = document.getElementById('lateral-city');
+    const lateralSort = document.getElementById('lateral-sort');
+    
+    if (lateralCategory && category) lateralCategory.value = category;
+    if (lateralStatus && status) lateralStatus.value = status;
+    if (lateralCity && city) lateralCity.value = city;
+    if (lateralSort) lateralSort.value = sort;
+    
+    // Populate mobile panel filters
+    const mobileCategory = document.getElementById('mobile-category');
+    const mobileStatus = document.getElementById('mobile-status');
+    const mobileCity = document.getElementById('mobile-city');
+    const mobileSort = document.getElementById('mobile-sort');
+    
+    if (mobileCategory && category) mobileCategory.value = category;
+    if (mobileStatus && status) mobileStatus.value = status;
+    if (mobileCity && city) mobileCity.value = city;
+    if (mobileSort) mobileSort.value = sort;
+    
+    console.log('Populated filter panel with:', { category, status, city, sort });
+}
+
+// Handle map filter submission
+function handleMapFilterSubmission(formType) {
+    const prefix = formType === 'mobile' ? 'mobile' : 'lateral';
+    
+    const category = document.getElementById(`${prefix}-category`).value;
+    const status = document.getElementById(`${prefix}-status`).value;
+    const city = document.getElementById(`${prefix}-city`).value;
+    const sort = document.getElementById(`${prefix}-sort`).value || 'recent';
+    
+    // Build URL with filters
+    let url = '/map?';
+    const params = [];
+    if (category) params.push(`category=${encodeURIComponent(category)}`);
+    if (status) params.push(`status=${encodeURIComponent(status)}`);
+    if (city) params.push(`city=${encodeURIComponent(city)}`);
+    if (sort && sort !== 'recent') params.push(`sort=${encodeURIComponent(sort)}`);
+    
+    if (params.length > 0) {
+        url += params.join('&');
+    } else {
+        url = '/map';
+    }
+    
+    // Update URL and reload map
+    window.history.pushState({}, '', url);
+    
+    // Update feed links with new filters
+    updateMapLinksWithFilters();
+    
+    // Reload map with new filters
+    if (typeof loadReportsOnMap === 'function') {
+        loadReportsOnMap();
+    }
+    
+    // Close the panel
+    if (formType === 'mobile') {
+        toggleMobilePanel();
+    } else {
+        toggleLateralPanel();
+    }
+}
 
 // Statistics modal functionality
 function openStatsModal() {
@@ -195,4 +341,6 @@ window.toggleMobilePanel = toggleMobilePanel;
 window.togglePanel = togglePanel;
 window.clearLateralFilters = clearLateralFilters;
 window.clearMobileFilters = clearMobileFilters;
-window.openStatsModal = openStatsModal; 
+window.openStatsModal = openStatsModal;
+window.updateMapLinksWithFilters = updateMapLinksWithFilters;
+window.populateFilterPanelWithCurrentFilters = populateFilterPanelWithCurrentFilters; 

@@ -57,6 +57,13 @@ document.addEventListener('DOMContentLoaded', function() {
     categoryInputs.forEach(input => {
         input.addEventListener('change', function() {
             continueBtn.disabled = false;
+            
+            // Scroll to the continue button with smooth animation
+            continueBtn.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center',
+                inline: 'nearest'
+            });
         });
     });
 });

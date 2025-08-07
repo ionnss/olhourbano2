@@ -35,32 +35,45 @@ function hideModalFallback() {
 
 // Open file modal for single file
 function openFileModal(filePath, fileName, fileType) {
+    console.log('openFileModal called:', { filePath, fileName, fileType });
+    
     const modal = document.getElementById('fileModal');
     const modalTitle = document.getElementById('fileModalLabel');
+    
+    console.log('Modal elements found:', {
+        modal: !!modal,
+        modalTitle: !!modalTitle
+    });
     
     // Hide all content viewers
     hideAllViewers();
     
     // Show appropriate viewer based on file type
     if (fileType === 'image' || isImageFile(fileName)) {
+        console.log('Showing image viewer');
         showImageViewer(filePath);
         modalTitle.innerHTML = '<i class="bi bi-image me-2"></i>Visualizar Imagem';
     } else if (fileType === 'video' || isVideoFile(fileName)) {
+        console.log('Showing video viewer');
         showVideoViewer(filePath);
         modalTitle.innerHTML = '<i class="bi bi-camera-video me-2"></i>Visualizar Vídeo';
     } else if (isPdfFile(fileName)) {
+        console.log('Showing PDF viewer');
         showPdfViewer(filePath);
         modalTitle.innerHTML = '<i class="bi bi-file-pdf me-2"></i>Visualizar PDF';
     } else {
+        console.log('Showing document viewer');
         showDocumentViewer(filePath, fileName);
         modalTitle.innerHTML = '<i class="bi bi-file-earmark me-2"></i>Visualizar Documento';
     }
     
     // Try to use Bootstrap modal, fallback to manual if not available
     if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+        console.log('Using Bootstrap modal');
         const bootstrapModal = new bootstrap.Modal(modal);
         bootstrapModal.show();
     } else {
+        console.log('Using fallback modal');
         showModalFallback();
     }
 }
@@ -105,33 +118,96 @@ function showVideoViewer(filePath) {
 
 // Show PDF viewer
 function showPdfViewer(filePath) {
+    console.log('showPdfViewer called with:', filePath);
+    
     const pdfViewer = document.getElementById('pdfViewer');
     const pdfFrame = document.getElementById('pdfFrame');
-    const pdfDownloadLink = document.getElementById('pdfDownloadLink');
+    const pdfFallback = document.querySelector('.pdf-fallback');
+    const pdfLoadingIndicator = document.getElementById('pdfLoadingIndicator');
     
-    // Set PDF source
-    pdfFrame.src = filePath;
-    pdfDownloadLink.href = filePath;
+    console.log('PDF elements found:', {
+        pdfViewer: !!pdfViewer,
+        pdfFrame: !!pdfFrame,
+        pdfFallback: !!pdfFallback,
+        pdfLoadingIndicator: !!pdfLoadingIndicator
+    });
     
     // Check if mobile device
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isMobile = isMobileDevice();
+    console.log('Is mobile device:', isMobile);
     
     if (isMobile) {
-        // On mobile, try to open PDF in new tab or download
-        setTimeout(() => {
-            // Check if iframe loaded successfully
+        // On mobile, immediately show option to open in new tab
+        console.log('Mobile device detected - showing PDF open option');
+        showPdfFallback();
+        
+        // Set up the open link
+        const pdfOpenLink = document.getElementById('pdfOpenLink');
+        if (pdfOpenLink) pdfOpenLink.href = filePath;
+        
+        // Hide the iframe and loading indicator
+        if (pdfFrame) pdfFrame.style.display = 'none';
+        if (pdfLoadingIndicator) pdfLoadingIndicator.style.display = 'none';
+    } else {
+        // Desktop: use iframe as before
+        console.log('Desktop device - using iframe PDF viewer');
+        
+        // Reset display states
+        if (pdfFrame) pdfFrame.style.display = 'block';
+        if (pdfFallback) pdfFallback.style.display = 'none';
+        if (pdfLoadingIndicator) pdfLoadingIndicator.style.display = 'none';
+        
+        // Set PDF source
+        if (pdfFrame) pdfFrame.src = filePath;
+        
+        // Set up load event handlers
+        if (pdfFrame) {
             pdfFrame.onload = function() {
-                // PDF loaded successfully
+                console.log('PDF loaded successfully on desktop');
             };
+            
             pdfFrame.onerror = function() {
-                // PDF failed to load, show download option
-                pdfFrame.style.display = 'none';
-                document.querySelector('.pdf-fallback').style.display = 'block';
+                console.log('PDF failed to load on desktop');
+                showPdfFallback();
             };
-        }, 2000);
+        }
     }
     
-    pdfViewer.style.display = 'block';
+    if (pdfViewer) pdfViewer.style.display = 'block';
+}
+
+// Helper function to show PDF fallback
+function showPdfFallback() {
+    console.log('Showing PDF fallback');
+    const pdfFrame = document.getElementById('pdfFrame');
+    const pdfFallback = document.querySelector('.pdf-fallback');
+    
+    if (pdfFrame) pdfFrame.style.display = 'none';
+    if (pdfFallback) pdfFallback.style.display = 'block';
+}
+
+// Enhanced mobile PDF detection
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// Check if browser supports PDF viewing
+function supportsPdfViewing() {
+    // Check if the browser supports PDF viewing in iframes
+    const testFrame = document.createElement('iframe');
+    testFrame.style.display = 'none';
+    document.body.appendChild(testFrame);
+    
+    // Try to load a test PDF
+    testFrame.src = 'data:application/pdf;base64,JVBERi0xLjQKJcOkw7zDtsO8DQoxIDAgb2JqDQo8PA0KL1R5cGUgL0NhdGFsb2cNCi9QYWdlcyAyIDAgUg0KPj4NCmVuZG9iag0KMiAwIG9iag0KPDwNCi9UeXBlIC9QYWdlcw0KL0NvdW50IDANCi9LaWRzIFtdDQo+Pg0KZW5kb2JqDQp4cmVmDQowIDMNCjAwMDAwMDAwMDAgNjU1MzUgZiANCjAwMDAwMDAwMTAgMDAwMDAgbiANCjAwMDAwMDAwNzkgMDAwMDAgbiANCnRyYWlsZXINCjw8DQovU2l6ZSAzDQovUm9vdCAxIDAgUg0KL0luZm8gMyAwIFINCj4+DQpzdGFydHhyZWYNCjExMg0KJSVFT0Y=';
+    
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const supported = testFrame.contentDocument && testFrame.contentDocument.body;
+            document.body.removeChild(testFrame);
+            resolve(supported);
+        }, 100);
+    });
 }
 
 // Show document viewer (fallback)
@@ -221,8 +297,23 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
+
+
 // Initialize modal when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('File modal DOM loaded');
+    
+    // Test if modal elements exist
+    const modal = document.getElementById('fileModal');
+    const pdfViewer = document.getElementById('pdfViewer');
+    const pdfFrame = document.getElementById('pdfFrame');
+    
+    console.log('Modal elements on load:', {
+        modal: !!modal,
+        pdfViewer: !!pdfViewer,
+        pdfFrame: !!pdfFrame
+    });
+    
     // Add close button event listeners
     const closeButtons = document.querySelectorAll('#fileModal .btn-close, #fileModal .btn-secondary');
     closeButtons.forEach(button => {
@@ -239,7 +330,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Add backdrop click to close
-    const modal = document.getElementById('fileModal');
     if (modal) {
         modal.addEventListener('click', function(event) {
             if (event.target === modal) {
@@ -271,4 +361,22 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         modalBody.appendChild(navButtons);
     }
-}); 
+});
+
+// Test function for PDF viewing
+window.testPdfViewing = function() {
+    console.log('Testing PDF viewing...');
+    const testPdfPath = '/uploads/3db79a399469c672.pdf'; // Use an existing PDF
+    openFileModal(testPdfPath, 'test.pdf', 'pdf');
+};
+
+// Function to open PDF in new tab (works better on mobile)
+window.openPdfInNewTab = function(filePath) {
+    console.log('Opening PDF in new tab:', filePath);
+    window.open(filePath, '_blank');
+};
+
+// Export functions for global access
+window.openFileModal = openFileModal;
+window.showPdfViewer = showPdfViewer;
+window.openPdfInNewTab = openPdfInNewTab; 

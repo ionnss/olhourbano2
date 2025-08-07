@@ -22,6 +22,7 @@ type Report struct {
 	TransportData json.RawMessage `json:"transport_data,omitempty" db:"transport_data"`
 	CreatedAt     time.Time       `json:"created_at" db:"created_at"`
 	VoteCount     int             `json:"vote_count" db:"vote_count"`
+	CommentCount  int             `json:"comment_count" db:"comment_count"`
 	Status        string          `json:"status" db:"status"`
 }
 

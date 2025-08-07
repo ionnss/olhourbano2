@@ -362,6 +362,14 @@ func ReportDetailHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error loading config for Google Maps API key: %v", err)
 	}
 
+	// Get initial comments for the report
+	comments, err := services.GetCommentsForReport(db.DB, reportID, "recent", 10, 0)
+	if err != nil {
+		log.Printf("Error fetching comments for report %d: %v", reportID, err)
+		// Continue without comments
+		comments = []*models.CommentDisplay{}
+	}
+
 	data := map[string]interface{}{
 		"ReportID":         reportID,
 		"Report":           report,
@@ -370,6 +378,7 @@ func ReportDetailHandler(w http.ResponseWriter, r *http.Request) {
 		"HashedCPFDisplay": hashedCPFDisplay,
 		"PageTitle":        "Denúncia #" + reportIDStr,
 		"GoogleMapsAPIKey": cfg.GoogleMapsAPIKey,
+		"Comments":         comments,
 	}
 
 	if err := renderTemplate(w, "04_report_detail.html", data); err != nil {

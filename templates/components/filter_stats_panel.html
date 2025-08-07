@@ -76,6 +76,23 @@
       </form>
     </div>
 
+    <!-- Navigation Button -->
+    <div style="margin-bottom:30px;">
+      {{if eq .CurrentPage "map"}}
+        <a href="/feed" 
+          class="btn w-100 d-flex align-items-center justify-content-center"
+          style="background-color:#007bff; color:white; border-radius:8px; padding:12px; text-decoration:none; font-weight:500;">
+          <i class="bi bi-list-ul me-2"></i> Ver no Feed
+        </a>
+      {{else}}
+        <a href="/map" 
+          class="btn w-100 d-flex align-items-center justify-content-center"
+          style="background-color:#007bff; color:white; border-radius:8px; padding:12px; text-decoration:none; font-weight:500;">
+          <i class="bi bi-map me-2"></i> Ver no Mapa
+        </a>
+      {{end}}
+    </div>
+
     <!-- Statistics Section -->
     <div style="margin-bottom:30px;">
       <h6 style="font-weight:600; color:#333; margin-bottom:20px; display:flex; align-items:center;">
@@ -142,23 +159,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Navigation Button -->
-    <div style="margin-bottom:30px;">
-      {{if eq .CurrentPage "map"}}
-        <a href="/feed" 
-          class="btn w-100 d-flex align-items-center justify-content-center"
-          style="background-color:#007bff; color:white; border-radius:8px; padding:12px; text-decoration:none; font-weight:500;">
-          <i class="bi bi-list-ul me-2"></i> Ver no Feed
-        </a>
-      {{else}}
-        <a href="/map" 
-          class="btn w-100 d-flex align-items-center justify-content-center"
-          style="background-color:#007bff; color:white; border-radius:8px; padding:12px; text-decoration:none; font-weight:500;">
-          <i class="bi bi-map me-2"></i> Ver no Mapa
-        </a>
-      {{end}}
     </div>
   </div>
 </div>
@@ -231,6 +231,23 @@
       </form>
     </div>
 
+    <!-- Navigation Button -->
+    <div style="margin-bottom:30px;">
+      {{if eq .CurrentPage "map"}}
+        <a href="/feed" 
+          class="btn w-100 d-flex align-items-center justify-content-center"
+          style="background-color:#007bff; color:white; border-radius:8px; padding:12px; text-decoration:none; font-weight:500;">
+          <i class="bi bi-list-ul me-2"></i> Ver no Feed
+        </a>
+      {{else}}
+        <a href="/map" 
+          class="btn w-100 d-flex align-items-center justify-content-center"
+          style="background-color:#007bff; color:white; border-radius:8px; padding:12px; text-decoration:none; font-weight:500;">
+          <i class="bi bi-map me-2"></i> Ver no Mapa
+        </a>
+      {{end}}
+    </div>
+
     <!-- Statistics Section -->
     <div style="margin-bottom:30px;">
       <h6 style="font-weight:600; color:#333; margin-bottom:20px; display:flex; align-items:center;">
@@ -297,23 +314,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Navigation Button -->
-    <div style="margin-bottom:30px;">
-      {{if eq .CurrentPage "map"}}
-        <a href="/feed" 
-          class="btn w-100 d-flex align-items-center justify-content-center"
-          style="background-color:#007bff; color:white; border-radius:8px; padding:12px; text-decoration:none; font-weight:500;">
-          <i class="bi bi-list-ul me-2"></i> Ver no Feed
-        </a>
-      {{else}}
-        <a href="/map" 
-          class="btn w-100 d-flex align-items-center justify-content-center"
-          style="background-color:#007bff; color:white; border-radius:8px; padding:12px; text-decoration:none; font-weight:500;">
-          <i class="bi bi-map me-2"></i> Ver no Mapa
-        </a>
-      {{end}}
     </div>
   </div>
 </div>

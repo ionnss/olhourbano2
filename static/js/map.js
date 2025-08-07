@@ -86,6 +86,16 @@ if (typeof google !== 'undefined' && google.maps) {
     initMap();
 }
 
+// Initialize map page when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Map page DOM loaded');
+    
+    // Ensure filter panel is properly initialized
+    if (typeof populateFilterPanelWithCurrentFilters === 'function') {
+        populateFilterPanelWithCurrentFilters();
+    }
+});
+
 // Load reports and display them on the map
 function loadReportsOnMap() {
     // Get filter parameters from URL
@@ -93,6 +103,11 @@ function loadReportsOnMap() {
     const category = urlParams.get('category');
     const status = urlParams.get('status');
     const city = urlParams.get('city');
+    
+    // Check for focus parameters (from report detail page)
+    const focusLat = urlParams.get('focus_lat');
+    const focusLng = urlParams.get('focus_lng');
+    const focusId = urlParams.get('focus_id');
     
     // Build API URL
     let apiUrl = '/api/reports/map';
@@ -110,6 +125,41 @@ function loadReportsOnMap() {
         .then(data => {
             if (data.success && data.reports) {
                 displayReportsOnMap(data.reports);
+                
+                // If we have focus parameters, center map and open info window
+                if (focusLat && focusLng && focusId) {
+                    const focusLocation = {
+                        lat: parseFloat(focusLat),
+                        lng: parseFloat(focusLng)
+                    };
+                    
+                    // Center map on the focused report
+                    map.setCenter(focusLocation);
+                    map.setZoom(16);
+                    
+                    // Find and open the marker for this report
+                    const targetMarker = markers.find(marker => 
+                        marker.reportId === parseInt(focusId)
+                    );
+                    
+                    if (targetMarker) {
+                        // Find the report data
+                        const targetReport = data.reports.find(report => 
+                            report.id === parseInt(focusId)
+                        );
+                        
+                        if (targetReport) {
+                            showInfoWindow(targetMarker, targetReport);
+                        }
+                    }
+                    
+                    // Remove focus parameters from URL to avoid confusion
+                    const newUrl = new URL(window.location);
+                    newUrl.searchParams.delete('focus_lat');
+                    newUrl.searchParams.delete('focus_lng');
+                    newUrl.searchParams.delete('focus_id');
+                    window.history.replaceState({}, '', newUrl);
+                }
             } else {
                 console.error('Failed to load reports:', data.message);
             }
@@ -120,78 +170,6 @@ function loadReportsOnMap() {
             showSampleData();
         });
 }
-
-// Filter functionality
-function toggleMapFilters() {
-    const filterPanel = document.getElementById('map-filter-panel');
-    if (filterPanel.style.display === 'none' || filterPanel.style.display === '') {
-        filterPanel.style.display = 'block';
-        populateCurrentFilters();
-    } else {
-        filterPanel.style.display = 'none';
-    }
-}
-
-function clearMapFilters() {
-    document.getElementById('map-category').value = '';
-    document.getElementById('map-status').value = '';
-    document.getElementById('map-city').value = '';
-    
-    // Reload map with no filters
-    loadReportsOnMap();
-    
-    // Update URL without parameters
-    window.history.pushState({}, '', '/map');
-    
-    // Hide filter panel
-    document.getElementById('map-filter-panel').style.display = 'none';
-}
-
-function populateCurrentFilters() {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    const category = urlParams.get('category');
-    const status = urlParams.get('status');
-    const city = urlParams.get('city');
-    
-    if (category) document.getElementById('map-category').value = category;
-    if (status) document.getElementById('map-status').value = status;
-    if (city) document.getElementById('map-city').value = city;
-}
-
-// Handle filter form submission
-document.addEventListener('DOMContentLoaded', function() {
-    const filterForm = document.getElementById('map-filter-form');
-    if (filterForm) {
-        filterForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const category = document.getElementById('map-category').value;
-            const status = document.getElementById('map-status').value;
-            const city = document.getElementById('map-city').value;
-            
-            // Build URL with filters
-            let url = '/map?';
-            const params = [];
-            if (category) params.push(`category=${encodeURIComponent(category)}`);
-            if (status) params.push(`status=${encodeURIComponent(status)}`);
-            if (city) params.push(`city=${encodeURIComponent(city)}`);
-            
-            if (params.length > 0) {
-                url += params.join('&');
-            } else {
-                url = '/map';
-            }
-            
-            // Update URL and reload map
-            window.history.pushState({}, '', url);
-            loadReportsOnMap();
-            
-            // Hide filter panel
-            document.getElementById('map-filter-panel').style.display = 'none';
-        });
-    }
-});
 
 // Display reports as markers on the map
 function displayReportsOnMap(reports) {
@@ -257,6 +235,9 @@ function createMarker(report) {
         title: report.description || 'Report',
         content: pinElement.element
     });
+    
+    // Store report ID in marker for later reference
+    marker.reportId = report.id;
     
     // Add click listener to show info window
     marker.addListener('click', function() {

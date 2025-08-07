@@ -178,6 +178,7 @@ func processReportsForTemplate(reports []*models.Report) []map[string]interface{
 			"TransportDetails":  transportDetails,
 			"CreatedAt":         createdAt,
 			"VoteCount":         report.VoteCount,
+			"CommentCount":      report.CommentCount,
 			"HashedCPFDisplay":  hashedCPFDisplay,
 		})
 	}

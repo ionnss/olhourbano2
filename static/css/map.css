@@ -32,6 +32,26 @@ body {
     user-select: none;
 }
 
+/* PDF Modal Overrides for Mobile */
+.modal.show #pdfFrame {
+    touch-action: manipulation;
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: default;
+}
+
+.modal.show .pdf-container {
+    touch-action: manipulation;
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
 /* Floating controls styling */
 #map-back-btn {
     position: fixed;
@@ -48,16 +68,17 @@ body {
     letter-spacing: 0.5px;
     font-size: 1.08rem;
     border-radius: 999px;
-    box-shadow: 0 2px 8px rgba(51, 51, 51, 0.8) !important;
+    box-shadow: 0 2px 8px rgba(51,51,51,0.8) !important;
     background-color: rgb(51, 51, 51);
     color: #fff;
     border: none;
-    transition: all 0.3s ease;
+    padding: 8px 16px;
 }
 
 #map-back-btn .btn:hover {
+    background-color: rgb(40, 40, 40);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(51, 51, 51, 0.9) !important;
+    box-shadow: 0 4px 12px rgba(51,51,51,0.9) !important;
 }
 
 #map-logo-card {
@@ -441,34 +462,6 @@ body {
     }
 }
 
-/* Filter panel styling */
-#map-filter-panel {
-    font-family: 'Montserrat', sans-serif;
-}
-
-#map-filter-panel h5 {
-    color: #333;
-    font-weight: 600;
-}
-
-#map-filter-panel label {
-    color: #555;
-    font-size: 0.9rem;
-}
-
-#map-filter-panel .form-select {
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 8px 12px;
-    font-size: 0.9rem;
-}
-
-#map-filter-panel .btn {
-    font-size: 0.9rem;
-    font-weight: 500;
-    padding: 8px 16px;
-}
-
 /* Mobile responsiveness for map info window */
 @media (max-width: 768px) {
     .map-info-window {
@@ -610,5 +603,50 @@ body {
     #map-back-btn .btn {
         font-size: 0.9rem;
         padding: 6px 10px;
+    }
+}
+
+/* Mobile PDF Viewer Enhancements */
+@media (max-width: 768px) {
+    .modal.show #pdfFrame {
+        height: 70vh !important;
+        min-height: 400px;
+        width: 100%;
+        border: none;
+        border-radius: 8px;
+    }
+    
+    .modal.show .pdf-container {
+        height: 70vh;
+        min-height: 400px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .modal.show .pdf-fallback {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem 1rem;
+    }
+    
+    .modal.show .pdf-fallback .btn {
+        margin-top: 1rem;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal.show #pdfFrame {
+        height: 60vh !important;
+        min-height: 350px;
+    }
+    
+    .modal.show .pdf-container {
+        height: 60vh;
+        min-height: 350px;
     }
 }

@@ -135,13 +135,16 @@
                         </div>
                     </div>
 
-                    <!-- Report Actions - removed redundant button, kept only map button -->
-                    <div class="report-actions mt-4">
-                        <a href="/map" class="action-btn">
+                    <!-- Report Actions - Map button -->
+                    <div class="report-actions mt-4 mb-4">
+                        <a href="/map{{if and .Report.Latitude .Report.Longitude}}?focus_lat={{.Report.Latitude}}&focus_lng={{.Report.Longitude}}&focus_id={{.ReportID}}{{end}}" class="action-btn">
                             <i class="bi bi-map me-2"></i>
                             Ver no Mapa
                         </a>
                     </div>
+
+                    <!-- Comments Section -->
+                    {{template "comments_section" .}}
                 </div>
             </div>
         </div>

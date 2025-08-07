@@ -48,6 +48,10 @@ func CreateRoutes() *mux.Router {
 	r.HandleFunc("/api/reports/map", handlers.MapReportsHandler).Methods("GET")   // Map reports data
 	r.HandleFunc("/api/reports/cities", handlers.CitiesHandler).Methods("GET")    // Cities data
 	r.HandleFunc("/api/vote", handlers.VoteHandler).Methods("POST")               // Vote on reports
+	
+	// Comment routes
+	r.HandleFunc("/api/comments", handlers.CreateCommentHandler).Methods("POST")           // Create comment
+	r.HandleFunc("/api/comments", handlers.GetCommentsHandler).Methods("GET")             // Get comments
 
 	r.HandleFunc("/feed", handlers.FeedHandler).Methods("GET")
 	r.HandleFunc("/map", handlers.MapHandler).Methods("GET")
