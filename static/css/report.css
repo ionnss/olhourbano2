@@ -817,11 +817,14 @@ body.report-page main {
     #mapContainer {
         margin: 0 -1rem;
         border-radius: 0;
+        padding: 0;
+        border: none;
     }
     
     #map {
         height: 250px !important;
         border-radius: 0 !important;
+        border: none !important;
     }
     
     /* Scale down all Google Maps controls */
@@ -1498,16 +1501,32 @@ body.report-page main {
 /* Enhanced map styling for report detail page */
 #mapContainer {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border: 1px solid #e9ecef;
+    border: none;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 #map {
-    border-radius: 8px;
+    border-radius: 12px;
+    width: 100% !important;
+    max-width: 100% !important;
+    border: none !important;
+    margin-bottom: 0 !important;
 }
 
 /* Ensure the new Google Maps markers are properly styled */
 #map .gm-style-marker {
     cursor: pointer;
+}
+
+/* Remove any borders from Google Maps elements */
+#map .gm-style,
+#map .gm-style * {
+    border: none !important;
 }
 
 /* Custom styling for report detail map markers */
