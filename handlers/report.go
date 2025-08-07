@@ -370,15 +370,101 @@ func ReportDetailHandler(w http.ResponseWriter, r *http.Request) {
 		comments = []*models.CommentDisplay{}
 	}
 
+	// Process status text for display
+	statusText := ""
+	switch report.Status {
+	case "pending":
+		statusText = "Pendente"
+	case "approved":
+		statusText = "Resolvida"
+	default:
+		statusText = "Pendente"
+	}
+
+	// Process transport details for display
+	transportDetails := ""
+	transportTypeName := ""
+	if report.TransportType != "" && report.TransportData != nil {
+		// Get human-readable transport type name
+		switch report.TransportType {
+		case "bus":
+			transportTypeName = "Ônibus"
+		case "metro":
+			transportTypeName = "Metrô"
+		case "train":
+			transportTypeName = "Trem"
+		case "other":
+			transportTypeName = "Outro"
+		default:
+			transportTypeName = "Transporte"
+		}
+
+		transportData, err := report.GetTransportData()
+		if err != nil {
+			log.Printf("Error parsing transport data for report %d: %v", reportID, err)
+		} else if transportData != nil {
+			var details []string
+
+			// Format bus details
+			if transportData.BusNumber != "" {
+				details = append(details, "Ônibus: "+transportData.BusNumber)
+			}
+			if transportData.BusLine != "" {
+				details = append(details, "Linha: "+transportData.BusLine)
+			}
+			if transportData.BusStop != "" {
+				details = append(details, "Ponto: "+transportData.BusStop)
+			}
+			if transportData.BusCompany != "" {
+				details = append(details, "Empresa: "+transportData.BusCompany)
+			}
+
+			// Format metro details
+			if transportData.MetroLine != "" {
+				details = append(details, "Linha: "+transportData.MetroLine)
+			}
+			if transportData.MetroStation != "" {
+				details = append(details, "Estação: "+transportData.MetroStation)
+			}
+			if transportData.MetroWagon != "" {
+				details = append(details, "Vagão: "+transportData.MetroWagon)
+			}
+			if transportData.MetroCard != "" {
+				details = append(details, "Cartão: "+transportData.MetroCard)
+			}
+
+			// Format train details
+			if transportData.TrainLine != "" {
+				details = append(details, "Linha: "+transportData.TrainLine)
+			}
+			if transportData.TrainStation != "" {
+				details = append(details, "Estação: "+transportData.TrainStation)
+			}
+			if transportData.TrainWagon != "" {
+				details = append(details, "Vagão: "+transportData.TrainWagon)
+			}
+
+			// Format other transport details
+			if transportData.TransportDetails != "" {
+				details = append(details, transportData.TransportDetails)
+			}
+
+			transportDetails = strings.Join(details, " • ")
+		}
+	}
+
 	data := map[string]interface{}{
-		"ReportID":         reportID,
-		"Report":           report,
-		"Category":         category,
-		"Photos":           photos,
-		"HashedCPFDisplay": hashedCPFDisplay,
-		"PageTitle":        "Denúncia #" + reportIDStr,
-		"GoogleMapsAPIKey": cfg.GoogleMapsAPIKey,
-		"Comments":         comments,
+		"ReportID":          reportID,
+		"Report":            report,
+		"Category":          category,
+		"Photos":            photos,
+		"HashedCPFDisplay":  hashedCPFDisplay,
+		"PageTitle":         "Denúncia #" + reportIDStr,
+		"GoogleMapsAPIKey":  cfg.GoogleMapsAPIKey,
+		"Comments":          comments,
+		"TransportDetails":  transportDetails,
+		"TransportTypeName": transportTypeName,
+		"StatusText":        statusText,
 	}
 
 	if err := renderTemplate(w, "04_report_detail.html", data); err != nil {

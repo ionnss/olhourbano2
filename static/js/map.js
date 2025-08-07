@@ -448,7 +448,18 @@ function showInfoWindow(marker, report) {
 // Create info window content
 function createInfoWindowContent(report) {
     const statusClass = report.status === 'approved' ? 'status-approved' : 'status-pending';
-    const statusText = report.status === 'approved' ? 'Resolvida' : 'Pendente';
+    
+    // Get Portuguese status text
+    let statusText = 'Pendente'; // default
+    switch (report.status) {
+        case 'approved':
+            statusText = 'Resolvida';
+            break;
+        case 'pending':
+        default:
+            statusText = 'Pendente';
+            break;
+    }
     
     // Get category info - this would ideally come from the API response
     // For now, using a mapping similar to the backend

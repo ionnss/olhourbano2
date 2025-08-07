@@ -216,7 +216,66 @@ func getTransportTypeName(transportType string) string {
 
 // getTransportDetails returns formatted transport details
 func getTransportDetails(report *models.Report) string {
-	// This would need to be implemented to parse the JSON transport data
-	// For now, return empty string
-	return ""
+	if report.TransportData == nil {
+		return ""
+	}
+
+	// Parse the JSON transport data
+	transportData, err := report.GetTransportData()
+	if err != nil {
+		log.Printf("Error parsing transport data for report %d: %v", report.ID, err)
+		return ""
+	}
+
+	if transportData == nil {
+		return ""
+	}
+
+	var details []string
+
+	// Format bus details
+	if transportData.BusNumber != "" {
+		details = append(details, "Ônibus: "+transportData.BusNumber)
+	}
+	if transportData.BusLine != "" {
+		details = append(details, "Linha: "+transportData.BusLine)
+	}
+	if transportData.BusStop != "" {
+		details = append(details, "Ponto: "+transportData.BusStop)
+	}
+	if transportData.BusCompany != "" {
+		details = append(details, "Empresa: "+transportData.BusCompany)
+	}
+
+	// Format metro details
+	if transportData.MetroLine != "" {
+		details = append(details, "Linha: "+transportData.MetroLine)
+	}
+	if transportData.MetroStation != "" {
+		details = append(details, "Estação: "+transportData.MetroStation)
+	}
+	if transportData.MetroWagon != "" {
+		details = append(details, "Vagão: "+transportData.MetroWagon)
+	}
+	if transportData.MetroCard != "" {
+		details = append(details, "Cartão: "+transportData.MetroCard)
+	}
+
+	// Format train details
+	if transportData.TrainLine != "" {
+		details = append(details, "Linha: "+transportData.TrainLine)
+	}
+	if transportData.TrainStation != "" {
+		details = append(details, "Estação: "+transportData.TrainStation)
+	}
+	if transportData.TrainWagon != "" {
+		details = append(details, "Vagão: "+transportData.TrainWagon)
+	}
+
+	// Format other transport details
+	if transportData.TransportDetails != "" {
+		details = append(details, transportData.TransportDetails)
+	}
+
+	return strings.Join(details, " • ")
 }

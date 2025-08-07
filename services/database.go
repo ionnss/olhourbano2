@@ -18,7 +18,7 @@ type ReportStats struct {
 // CreateReport inserts a new report into the database
 func CreateReport(db *sql.DB, report *models.Report) (int, error) {
 	// Extract city name from location for better filtering
-	city := extractCityFromLocation(report.Location)
+	city := ExtractCityFromLocation(report.Location)
 
 	query := `
 		INSERT INTO reports (problem_type, hashed_cpf, birth_date, email, location, city, latitude, longitude, description, photo_path, transport_type, transport_data, created_at, vote_count, status)
@@ -465,7 +465,7 @@ func getCitiesFromLocation(db *sql.DB) ([]string, error) {
 		}
 
 		// Try to extract city name from location using multiple strategies
-		city := extractCityFromLocation(location)
+		city := ExtractCityFromLocation(location)
 		if city != "" && !contains(cities, city) {
 			cities = append(cities, city)
 		}
@@ -474,16 +474,24 @@ func getCitiesFromLocation(db *sql.DB) ([]string, error) {
 	return cities, nil
 }
 
-// extractCityFromLocation tries to extract city name from location string
-func extractCityFromLocation(location string) string {
+// ExtractCityFromLocation tries to extract city name from location string
+func ExtractCityFromLocation(location string) string {
 	if location == "" {
 		return ""
 	}
 
-	// Remove common suffixes that might interfere
+	// Clean up the location string
+	location = strings.TrimSpace(location)
+
+	// Remove common suffixes and prefixes that might interfere
 	location = strings.ReplaceAll(location, " - Brasil", "")
 	location = strings.ReplaceAll(location, ", Brazil", "")
 	location = strings.ReplaceAll(location, ", Brasil", "")
+	location = strings.ReplaceAll(location, "Brasil", "")
+	location = strings.ReplaceAll(location, "Brazil", "")
+
+	// Remove extra whitespace
+	location = strings.Join(strings.Fields(location), " ")
 
 	// Split by comma and clean up
 	parts := strings.Split(location, ",")
@@ -514,8 +522,8 @@ func extractCityFromLocation(location string) string {
 				statePart := strings.TrimSpace(subParts[1])
 
 				// If the second part looks like a state abbreviation, the first part is the city
-				if isStateAbbreviation(statePart) && len(cityPart) > 2 {
-					return cityPart
+				if isStateAbbreviation(statePart) && isValidCityName(cityPart) {
+					return cleanCityName(cityPart)
 				}
 			}
 		}
@@ -525,14 +533,14 @@ func extractCityFromLocation(location string) string {
 			continue
 		}
 
-		// Skip parts that are too short (likely not city names)
-		if len(part) < 3 {
+		// Skip parts that are too short or don't look like city names
+		if !isValidCityName(part) {
 			continue
 		}
 
 		// If we haven't found a city yet and this part doesn't look like a postal code or state,
 		// and it's not the first part (which is usually the street), it might be the city
-		if i > 0 && !isPostalCode(part) && !isStateAbbreviation(part) && len(part) >= 3 {
+		if i > 0 && !isPostalCode(part) && !isStateAbbreviation(part) {
 			// Check if this part contains a state abbreviation that should be removed
 			if strings.Contains(part, " - ") {
 				subParts := strings.Split(part, " - ")
@@ -541,12 +549,16 @@ func extractCityFromLocation(location string) string {
 					statePart := strings.TrimSpace(subParts[1])
 
 					// If the second part looks like a state abbreviation, return just the city part
-					if isStateAbbreviation(statePart) && len(cityPart) > 2 {
-						return cityPart
+					if isStateAbbreviation(statePart) && isValidCityName(cityPart) {
+						return cleanCityName(cityPart)
 					}
 				}
 			}
-			return part
+
+			// Additional validation: check if this part looks like a city name
+			if isValidCityName(part) {
+				return cleanCityName(part)
+			}
 		}
 	}
 
@@ -577,6 +589,96 @@ func isStateAbbreviation(s string) bool {
 		}
 	}
 	return false
+}
+
+// isValidCityName checks if a string looks like a valid city name
+func isValidCityName(s string) bool {
+	// Must be at least 3 characters
+	if len(s) < 3 {
+		return false
+	}
+
+	// Must not contain numbers (except for cities like "São João")
+	if strings.ContainsAny(s, "0123456789") {
+		return false
+	}
+
+	// Must not contain special characters that are not common in city names
+	// Allow letters, spaces, hyphens, apostrophes, and common accented characters
+	invalidChars := []string{"@", "#", "$", "%", "^", "&", "*", "(", ")", "+", "=", "[", "]", "{", "}", "|", "\\", ":", ";", "\"", "'", "<", ">", ",", ".", "?", "/"}
+	for _, char := range invalidChars {
+		if strings.Contains(s, char) {
+			return false
+		}
+	}
+
+	// Must not be all uppercase (likely an abbreviation)
+	if s == strings.ToUpper(s) && len(s) <= 5 {
+		return false
+	}
+
+	// Must not contain common non-city words
+	nonCityWords := []string{"rua", "avenida", "av", "r", "n", "s", "l", "o", "e", "norte", "sul", "leste", "oeste", "centro", "bairro", "distrito", "zona"}
+	for _, word := range nonCityWords {
+		if strings.EqualFold(s, word) {
+			return false
+		}
+	}
+
+	return true
+}
+
+// cleanCityName removes extra text and normalizes city names
+func cleanCityName(s string) string {
+	// Remove extra whitespace
+	s = strings.Join(strings.Fields(s), " ")
+
+	// Remove common suffixes that might be attached to city names
+	suffixes := []string{" - ", " -", "- ", " - SP", " - RJ", " - MG", " - RS", " - PR", " - SC", " - BA", " - CE", " - PE", " - GO", " - MT", " - MS", " - MA", " - PA", " - PB", " - PI", " - RN", " - AL", " - SE", " - TO", " - RO", " - AC", " - RR", " - AP", " - AM", " - DF", " - ES"}
+	for _, suffix := range suffixes {
+		if strings.HasSuffix(s, suffix) {
+			s = strings.TrimSuffix(s, suffix)
+			break
+		}
+	}
+
+	// Remove common prefixes
+	prefixes := []string{"Cidade de ", "Município de ", "Municipio de "}
+	for _, prefix := range prefixes {
+		if strings.HasPrefix(s, prefix) {
+			s = strings.TrimPrefix(s, prefix)
+			break
+		}
+	}
+
+	// Capitalize properly (first letter of each word)
+	words := strings.Fields(s)
+	for i, word := range words {
+		if len(word) > 0 {
+			// Handle common prepositions and articles
+			lowerWords := []string{"de", "da", "do", "das", "dos", "e", "em", "na", "no", "nas", "nos", "para", "por", "com", "sem", "sob", "sobre", "entre", "contra", "desde", "até", "atras", "após", "ante", "perante", "segundo", "conforme", "mediante", "salvo", "exceto", "menos", "fora", "tirante", "senão", "que", "qual", "quais", "cujo", "cuja", "cujos", "cujas", "onde", "quando", "como", "porque", "pois", "logo", "portanto", "então", "assim", "também", "tambem", "ainda", "já", "ja", "nunca", "sempre", "só", "so", "apenas", "sómente", "somente", "unicamente", "exclusivamente", "inclusive", "inclusivamente", "exclusive", "exclusivamente", "salvo", "exceto", "menos", "fora", "tirante", "senão", "que", "qual", "quais", "cujo", "cuja", "cujos", "cujas", "onde", "quando", "como", "porque", "pois", "logo", "portanto", "então", "assim", "também", "tambem", "ainda", "já", "ja", "nunca", "sempre", "só", "so", "apenas", "sómente", "somente", "unicamente", "exclusivamente", "inclusive", "inclusivamente", "exclusive", "exclusivamente"}
+			isLower := false
+			for _, lowerWord := range lowerWords {
+				if strings.EqualFold(word, lowerWord) {
+					isLower = true
+					break
+				}
+			}
+
+			if !isLower {
+				// Capitalize first letter, keep rest as is
+				if len(word) > 1 {
+					words[i] = strings.ToUpper(word[:1]) + strings.ToLower(word[1:])
+				} else {
+					words[i] = strings.ToUpper(word)
+				}
+			} else {
+				words[i] = strings.ToLower(word)
+			}
+		}
+	}
+
+	return strings.Join(words, " ")
 }
 
 // Helper function to check if slice contains string
@@ -616,7 +718,7 @@ func UpdateExistingReportsWithCity(db *sql.DB) error {
 			return err
 		}
 
-		city := extractCityFromLocation(location)
+		city := ExtractCityFromLocation(location)
 		if city != "" {
 			_, err = db.Exec(query, city, id)
 			if err != nil {

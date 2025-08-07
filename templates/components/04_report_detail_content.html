@@ -21,7 +21,7 @@
                             <span class="category-name">{{.Category.Name}}</span>
                         </div>
                         <div class="report-status">
-                            <span class="status-badge status-{{.Report.Status}}">{{.Report.Status}}</span>
+                            <span class="status-badge status-{{.Report.Status}}">{{.StatusText}}</span>
                         </div>
                     </div>
 
@@ -65,10 +65,10 @@
                     <div class="report-transport mb-4">
                         <h6><i class="bi bi-bus-front text-muted me-2"></i>Informações de Transporte</h6>
                         <div class="transport-info">
-                            <span class="transport-type">{{.Report.TransportType}}</span>
-                            {{if .Report.TransportData}}
+                            <span class="transport-type">{{.TransportTypeName}}</span>
+                            {{if .TransportDetails}}
                             <div class="transport-details mt-2">
-                                <small class="text-muted">{{.Report.TransportData}}</small>
+                                <small class="text-muted">{{.TransportDetails}}</small>
                             </div>
                             {{end}}
                         </div>
