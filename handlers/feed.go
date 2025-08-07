@@ -42,7 +42,7 @@ func FeedHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Fetch reports from database
-	reports, err := services.GetReports(db.DB, page, category, status, city, ReportsPerPage)
+	reports, err := services.GetReports(db.DB, page, category, status, city, sort, ReportsPerPage)
 	if err != nil {
 		log.Printf("Error fetching reports: %v", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)

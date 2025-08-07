@@ -112,7 +112,7 @@ func GetReportByID(db *sql.DB, id int) (*models.Report, error) {
 }
 
 // GetReports retrieves reports with pagination and filtering
-func GetReports(db *sql.DB, page int, category, status, city string, limit int) ([]*models.Report, error) {
+func GetReports(db *sql.DB, page int, category, status, city, sort string, limit int) ([]*models.Report, error) {
 	offset := (page - 1) * limit
 
 	query := `
@@ -141,8 +141,20 @@ func GetReports(db *sql.DB, page int, category, status, city string, limit int) 
 		args = append(args, "%"+city+"%")
 	}
 
+	// Add ORDER BY clause based on sort parameter
+	switch sort {
+	case "votes":
+		query += " ORDER BY vote_count DESC, created_at DESC"
+	case "oldest":
+		query += " ORDER BY created_at ASC"
+	case "recent":
+		fallthrough
+	default:
+		query += " ORDER BY created_at DESC"
+	}
+
 	argCount++
-	query += fmt.Sprintf(" ORDER BY created_at DESC LIMIT $%d", argCount)
+	query += fmt.Sprintf(" LIMIT $%d", argCount)
 	args = append(args, limit)
 
 	argCount++

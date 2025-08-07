@@ -7,7 +7,7 @@ categories:
     name: "Infraestrutura e Mobilidade"
     icon: "🚧"
     color: "#FF5722"  # Deep Orange (construction)
-    description: "Problemas com ruas, calçadas, sinalizações e transporte"
+    description: "Problemas com ruas, calçadas e sinalizações"
 
   - id: "ciclismo"
     name: "Ciclismo"
@@ -193,7 +193,6 @@ transport_configurations:
   # Categories that require transport information
   transport_required:
     - "transporte_publico"
-    - "infraestrutura_mobilidade"
   
   # Transport types and their fields
   transport_types:
