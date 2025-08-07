@@ -6,6 +6,11 @@ RUN apt-get update && apt-get install -y \
     ffmpeg \
     imagemagick \
     qpdf \
+    exiftool \
+    antiword \
+    zip \
+    unzip \
+    pdftk \
     && rm -rf /var/lib/apt/lists/*
 
 # Fix ImageMagick policy to allow PDF processing

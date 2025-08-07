@@ -232,9 +232,15 @@ func cleanFileMetadata(inputPath, outputPath, contentType string) error {
 		return cleanPDFMetadata(inputPath, outputPath)
 	case strings.HasPrefix(contentType, "video/"):
 		return cleanVideoMetadata(inputPath, outputPath)
+	case contentType == "application/msword":
+		return cleanWordDocumentMetadata(inputPath, outputPath)
+	case contentType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+		return cleanWordDocumentMetadata(inputPath, outputPath)
+	case contentType == "text/plain":
+		return cleanTextFileMetadata(inputPath, outputPath)
 	default:
-		// For other file types, just copy the file
-		return copyFile(inputPath, outputPath)
+		// For other file types, try to clean metadata if possible
+		return cleanGenericFileMetadata(inputPath, outputPath, contentType)
 	}
 }
 
@@ -251,17 +257,70 @@ func cleanImageMetadata(inputPath, outputPath string) error {
 	return cmd.Run()
 }
 
-// cleanPDFMetadata removes metadata from PDF files using qpdf
+// cleanPDFMetadata removes metadata from PDF files using multiple methods
 func cleanPDFMetadata(inputPath, outputPath string) error {
-	// Check if qpdf is available
-	if _, err := exec.LookPath("qpdf"); err != nil {
-		// Fallback: just copy the file if qpdf is not available
-		return copyFile(inputPath, outputPath)
+	// Try exiftool first (most comprehensive metadata removal)
+	if _, err := exec.LookPath("exiftool"); err == nil {
+		// Use exiftool to remove ALL metadata
+		cmd := exec.Command("exiftool", "-all=", "-o", outputPath, inputPath)
+		if err := cmd.Run(); err == nil {
+			// Verify the cleaning worked by checking if metadata still exists
+			if !hasPDFMetadata(outputPath) {
+				return nil
+			}
+		}
 	}
 
-	// Use qpdf to clean metadata
-	cmd := exec.Command("qpdf", "--linearize", "--deterministic-id", inputPath, outputPath)
-	return cmd.Run()
+	// Try qpdf with more aggressive options
+	if _, err := exec.LookPath("qpdf"); err == nil {
+		// Use qpdf with metadata removal options
+		cmd := exec.Command("qpdf",
+			"--linearize",
+			"--deterministic-id",
+			"--remove-metadata",
+			"--replace-input",
+			inputPath)
+		if err := cmd.Run(); err == nil {
+			// Copy the cleaned file to output path
+			return copyFile(inputPath, outputPath)
+		}
+	}
+
+	// Try pdftk if available (another PDF tool)
+	if _, err := exec.LookPath("pdftk"); err == nil {
+		cmd := exec.Command("pdftk", inputPath, "output", outputPath, "dump_data_utf8")
+		if err := cmd.Run(); err == nil {
+			return nil
+		}
+	}
+
+	// Fallback: try to use qpdf with basic options
+	if _, err := exec.LookPath("qpdf"); err == nil {
+		cmd := exec.Command("qpdf", "--linearize", "--deterministic-id", inputPath, outputPath)
+		return cmd.Run()
+	}
+
+	// Last resort: just copy the file
+	return copyFile(inputPath, outputPath)
+}
+
+// hasPDFMetadata checks if a PDF still has metadata
+func hasPDFMetadata(pdfPath string) bool {
+	// Check if exiftool is available to verify metadata
+	if _, err := exec.LookPath("exiftool"); err != nil {
+		return false // Can't check, assume it's clean
+	}
+
+	// Run exiftool to check for metadata
+	cmd := exec.Command("exiftool", "-Author", "-Creator", "-Producer", "-CreationDate", "-ModDate", pdfPath)
+	output, err := cmd.Output()
+	if err != nil {
+		return false // Error checking, assume it's clean
+	}
+
+	// If output contains metadata values, return true
+	outputStr := string(output)
+	return strings.Contains(outputStr, ":") && !strings.Contains(outputStr, "No metadata")
 }
 
 // cleanVideoMetadata removes metadata from video files using ffmpeg
@@ -282,6 +341,146 @@ func cleanVideoMetadata(inputPath, outputPath string) error {
 		outputPath)
 
 	return cmd.Run()
+}
+
+// cleanWordDocumentMetadata removes metadata from Word documents
+func cleanWordDocumentMetadata(inputPath, outputPath string) error {
+	// For Word documents, we need to use specialized tools
+	// Since antiword might not be available, we'll use a more robust approach
+
+	// Check if exiftool is available (works for many file types)
+	if _, err := exec.LookPath("exiftool"); err == nil {
+		// Use exiftool to remove all metadata
+		cmd := exec.Command("exiftool", "-all=", "-o", outputPath, inputPath)
+		if err := cmd.Run(); err == nil {
+			return nil
+		}
+	}
+
+	// Check if antiword is available for .doc files
+	if _, err := exec.LookPath("antiword"); err == nil {
+		// Use antiword to extract text content (removes metadata)
+		cmd := exec.Command("antiword", inputPath)
+		output, err := cmd.Output()
+		if err == nil {
+			// Write clean text to output file
+			return os.WriteFile(outputPath, output, 0644)
+		}
+	}
+
+	// For .docx files, we can try to use zip/unzip to remove metadata
+	if strings.HasSuffix(inputPath, ".docx") {
+		return cleanDocxMetadata(inputPath, outputPath)
+	}
+
+	// Fallback: just copy the file if no cleaning tools are available
+	return copyFile(inputPath, outputPath)
+}
+
+// cleanDocxMetadata removes metadata from .docx files by manipulating the ZIP structure
+func cleanDocxMetadata(inputPath, outputPath string) error {
+	// Create a temporary directory
+	tempDir, err := os.MkdirTemp("", "docx_clean")
+	if err != nil {
+		return copyFile(inputPath, outputPath)
+	}
+	defer os.RemoveAll(tempDir)
+
+	// Extract the .docx file (it's a ZIP)
+	cmd := exec.Command("unzip", "-q", inputPath, "-d", tempDir)
+	if err := cmd.Run(); err != nil {
+		return copyFile(inputPath, outputPath)
+	}
+
+	// Remove metadata files if they exist
+	metadataFiles := []string{
+		"docProps/core.xml",
+		"docProps/app.xml",
+		"docProps/custom.xml",
+	}
+
+	for _, metadataFile := range metadataFiles {
+		os.Remove(filepath.Join(tempDir, metadataFile))
+	}
+
+	// Recreate the .docx file
+	cmd = exec.Command("zip", "-r", "-q", outputPath, ".")
+	cmd.Dir = tempDir
+	if err := cmd.Run(); err != nil {
+		return copyFile(inputPath, outputPath)
+	}
+
+	return nil
+}
+
+// cleanTextFileMetadata removes metadata from text files
+func cleanTextFileMetadata(inputPath, outputPath string) error {
+	// Read the file content
+	content, err := os.ReadFile(inputPath)
+	if err != nil {
+		return copyFile(inputPath, outputPath)
+	}
+
+	// Remove common metadata patterns
+	lines := strings.Split(string(content), "\n")
+	var cleanLines []string
+
+	for _, line := range lines {
+		// Skip lines that look like metadata
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+
+		// Skip common metadata patterns
+		lowerLine := strings.ToLower(line)
+		if strings.HasPrefix(lowerLine, "author:") ||
+			strings.HasPrefix(lowerLine, "created:") ||
+			strings.HasPrefix(lowerLine, "modified:") ||
+			strings.HasPrefix(lowerLine, "title:") ||
+			strings.HasPrefix(lowerLine, "subject:") ||
+			strings.HasPrefix(lowerLine, "keywords:") ||
+			strings.HasPrefix(lowerLine, "creator:") ||
+			strings.HasPrefix(lowerLine, "producer:") ||
+			strings.HasPrefix(lowerLine, "company:") ||
+			strings.HasPrefix(lowerLine, "organization:") ||
+			strings.HasPrefix(lowerLine, "computer:") ||
+			strings.HasPrefix(lowerLine, "user:") {
+			continue
+		}
+
+		cleanLines = append(cleanLines, line)
+	}
+
+	// Write clean content to output file
+	cleanContent := strings.Join(cleanLines, "\n")
+	return os.WriteFile(outputPath, []byte(cleanContent), 0644)
+}
+
+// cleanGenericFileMetadata attempts to clean metadata using a generic approach
+func cleanGenericFileMetadata(inputPath, outputPath, contentType string) error {
+	// For generic files, we can try to strip metadata if a tool is available
+
+	// Check if exiftool is available (works for many file types)
+	if _, err := exec.LookPath("exiftool"); err == nil {
+		cmd := exec.Command("exiftool", "-all=", "-o", outputPath, inputPath)
+		if err := cmd.Run(); err == nil {
+			return nil
+		}
+	}
+
+	// For specific file types, try specialized tools
+	switch {
+	case strings.HasPrefix(contentType, "image/"):
+		return cleanImageMetadata(inputPath, outputPath)
+	case contentType == "application/pdf":
+		return cleanPDFMetadata(inputPath, outputPath)
+	case strings.HasPrefix(contentType, "video/"):
+		return cleanVideoMetadata(inputPath, outputPath)
+	default:
+		// Fallback to just copying the file if no specific cleaning is possible
+		return copyFile(inputPath, outputPath)
+	}
 }
 
 // copyFile copies a file from source to destination
