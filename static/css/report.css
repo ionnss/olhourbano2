@@ -522,6 +522,18 @@
 
 /* Categories Page Mobile */
 @media (max-width: 768px) {
+    /* Hide header and adjust body when categories container is visible */
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden;
+    }
+    
+    main {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
     /* Full screen categories page like report info */
     .report-categories-container {
         position: fixed;
@@ -536,6 +548,18 @@
         padding: 0 !important;
         width: 100vw !important;
         height: 100vh !important;
+    }
+    
+    .report-categories-container .row {
+        margin: 0;
+        width: 100%;
+    }
+    
+    .report-categories-container .col-lg-10 {
+        padding: 0;
+        max-width: 100%;
+        flex: 0 0 100%;
+        width: 100%;
     }
     
     .report-categories-container .styled-section {
@@ -562,8 +586,23 @@
         font-size: 1.1rem;
     }
     
+    .form-actions {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+        padding-bottom: 2rem;
+    }
+    
+    .back-button,
+    .cta-button {
+        width: 100%;
+        justify-content: center;
+    }
+    
     .cta-button {
         margin-bottom: 2rem;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
     }
 }
 
@@ -776,6 +815,17 @@
     
     .category-card p {
         font-size: 0.9rem;
+    }
+    
+    /* Categories page specific 480px adjustments */
+    .report-categories-container .styled-section {
+        padding: 1rem;
+        border-radius: 0;
+    }
+    
+    .report-categories-container .cta-button {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.95rem;
     }
 }
 
@@ -1357,6 +1407,23 @@
 
 .report-detail-container .vote-btn:hover i {
     color: #28a745 !important;
+}
+
+/* Mobile bottom spacing for category selection */
+.mobile-bottom-spacing {
+    height: 0;
+}
+
+@media (max-width: 768px) {
+    .mobile-bottom-spacing {
+        height: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .mobile-bottom-spacing {
+        height: 120px;
+    }
 }
 
 /* File preview area styling */
