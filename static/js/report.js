@@ -109,6 +109,9 @@ function reverseGeocode(lat, lng) {
     });
 }
 
+// Global variable to store accumulated files
+let accumulatedFiles = [];
+
 // Document ready
 document.addEventListener('DOMContentLoaded', function() {
     // CPF formatting and validation
@@ -170,6 +173,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('files');
     if (fileInput) {
         fileInput.addEventListener('change', handleFilePreview);
+        
+        // Add click handler to the upload button for better UX
+        const uploadButton = document.querySelector('.file-upload-btn');
+        if (uploadButton) {
+            uploadButton.addEventListener('click', function(e) {
+                // Prevent the default label behavior and trigger file input directly
+                e.preventDefault();
+                fileInput.click();
+            });
+        }
+        
+        // Ensure accumulated files are attached to file input for validation
+        fileInput.addEventListener('invalid', function(e) {
+            if (accumulatedFiles.length > 0) {
+                prepareFormSubmission();
+            }
+        });
     }
 
     // Map toggle
@@ -373,10 +393,39 @@ function handleFilePreview() {
     const fileList = document.getElementById('fileList');
     
     if (fileInput.files.length > 0) {
+        // Add new files to accumulated files
+        Array.from(fileInput.files).forEach(file => {
+            // Check if file is already in accumulated files
+            const isDuplicate = accumulatedFiles.some(existingFile => 
+                existingFile.name === file.name && 
+                existingFile.size === file.size && 
+                existingFile.lastModified === file.lastModified
+            );
+            
+            if (!isDuplicate) {
+                accumulatedFiles.push(file);
+            }
+        });
+        
+        // Clear the file input to allow new selections
+        fileInput.value = '';
+        
+        // Display all accumulated files
+        displayAccumulatedFiles();
+        
+        updateFileInputText();
+    }
+}
+
+function displayAccumulatedFiles() {
+    const filePreview = document.getElementById('filePreview');
+    const fileList = document.getElementById('fileList');
+    
+    if (accumulatedFiles.length > 0) {
         filePreview.classList.remove('d-none');
         fileList.innerHTML = '';
         
-        Array.from(fileInput.files).forEach((file, index) => {
+        accumulatedFiles.forEach((file, index) => {
             const fileItem = document.createElement('div');
             fileItem.className = 'd-flex align-items-center mb-2';
             
@@ -387,15 +436,23 @@ function handleFilePreview() {
                 <i class="${icon} me-2"></i>
                 <span class="flex-grow-1">${file.name}</span>
                 <small class="text-muted">(${(file.size / 1024 / 1024).toFixed(2)} MB)</small>
+                <button type="button" class="btn btn-sm btn-outline-danger ms-2" onclick="removeFile(${index})">
+                    <i class="bi bi-trash"></i>
+                </button>
             `;
             fileList.appendChild(fileItem);
         });
         
-        updateFileInputText();
+
     } else {
         filePreview.classList.add('d-none');
-        updateFileInputText();
     }
+}
+
+function removeFile(index) {
+    accumulatedFiles.splice(index, 1);
+    displayAccumulatedFiles();
+    updateFileInputText();
 }
 
 // Get appropriate icon for file type
@@ -417,24 +474,43 @@ function getFileIcon(fileType) {
 
 // Update file input text
 function updateFileInputText() {
-    const fileInput = document.getElementById('files');
     const fileUploadText = document.querySelector('.file-upload-text');
     
-    if (fileInput.files.length > 0) {
-        const fileNames = Array.from(fileInput.files).map(file => file.name);
-        if (fileNames.length === 1) {
-            fileUploadText.textContent = fileNames[0];
+    if (accumulatedFiles.length > 0) {
+        if (accumulatedFiles.length === 1) {
+            fileUploadText.textContent = `${accumulatedFiles[0].name} (clique para adicionar mais)`;
         } else {
-            fileUploadText.textContent = `${fileNames.length} arquivos selecionados`;
+            fileUploadText.textContent = `${accumulatedFiles.length} arquivos selecionados (clique para adicionar mais)`;
         }
     } else {
         fileUploadText.textContent = 'Selecionar Arquivos';
     }
 }
 
+// Handle form submission with accumulated files
+function prepareFormSubmission() {
+    const fileInput = document.getElementById('files');
+    
+    // Create a new DataTransfer object
+    const dataTransfer = new DataTransfer();
+    
+    // Add all accumulated files to the DataTransfer
+    accumulatedFiles.forEach(file => {
+        dataTransfer.items.add(file);
+    });
+    
+    // Set the file input's files to the accumulated files
+    fileInput.files = dataTransfer.files;
+}
+
 // Form validation
 function validateReportForm(e) {
     e.preventDefault();
+    
+    // Prepare accumulated files for submission BEFORE validation
+    if (accumulatedFiles.length > 0) {
+        prepareFormSubmission();
+    }
     
     const submitBtn = document.getElementById('submitBtn');
     const originalText = submitBtn.innerHTML;
@@ -471,7 +547,12 @@ function validateReportForm(e) {
         }
     }
     
-    // 2. Check email fields
+    // 2. Check files
+    if (accumulatedFiles.length === 0) {
+        validationErrors.push('Pelo menos um arquivo deve ser selecionado');
+    }
+    
+    // 3. Check email fields
     const email = document.getElementById('email').value;
     const emailConfirmation = document.getElementById('email_confirmation').value;
     

@@ -191,6 +191,18 @@
     position: relative;
 }
 
+/* Hidden file input that's still focusable */
+.file-input-hidden {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1;
+}
+
 .file-upload-btn {
     border: 2px solid #e9ecef;
     border-radius: 10px;
@@ -201,6 +213,8 @@
     cursor: pointer;
     display: flex;
     align-items: center;
+    position: relative;
+    z-index: 0;
 }
 
 .file-upload-btn:hover {
@@ -217,6 +231,29 @@
 .file-upload-btn:hover i {
     color: #007bff;
 }
+
+/* Enhanced file upload button styling */
+.file-upload-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.file-upload-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.file-upload-btn:hover::after {
+    left: 100%;
+}
+
+
 
 /* Form Actions */
 .form-actions {
@@ -1320,4 +1357,66 @@
 
 .report-detail-container .vote-btn:hover i {
     color: #28a745 !important;
+}
+
+/* File preview area styling */
+#filePreview {
+    margin-top: 1rem;
+}
+
+#filePreview .border {
+    border-color: #e9ecef !important;
+    background: rgba(248, 249, 250, 0.5) !important;
+}
+
+#filePreview h6 {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+#fileList .d-flex {
+    padding: 0.5rem;
+    border-radius: 6px;
+    background: white;
+    margin-bottom: 0.5rem;
+    border: 1px solid #e9ecef;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: flex-start;
+}
+
+#fileList .d-flex:last-child {
+    margin-bottom: 0;
+}
+
+#fileList .d-flex i {
+    color: #6c757d;
+    font-size: 1.1rem;
+    min-width: 20px;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+#fileList .d-flex span {
+    color: #495057;
+    font-weight: 500;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    flex: 1;
+    min-width: 0;
+    line-height: 1.4;
+}
+
+#fileList .d-flex small {
+    color: #6c757d;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+#fileList .d-flex .btn {
+    flex-shrink: 0;
+    margin-top: 0.1rem;
 }

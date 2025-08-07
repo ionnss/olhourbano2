@@ -130,7 +130,7 @@
                                     <span class="badge bg-secondary ms-1">Máximo {{.MaxFiles}} arquivos</span>
                                 </label>
                                 <div class="custom-file-upload">
-                                    <input type="file" class="d-none" id="files" name="files" multiple required
+                                    <input type="file" class="file-input-hidden" id="files" name="files" multiple
                                            accept="{{range $i, $type := .AllowedTypes}}{{if $i}},{{end}}{{$type}}{{end}}">
                                     <label for="files" class="file-upload-btn btn btn-outline-secondary w-100 text-start">
                                         <i class="bi bi-cloud-upload me-2"></i>
