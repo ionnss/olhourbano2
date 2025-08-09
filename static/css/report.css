@@ -1120,7 +1120,7 @@ body.report-page main {
 
 .media-gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 1rem;
     margin-top: 1rem;
 }
@@ -1152,7 +1152,7 @@ body.report-page main {
     border: 2px dashed #dee2e6;
     color: #6c757d;
     font-size: 2rem;
-    min-height: 120px;
+    min-height: 150px;
 }
 
 .media-icon-thumbnail:hover {
@@ -1318,7 +1318,7 @@ body.report-page main {
     }
     
     .media-gallery {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         gap: 0.5rem;
     }
     
@@ -1421,6 +1421,11 @@ body.report-page main {
         overflow-wrap: break-word;
         max-width: 100%;
         font-size: 0.85rem;
+    }
+    
+    .media-gallery {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 0.5rem;
     }
 }
 

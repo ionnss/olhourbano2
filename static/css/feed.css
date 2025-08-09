@@ -180,8 +180,8 @@
 
 .media-item {
     flex: 0 0 auto;
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     border-radius: 8px;
     overflow: hidden;
     position: relative;
@@ -234,8 +234,8 @@
     position: absolute;
     right: 0;
     top: 0;
-    width: 120px;
-    height: 80px;
+    width: 140px;
+    height: 100px;
     background: rgba(0, 0, 0, 0.7);
     display: flex;
     align-items: center;
@@ -572,8 +572,8 @@
     }
     
     .media-item {
-        width: 60px;
-        height: 60px;
+        width: 80px;
+        height: 80px;
         flex: 0 0 auto;
     }
     
@@ -586,8 +586,8 @@
     }
     
     .media-overlay {
-        width: 60px;
-        height: 60px;
+        width: 100px;
+        height: 80px;
     }
     
     .overlay-text {
@@ -638,8 +638,8 @@
     }
     
     .media-item {
-        width: 50px;
-        height: 50px;
+        width: 65px;
+        height: 65px;
         flex: 0 0 auto;
     }
     
@@ -652,8 +652,8 @@
     }
     
     .media-overlay {
-        width: 50px;
-        height: 50px;
+        width: 80px;
+        height: 65px;
     }
     
     .overlay-text {
