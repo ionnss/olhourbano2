@@ -358,13 +358,7 @@ body.report-page main {
     margin-top: 0.25rem;
 }
 
-/* Map Container */
-#mapContainer {
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
+/* Map controls for report form */
 .map-controls {
     background: rgba(248, 249, 250, 0.95);
     border-radius: 10px;
@@ -813,71 +807,7 @@ body.report-page main {
 }
 
 /* Mobile Map Improvements */
-@media (max-width: 768px) {
-    #mapContainer {
-        margin: 0 -1rem;
-        border-radius: 0;
-        padding: 0;
-        border: none;
-    }
-    
-    #map {
-        height: 250px !important;
-        border-radius: 0 !important;
-        border: none !important;
-    }
-    
-    /* Scale down all Google Maps controls */
-    #map .gm-style-mtc {
-        transform: scale(0.7);
-        transform-origin: top left;
-    }
-    
-    /* Map type controls (Map/Satellite) */
-    #map .gm-style .gm-style-mtc {
-        transform: scale(0.7);
-        transform-origin: top left;
-        margin-top: 5px;
-        margin-left: 5px;
-    }
-    
-    /* Fullscreen control */
-    #map .gm-fullscreen-control {
-        transform: scale(0.7);
-        transform-origin: top right;
-        margin-top: 5px;
-        margin-right: 5px;
-    }
-    
-    /* Zoom controls */
-    #map .gm-bundled-control {
-        transform: scale(0.7);
-        transform-origin: bottom right;
-        margin-bottom: 5px;
-        margin-right: 5px;
-    }
-    
-    /* Street View Pegman */
-    #map .gm-svpc {
-        transform: scale(0.7);
-        transform-origin: bottom right;
-    }
-    
-    /* Info windows */
-    .gm-style .gm-style-iw {
-        max-width: 200px !important;
-    }
-    
-    .gm-style-iw-tc {
-        transform: scale(0.7);
-    }
-    
-    /* General map UI scaling */
-    #map .gm-style > div:first-child > div:first-child > div:last-child > div {
-        transform: scale(0.7);
-        transform-origin: top left;
-    }
-}
+/* Mobile map styles moved to dedicated report-detail-map.css file */
 
 /* Form Page Mobile */
 @media (max-width: 768px) {
@@ -956,10 +886,6 @@ body.report-page main {
     .report-info-container .styled-section {
         padding: 1rem;
         border-radius: 0 !important;
-    }
-    
-    #map {
-        height: 200px !important;
     }
     
     .section-title {
@@ -1498,41 +1424,7 @@ body.report-page main {
     }
 }
 
-/* Enhanced map styling for report detail page */
-#mapContainer {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border: none;
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 0;
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-#map {
-    border-radius: 12px;
-    width: 100% !important;
-    max-width: 100% !important;
-    border: none !important;
-    margin-bottom: 0 !important;
-}
-
-/* Ensure the new Google Maps markers are properly styled */
-#map .gm-style-marker {
-    cursor: pointer;
-}
-
-/* Remove any borders from Google Maps elements */
-#map .gm-style,
-#map .gm-style * {
-    border: none !important;
-}
-
-/* Custom styling for report detail map markers */
-#map .gm-style-marker[title="Localização da Denúncia"] {
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-}
+/* Map styling moved to dedicated report-detail-map.css file */
 
 /* ====================================
    REPORT DETAIL PAGE BUTTON STYLES
