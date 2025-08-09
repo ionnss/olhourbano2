@@ -117,33 +117,7 @@
     padding: 0.5rem 1rem;
 }
 
-/* Comment Verification Modal */
-#commentVerificationModal .modal-content {
-    border-radius: 12px;
-    border: none;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
 
-#commentVerificationModal .modal-header {
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    color: white;
-    border-radius: 12px 12px 0 0;
-    border-bottom: none;
-}
-
-#commentVerificationModal .modal-title {
-    font-weight: 600;
-}
-
-#commentVerificationModal .btn-close {
-    filter: invert(1);
-}
-
-#commentVerificationModal .alert-info {
-    background: rgba(0, 123, 255, 0.1);
-    border: 1px solid rgba(0, 123, 255, 0.2);
-    color: #0056b3;
-}
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
@@ -169,10 +143,7 @@
     
 
     
-    #commentVerificationModal .modal-dialog {
-        margin: 0.5rem;
-        max-width: calc(100% - 1rem);
-    }
+
 }
 
 @media (max-width: 480px) {

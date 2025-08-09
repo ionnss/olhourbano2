@@ -1,8 +1,6 @@
 // Comments functionality
 let currentCommentOffset = 10; // Start with 10 comments loaded
 let currentCommentSort = 'recent';
-let commentCPF = '';
-let commentBirthDate = '';
 
 // Initialize comments functionality
 document.addEventListener('DOMContentLoaded', function() {
@@ -46,13 +44,7 @@ function initializeComments() {
         });
     }
 
-    // Comment verification modal
-    const verifyCommentBtn = document.getElementById('verifyCommentCPF');
-    if (verifyCommentBtn) {
-        verifyCommentBtn.addEventListener('click', function() {
-            verifyCommentCPF();
-        });
-    }
+
 
 
 }
@@ -71,25 +63,54 @@ function handleCommentSubmission() {
         return;
     }
 
-    // Show verification modal
-    const modal = new bootstrap.Modal(document.getElementById('commentVerificationModal'));
+    // Show verification modal using vote modal structure
+    showCommentVerificationModal(reportID);
+}
+
+function showCommentVerificationModal(reportId) {
+    // Set the report ID in the modal
+    document.getElementById('voteReportId').value = reportId;
+    
+    // Clear previous form data
+    document.getElementById('voteCpf').value = '';
+    document.getElementById('voteBirthDate').value = '';
+    
+    // Hide verification status
+    document.getElementById('voteVerificationStatus').style.display = 'none';
+    
+    // Update modal title and content for comments
+    document.getElementById('voteVerificationModalLabel').innerHTML = '<i class="bi bi-shield-check me-2"></i>Verificação para Comentar';
+    document.querySelector('#voteVerificationModal .alert-info').innerHTML = '<i class="bi bi-info-circle me-2"></i>Para adicionar um comentário, precisamos verificar sua identidade.';
+    document.getElementById('submitVoteBtn').innerHTML = '<i class="bi bi-check-circle me-1"></i>Confirmar Comentário';
+    document.getElementById('submitVoteBtn').onclick = submitComment;
+    
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('voteVerificationModal'));
     modal.show();
 }
 
-function verifyCommentCPF() {
-    const cpf = document.getElementById('commentCPF').value.trim();
-    const birthDate = document.getElementById('commentBirthDate').value;
-    const statusDiv = document.getElementById('commentVerificationStatus');
-
+function submitComment() {
+    const reportId = document.getElementById('voteReportId').value;
+    const cpf = document.getElementById('voteCpf').value;
+    const birthDate = document.getElementById('voteBirthDate').value;
+    const content = document.getElementById('commentContent').value.trim();
+    
+    // Validate form
     if (!cpf || !birthDate) {
         showCommentVerificationStatus('Por favor, preencha todos os campos.', 'error');
         return;
     }
-
-    // Show loading
+    
+    if (!content) {
+        showCommentVerificationStatus('Por favor, adicione um comentário.', 'error');
+        return;
+    }
+    
+    // Show loading state
     showCommentVerificationStatus('Verificando CPF...', 'loading');
-
-    // Verify CPF
+    document.getElementById('submitVoteBtn').disabled = true;
+    
+    // First verify CPF, then create comment
     fetch('/api/verify-cpf', {
         method: 'POST',
         headers: {
@@ -104,12 +125,10 @@ function verifyCommentCPF() {
     .then(data => {
         if (data.success && data.valid) {
             showCommentVerificationStatus('CPF verificado com sucesso!', 'success');
-            commentCPF = cpf;
-            commentBirthDate = birthDate;
             
             // Create comment after successful verification
             setTimeout(() => {
-                createComment();
+                createCommentWithVerifiedCPF(reportId, cpf, birthDate, content);
             }, 1000);
         } else {
             showCommentVerificationStatus('CPF inválido ou data de nascimento incorreta.', 'error');
@@ -118,6 +137,49 @@ function verifyCommentCPF() {
     .catch(error => {
         console.error('Error:', error);
         showCommentVerificationStatus('Erro ao verificar CPF. Tente novamente.', 'error');
+    })
+    .finally(() => {
+        document.getElementById('submitVoteBtn').disabled = false;
+    });
+}
+
+function createCommentWithVerifiedCPF(reportId, cpf, birthDate, content) {
+    fetch('/api/comments', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            report_id: parseInt(reportId),
+            cpf: cpf,
+            birth_date: birthDate,
+            content: content
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('voteVerificationModal'));
+            modal.hide();
+            
+            // Clear form
+            document.getElementById('commentContent').value = '';
+            document.getElementById('commentCharCount').textContent = '0';
+            
+            // Reload comments
+            currentCommentOffset = 0;
+            loadComments(true);
+            
+            // Show success message
+            showCommentSuccess('Comentário adicionado com sucesso!');
+        } else {
+            showCommentError(data.message || 'Erro ao adicionar comentário.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showCommentError('Erro ao adicionar comentário. Tente novamente.');
     });
 }
 
@@ -244,17 +306,39 @@ function updateLoadMoreButton(total) {
 }
 
 function showCommentVerificationStatus(message, type) {
-    const statusDiv = document.getElementById('commentVerificationStatus');
-    const icon = type === 'success' ? 'bi-check-circle' : 
-                 type === 'error' ? 'bi-exclamation-triangle' : 'bi-arrow-clockwise';
+    const statusDiv = document.getElementById('voteVerificationStatus');
+    const messageSpan = document.getElementById('voteVerificationMessage');
     
-    statusDiv.innerHTML = `
-        <div class="alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'}">
-            <i class="bi ${icon} me-2"></i>
-            ${message}
-        </div>
-    `;
     statusDiv.style.display = 'block';
+    
+    // Remove existing classes
+    statusDiv.className = 'mb-3';
+    
+    // Add appropriate classes based on type
+    if (type === 'loading') {
+        statusDiv.innerHTML = `
+            <div class="verification-status">
+                <div class="spinner-border spinner-border-sm me-2" role="status">
+                    <span class="visually-hidden">Verificando...</span>
+                </div>
+                <span id="voteVerificationMessage">${message}</span>
+            </div>
+        `;
+    } else if (type === 'success') {
+        statusDiv.innerHTML = `
+            <div class="verification-status success">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <span id="voteVerificationMessage">${message}</span>
+            </div>
+        `;
+    } else if (type === 'error') {
+        statusDiv.innerHTML = `
+            <div class="verification-status error">
+                <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+                <span id="voteVerificationMessage">${message}</span>
+            </div>
+        `;
+    }
 }
 
 function showCommentSuccess(message) {
