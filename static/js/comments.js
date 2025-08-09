@@ -63,37 +63,88 @@ function handleCommentSubmission() {
         return;
     }
 
-    // Show verification modal using vote modal structure
-    showCommentVerificationModal(reportID);
+    // Add a small delay to ensure DOM is ready
+    setTimeout(() => {
+        showCommentVerificationModal(reportID);
+    }, 100);
 }
 
 function showCommentVerificationModal(reportId) {
+    // Check if the modal element exists
+    const modalElement = document.getElementById('voteVerificationModal');
+    if (!modalElement) {
+        console.error('Vote verification modal not found in DOM');
+        showCommentError('Erro: Modal de verificação não encontrado. Recarregue a página.');
+        return;
+    }
+    
+    // Check if Bootstrap is available
+    if (typeof bootstrap === 'undefined' || !bootstrap.Modal) {
+        console.error('Bootstrap Modal not available');
+        showCommentError('Erro: Bootstrap não carregado. Recarregue a página.');
+        return;
+    }
+    
     // Set the report ID in the modal
-    document.getElementById('voteReportId').value = reportId;
+    const reportIdElement = document.getElementById('voteReportId');
+    if (reportIdElement) {
+        reportIdElement.value = reportId;
+    }
     
     // Clear previous form data
-    document.getElementById('voteCpf').value = '';
-    document.getElementById('voteBirthDate').value = '';
+    const cpfElement = document.getElementById('voteCpf');
+    const birthDateElement = document.getElementById('voteBirthDate');
+    if (cpfElement) cpfElement.value = '';
+    if (birthDateElement) birthDateElement.value = '';
     
     // Hide verification status
-    document.getElementById('voteVerificationStatus').style.display = 'none';
+    const statusElement = document.getElementById('voteVerificationStatus');
+    if (statusElement) {
+        statusElement.style.display = 'none';
+    }
     
     // Update modal title and content for comments
-    document.getElementById('voteVerificationModalLabel').innerHTML = '<i class="bi bi-shield-check me-2"></i>Verificação para Comentar';
-    document.querySelector('#voteVerificationModal .alert-info').innerHTML = '<i class="bi bi-info-circle me-2"></i>Para adicionar um comentário, precisamos verificar sua identidade.';
-    document.getElementById('submitVoteBtn').innerHTML = '<i class="bi bi-check-circle me-1"></i>Confirmar Comentário';
-    document.getElementById('submitVoteBtn').onclick = submitComment;
+    const titleElement = document.getElementById('voteVerificationModalLabel');
+    if (titleElement) {
+        titleElement.innerHTML = '<i class="bi bi-shield-check me-2"></i>Verificação para Comentar';
+    }
+    
+    const alertElement = document.querySelector('#voteVerificationModal .alert-info');
+    if (alertElement) {
+        alertElement.innerHTML = '<i class="bi bi-info-circle me-2"></i>Para adicionar um comentário, precisamos verificar sua identidade.';
+    }
+    
+    const submitBtn = document.getElementById('submitVoteBtn');
+    if (submitBtn) {
+        submitBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Confirmar Comentário';
+        submitBtn.onclick = submitComment;
+    }
     
     // Show the modal
-    const modal = new bootstrap.Modal(document.getElementById('voteVerificationModal'));
-    modal.show();
+    try {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+    } catch (error) {
+        console.error('Error initializing modal:', error);
+        showCommentError('Erro ao abrir modal de verificação. Recarregue a página.');
+    }
 }
 
 function submitComment() {
-    const reportId = document.getElementById('voteReportId').value;
-    const cpf = document.getElementById('voteCpf').value;
-    const birthDate = document.getElementById('voteBirthDate').value;
-    const content = document.getElementById('commentContent').value.trim();
+    const reportIdElement = document.getElementById('voteReportId');
+    const cpfElement = document.getElementById('voteCpf');
+    const birthDateElement = document.getElementById('voteBirthDate');
+    const contentElement = document.getElementById('commentContent');
+    
+    if (!reportIdElement || !cpfElement || !birthDateElement || !contentElement) {
+        showCommentError('Erro: Elementos do formulário não encontrados.');
+        return;
+    }
+    
+    const reportId = reportIdElement.value;
+    const cpf = cpfElement.value;
+    const birthDate = birthDateElement.value;
+    const content = contentElement.value.trim();
     
     // Validate form
     if (!cpf || !birthDate) {
@@ -307,7 +358,10 @@ function updateLoadMoreButton(total) {
 
 function showCommentVerificationStatus(message, type) {
     const statusDiv = document.getElementById('voteVerificationStatus');
-    const messageSpan = document.getElementById('voteVerificationMessage');
+    if (!statusDiv) {
+        console.error('Vote verification status element not found');
+        return;
+    }
     
     statusDiv.style.display = 'block';
     
