@@ -167,12 +167,12 @@ function showShareModal() {
     
     document.body.style.overflow = 'hidden';
     
-    // Add touch event handling for mobile
+    // Add touch event handling for mobile (passive listener)
     shareModal.addEventListener('touchstart', function(e) {
         if (e.target === shareModal) {
             closeShareModal();
         }
-    });
+    }, { passive: true });
 }
 
 // Close share modal
@@ -212,6 +212,17 @@ async function generateShareImage() {
             throw new Error('html2canvas library not loaded');
         }
         
+        // Check if we're on mobile and html2canvas might have issues
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        
+        if (isMobile && isIOS) {
+            // On iOS, html2canvas can be problematic, show fallback
+            console.log('iOS detected, using fallback preview');
+            showFallbackPreview();
+            return;
+        }
+        
         // Generate both landscape and portrait versions
         let landscapeBlob, portraitBlob;
         
@@ -220,6 +231,11 @@ async function generateShareImage() {
             console.log('Landscape image generated successfully');
         } catch (error) {
             console.error('Error generating landscape image:', error);
+            if (isMobile) {
+                console.log('Mobile device detected, showing fallback preview');
+                showFallbackPreview();
+                return;
+            }
             throw error;
         }
         
@@ -228,6 +244,11 @@ async function generateShareImage() {
             console.log('Portrait image generated successfully');
         } catch (error) {
             console.error('Error generating portrait image:', error);
+            if (isMobile) {
+                console.log('Mobile device detected, showing fallback preview');
+                showFallbackPreview();
+                return;
+            }
             throw error;
         }
         
@@ -428,7 +449,7 @@ async function generateLandscapeImage(reportId, categoryName, categoryIcon, desc
     // Wait for fonts to load
     await document.fonts.ready;
     
-    // Generate image using html2canvas
+    // Generate image using html2canvas with mobile-friendly settings
     const canvas = await html2canvas(shareImageElement, {
         width: 1200,
         height: 630,
@@ -438,7 +459,13 @@ async function generateLandscapeImage(reportId, categoryName, categoryIcon, desc
         backgroundColor: null,
         logging: false,
         removeContainer: true,
-        foreignObjectRendering: false
+        foreignObjectRendering: false,
+        imageTimeout: 15000, // 15 second timeout for images
+        ignoreElements: (element) => {
+            // Ignore elements that might cause issues on mobile
+            return element.tagName === 'IFRAME' || 
+                   element.classList.contains('mobile-ignore');
+        }
     });
     
     // Remove temporary element
@@ -578,7 +605,7 @@ async function generatePortraitImage(reportId, categoryName, categoryIcon, descr
     // Wait for fonts to load
     await document.fonts.ready;
     
-    // Generate image using html2canvas
+    // Generate image using html2canvas with mobile-friendly settings
     const canvas = await html2canvas(shareImageElement, {
         width: 630,
         height: 1200,
@@ -588,7 +615,13 @@ async function generatePortraitImage(reportId, categoryName, categoryIcon, descr
         backgroundColor: null,
         logging: false,
         removeContainer: true,
-        foreignObjectRendering: false
+        foreignObjectRendering: false,
+        imageTimeout: 15000, // 15 second timeout for images
+        ignoreElements: (element) => {
+            // Ignore elements that might cause issues on mobile
+            return element.tagName === 'IFRAME' || 
+                   element.classList.contains('mobile-ignore');
+        }
     });
     
     // Remove temporary element
@@ -876,7 +909,7 @@ async function copyImageToClipboard() {
     }
 }
 
-// Fallback preview function
+// Fallback preview function for mobile devices
 function showFallbackPreview() {
     const previewElement = document.getElementById('sharePreview');
     if (!previewElement) return;
@@ -890,6 +923,8 @@ function showFallbackPreview() {
     const createdAt = document.querySelector('.report-date span').textContent;
     const reportUrl = `https://olhourbano.com.br/report/${reportId}`;
     
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
     const fallbackPreview = `
         <div style="
             background: #f8f9fa;
@@ -901,6 +936,20 @@ function showFallbackPreview() {
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border: 1px solid #e9ecef;
         ">
+            ${isMobile ? `
+            <div style="
+                background: #e3f2fd;
+                border: 1px solid #2196f3;
+                color: #1565c0;
+                padding: 1rem;
+                border-radius: 12px;
+                margin-bottom: 1.5rem;
+                font-size: 0.9rem;
+            ">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong>Preview Mobile:</strong> A visualização da imagem foi simplificada para melhor compatibilidade com dispositivos móveis.
+            </div>
+            ` : ''}
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
                 <div style="display: flex; align-items: flex-start; gap: 1rem; flex: 1;">
                     <div style="
