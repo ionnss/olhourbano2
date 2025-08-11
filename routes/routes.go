@@ -49,13 +49,24 @@ func CreateRoutes() *mux.Router {
 	r.HandleFunc("/api/reports/cities", handlers.CitiesHandler).Methods("GET")    // Cities data
 	r.HandleFunc("/api/vote", handlers.VoteHandler).Methods("POST")               // Vote on reports
 	r.HandleFunc("/api/share-image", handlers.ShareImageHandler).Methods("POST")  // Share image generation
-	
+	r.HandleFunc("/api/stats", handlers.StatsHandler).Methods("GET")              // Statistics data
+
 	// Comment routes
-	r.HandleFunc("/api/comments", handlers.CreateCommentHandler).Methods("POST")           // Create comment
-	r.HandleFunc("/api/comments", handlers.GetCommentsHandler).Methods("GET")             // Get comments
+	r.HandleFunc("/api/comments", handlers.CreateCommentHandler).Methods("POST") // Create comment
+	r.HandleFunc("/api/comments", handlers.GetCommentsHandler).Methods("GET")    // Get comments
 
 	r.HandleFunc("/feed", handlers.FeedHandler).Methods("GET")
 	r.HandleFunc("/map", handlers.MapHandler).Methods("GET")
+
+	// Footer pages routes
+	r.HandleFunc("/sobre", handlers.SobreHandler).Methods("GET")
+	r.HandleFunc("/status", handlers.StatusHandler).Methods("GET")
+	r.HandleFunc("/termos", handlers.TermosHandler).Methods("GET")
+	r.HandleFunc("/ajuda", handlers.AjudaHandler).Methods("GET")
+	r.HandleFunc("/blog", handlers.BlogHandler).Methods("GET")
+	r.HandleFunc("/governos", handlers.GovernosHandler).Methods("GET")
+	r.HandleFunc("/empresas", handlers.EmpresasHandler).Methods("GET")
+	r.HandleFunc("/pesquisadores", handlers.PesquisadoresHandler).Methods("GET")
 
 	return r
 }

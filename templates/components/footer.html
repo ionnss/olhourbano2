@@ -14,29 +14,40 @@
         <h3>OU</h3>
       </div>
 
-
-
-
+      <!-- Stats Section -->
+      <div class="footer-stats mt-4">
+        <div class="stats-container d-flex gap-4 justify-content-center">
+          <div class="stat-item text-center">
+            <div class="stat-number" id="footer-total-reports">-</div>
+            <div class="stat-label">Denúncias</div>
+          </div>
+          <div class="stat-separator"></div>
+          <div class="stat-item text-center">
+            <div class="stat-number" id="footer-active-citizens">-</div>
+            <div class="stat-label">Cidadãos</div>
+          </div>
+        </div>
+      </div>
 
     </div>
 
     <div class="institucional px-5">
       <h4 class="institucional-title mb-3">Institucional</h4>
       <ul class="footer-links">
-        <li><a hx-get="/sobre" hx-target="#content">Sobre nós</a></li>
-        <li><a hx-get="/status" hx-target="#content">Status</a></li>
-        <li><a hx-get="/termos" hx-target="#content">Termos e privacidade</a></li>
-        <li><a hx-get="/ajuda" hx-target="#content">Ajuda</a></li>
-        <li><a hx-get="/blog" hx-target="#content">Blog</a></li>
+        <li><a href="/sobre">Sobre nós</a></li>
+        <li><a href="/status">Status</a></li>
+        <li><a href="/termos">Termos e privacidade</a></li>
+        <li><a href="/ajuda">Ajuda</a></li>
+        <li><a href="/blog">Blog</a></li>
       </ul>
     </div>
 
     <div class="solucoes-parcerias px-5">
       <h4 class="solucoes-parcerias-title mb-3">Soluções e Parcerias</h4>
       <ul class="footer-links">
-        <li><a hx-get="/governos" hx-target="#content">Prefeituras e Governos</a></li>
-        <li><a hx-get="/empresas" hx-target="#content">Empresas</a></li>
-        <li><a hx-get="/pesquisadores" hx-target="#content">Universidades e Pesquisadores</a></li>
+        <li><a href="/governos">Prefeituras e Governos</a></li>
+        <li><a href="/empresas">Empresas</a></li>
+        <li><a href="/pesquisadores">Universidades e Pesquisadores</a></li>
       </ul>
     </div>
   </div>
@@ -71,4 +82,24 @@
 
   </div>
 </footer>
+
+<!-- Footer Stats JavaScript -->
+<script>
+async function loadFooterStats() {
+  try {
+    const response = await fetch('/api/stats');
+    const data = await response.json();
+    
+    if (data.success) {
+      document.getElementById('footer-total-reports').textContent = data.total_reports.toLocaleString('pt-BR');
+      document.getElementById('footer-active-citizens').textContent = data.active_citizens.toLocaleString('pt-BR');
+    }
+  } catch (error) {
+    console.error('Error loading footer stats:', error);
+  }
+}
+
+// Load stats when the page loads
+document.addEventListener('DOMContentLoaded', loadFooterStats);
+</script>
 {{end}}

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajuda - Olho Urbano</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/header.css">
+    <link rel="stylesheet" href="/static/css/footer.css">
+    <link rel="stylesheet" href="/static/css/footer_pages.css">
+</head>
+<body>
+    {{template "header" .}}
+    
+    <main class="footer-page-main">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="footer-page-content">
+                        <div class="page-header text-center mb-5">
+                            <h1 class="page-title">Central de Ajuda</h1>
+                            <p class="page-subtitle">Tire suas dúvidas sobre como usar a plataforma</p>
+                        </div>
+
+                        <div class="help-search mb-5">
+                            <div class="search-box">
+                                <i class="bi bi-search"></i>
+                                <input type="text" placeholder="Digite sua dúvida..." class="search-input">
+                            </div>
+                        </div>
+
+                        <div class="content-section mb-5">
+                            <h2>Perguntas Frequentes</h2>
+                            <div class="faq-grid">
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <h4>Como fazer uma denúncia?</h4>
+                                        <i class="bi bi-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Para fazer uma denúncia, siga estes passos:</p>
+                                        <ol>
+                                            <li>Acesse a página inicial e clique em "Fazer Denúncia"</li>
+                                            <li>Escolha a categoria que melhor descreve o problema</li>
+                                            <li>Preencha seus dados pessoais (CPF e data de nascimento)</li>
+                                            <li>Informe o local exato do problema</li>
+                                            <li>Descreva detalhadamente a situação</li>
+                                            <li>Anexe fotos ou documentos se necessário</li>
+                                            <li>Envie a denúncia</li>
+                                        </ol>
+                                    </div>
+                                </div>
+
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <h4>Por que preciso informar meu CPF?</h4>
+                                        <i class="bi bi-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>O CPF é solicitado para:</p>
+                                        <ul>
+                                            <li>Verificar a identidade do denunciante</li>
+                                            <li>Evitar denúncias falsas ou duplicadas</li>
+                                            <li>Garantir a credibilidade da plataforma</li>
+                                            <li>Permitir o acompanhamento das denúncias</li>
+                                        </ul>
+                                        <p>Seus dados são protegidos e armazenados de forma segura.</p>
+                                    </div>
+                                </div>
+
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <h4>Como acompanhar minha denúncia?</h4>
+                                        <i class="bi bi-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Você pode acompanhar sua denúncia de várias formas:</p>
+                                        <ul>
+                                            <li>Receberá atualizações por e-mail</li>
+                                            <li>Pode consultar o status na plataforma</li>
+                                            <li>Pode votar em outras denúncias para dar visibilidade</li>
+                                            <li>Pode compartilhar denúncias nas redes sociais</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <h4>Quais tipos de arquivos posso anexar?</h4>
+                                        <i class="bi bi-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Aceitamos os seguintes tipos de arquivo:</p>
+                                        <ul>
+                                            <li><strong>Imagens:</strong> JPG, PNG, GIF (máx. 5MB cada)</li>
+                                            <li><strong>Vídeos:</strong> MP4, AVI, MOV (máx. 50MB cada)</li>
+                                            <li><strong>Documentos:</strong> PDF, DOC, DOCX (máx. 10MB cada)</li>
+                                        </ul>
+                                        <p>Máximo de 5 arquivos por denúncia.</p>
+                                    </div>
+                                </div>
+
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <h4>Como funciona o sistema de votação?</h4>
+                                        <i class="bi bi-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>O sistema de votação permite:</p>
+                                        <ul>
+                                            <li>Dar visibilidade a denúncias importantes</li>
+                                            <li>Priorizar problemas que afetam mais pessoas</li>
+                                            <li>Influenciar a ordem de atendimento</li>
+                                            <li>Demonstrar apoio a causas comunitárias</li>
+                                        </ul>
+                                        <p>Cada usuário pode votar uma vez por denúncia.</p>
+                                    </div>
+                                </div>
+
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <h4>Minha denúncia não foi respondida. O que fazer?</h4>
+                                        <i class="bi bi-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Se sua denúncia não foi respondida:</p>
+                                        <ul>
+                                            <li>Verifique se os dados estão corretos</li>
+                                            <li>Compartilhe a denúncia para dar mais visibilidade</li>
+                                            <li>Entre em contato conosco para verificar o status</li>
+                                            <li>Considere fazer uma nova denúncia com mais detalhes</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-section mb-5">
+                            <h2>Guia de Uso</h2>
+                            <div class="guide-grid">
+                                <div class="guide-card">
+                                    <div class="guide-icon">
+                                        <i class="bi bi-camera"></i>
+                                    </div>
+                                    <h3>Fotos e Vídeos</h3>
+                                    <p>Dicas para anexar mídia eficaz:</p>
+                                    <ul>
+                                        <li>Use boa iluminação</li>
+                                        <li>Mantenha a câmera estável</li>
+                                        <li>Inclua pontos de referência</li>
+                                        <li>Mostre diferentes ângulos</li>
+                                    </ul>
+                                </div>
+
+                                <div class="guide-card">
+                                    <div class="guide-icon">
+                                        <i class="bi bi-geo-alt"></i>
+                                    </div>
+                                    <h3>Localização</h3>
+                                    <p>Como informar o local corretamente:</p>
+                                    <ul>
+                                        <li>Use o mapa interativo</li>
+                                        <li>Informe endereço completo</li>
+                                        <li>Adicione pontos de referência</li>
+                                        <li>Verifique as coordenadas</li>
+                                    </ul>
+                                </div>
+
+                                <div class="guide-card">
+                                    <div class="guide-icon">
+                                        <i class="bi bi-pencil"></i>
+                                    </div>
+                                    <h3>Descrição</h3>
+                                    <p>Como descrever o problema:</p>
+                                    <ul>
+                                        <li>Seja específico e detalhado</li>
+                                        <li>Mencione quando observou</li>
+                                        <li>Descreva o impacto na comunidade</li>
+                                        <li>Sugira possíveis soluções</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <h2>Contato e Suporte</h2>
+                            <p>Precisa de ajuda adicional? Entre em contato conosco:</p>
+                            <div class="support-grid">
+                                <div class="support-item">
+                                    <div class="support-icon">
+                                        <i class="bi bi-envelope"></i>
+                                    </div>
+                                    <h4>E-mail</h4>
+                                    <p>olhourbano.contato@gmail.com</p>
+                                    <small>Resposta em até 24 horas</small>
+                                </div>
+                                <div class="support-item">
+                                    <div class="support-icon">
+                                        <i class="bi bi-chat"></i>
+                                    </div>
+                                    <h4>Redes Sociais</h4>
+                                    <p>@olho.urbano</p>
+                                    <small>Instagram e Twitter</small>
+                                </div>
+                                <div class="support-item">
+                                    <div class="support-icon">
+                                        <i class="bi bi-clock"></i>
+                                    </div>
+                                    <h4>Horário de Atendimento</h4>
+                                    <p>Segunda a Sexta</p>
+                                    <small>9h às 18h</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    {{template "footer" .}}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // FAQ toggle functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const icon = question.querySelector('i');
+                
+                answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+                icon.classList.toggle('bi-chevron-down');
+                icon.classList.toggle('bi-chevron-up');
+            });
+        });
+
+        // Search functionality
+        document.querySelector('.search-input').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('h4').textContent.toLowerCase();
+                const answer = item.querySelector('p').textContent.toLowerCase();
+                
+                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

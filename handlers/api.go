@@ -381,3 +381,46 @@ func ShareImageHandler(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(response)
 }
+
+type StatsResponse struct {
+	Success        bool `json:"success"`
+	TotalReports   int  `json:"total_reports"`
+	ActiveCitizens int  `json:"active_citizens"`
+}
+
+func StatsHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	// Get database connection
+	db, err := db.ConnectDB()
+	if err != nil {
+		http.Error(w, "Database connection error", http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	// Get report stats
+	stats, err := services.GetReportStats(db)
+	if err != nil {
+		log.Printf("Error getting stats: %v", err)
+		http.Error(w, "Error getting statistics", http.StatusInternalServerError)
+		return
+	}
+
+	// Get active citizens count (unique users who have made reports)
+	var activeCitizens int
+	err = db.QueryRow("SELECT COUNT(DISTINCT hashed_cpf) FROM reports").Scan(&activeCitizens)
+	if err != nil {
+		log.Printf("Error getting active citizens count: %v", err)
+		// Continue with 0 if there's an error
+		activeCitizens = 0
+	}
+
+	response := StatsResponse{
+		Success:        true,
+		TotalReports:   stats.TotalReports,
+		ActiveCitizens: activeCitizens,
+	}
+
+	json.NewEncoder(w).Encode(response)
+}

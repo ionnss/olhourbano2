@@ -212,14 +212,13 @@ async function generateShareImage() {
             throw new Error('html2canvas library not loaded');
         }
         
-        // Check if we're on mobile and html2canvas might have issues
+        // Check if we're on mobile
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
         
-        if (isMobile && isIOS) {
-            // On iOS, html2canvas can be problematic, show fallback
-            console.log('iOS detected, using fallback preview');
-            showFallbackPreview();
+        if (isMobile) {
+            // For mobile users, just show the portrait download button
+            console.log('Mobile device detected, showing portrait download button only');
+            showMobilePortraitDownload();
             return;
         }
         
@@ -244,11 +243,6 @@ async function generateShareImage() {
             console.log('Portrait image generated successfully');
         } catch (error) {
             console.error('Error generating portrait image:', error);
-            if (isMobile) {
-                console.log('Mobile device detected, showing fallback preview');
-                showFallbackPreview();
-                return;
-            }
             throw error;
         }
         
@@ -907,6 +901,39 @@ async function copyImageToClipboard() {
             alert('Erro ao copiar imagem. Tente baixar a imagem primeiro.');
         }
     }
+}
+
+// Show only portrait download button for mobile users
+function showMobilePortraitDownload() {
+    const previewElement = document.getElementById('sharePreview');
+    if (!previewElement) return;
+    
+    const reportId = document.querySelector('.share-btn').dataset.reportId;
+    
+    previewElement.innerHTML = `
+        <div style="text-align: center; padding: 2rem;">
+            <h5 style="margin-bottom: 20px; color: #333;">Baixar Imagem para Compartilhar</h5>
+            <button onclick="downloadShareImage('portrait')" style="
+                background: #17a2b8;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-size: 16px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin: 0 auto;
+            ">
+                <i class="bi bi-download"></i>
+                Baixar Imagem
+            </button>
+            <p style="margin-top: 15px; font-size: 14px; color: #666;">
+                Baixe a imagem para compartilhar nas redes sociais
+            </p>
+        </div>
+    `;
 }
 
 // Fallback preview function for mobile devices
