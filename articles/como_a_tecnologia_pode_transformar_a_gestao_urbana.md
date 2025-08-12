@@ -6,7 +6,7 @@ tags: tecnologia cívica, inovação, participação cidadã
 excerpt: Saiba como plataformas de tecnologia cívica como o [OlhoUrbano.com.br](https://olhourbano.com.br) estão conectando cidadãos e governos para resolver problemas urbanos de forma mais rápida, transparente e participativa.
 ---
 
-# Como a Tecnologia Cívica Está Transformando a Gestão Urbana
+ **Como a Tecnologia Cívica Está Transformando a Gestão Urbana**
 
 A gestão das cidades está entrando em uma nova era. Com a expansão das **tecnologias cívicas** (*civic techs*), ferramentas digitais estão tornando a comunicação entre cidadãos e poder público mais ágil, transparente e colaborativa.  
 
