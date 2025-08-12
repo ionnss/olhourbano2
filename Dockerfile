@@ -25,8 +25,8 @@ COPY go.mod go.sum ./
 # Download dependencies
 RUN go mod download && go mod tidy
 
-# Download the wait-for-it script
-ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /wait-for-it.sh
+# Copy the wait-for-it script
+COPY wait-for-it.sh /wait-for-it.sh
 
 # Make the wait-for-it script executable
 RUN chmod +x /wait-for-it.sh
