@@ -255,19 +255,127 @@ func convertMarkdownToHTML(markdown string) string {
 
 // processInlineMarkdown processes inline markdown elements like bold, italic, and links
 func processInlineMarkdown(content string) string {
-	// Bold
-	content = strings.ReplaceAll(content, "**", "<strong>")
-	content = strings.ReplaceAll(content, "__", "<strong>")
+	// Process bold text (**text** or __text__)
+	content = processBoldText(content)
 
-	// Italic
-	content = strings.ReplaceAll(content, "*", "<em>")
-	content = strings.ReplaceAll(content, "_", "<em>")
+	// Process italic text (*text* or _text_)
+	content = processItalicText(content)
 
-	// Links (basic implementation)
-	// This is a very basic implementation - you might want to use regex for better parsing
-	content = strings.ReplaceAll(content, "[", "<a href=\"")
-	content = strings.ReplaceAll(content, "](", "\">")
-	content = strings.ReplaceAll(content, ")", "</a>")
+	// Process links [text](url)
+	content = processLinks(content)
+
+	return content
+}
+
+// processBoldText handles bold markdown (**text** or __text__)
+func processBoldText(content string) string {
+	// Handle **text** pattern
+	for strings.Contains(content, "**") {
+		start := strings.Index(content, "**")
+		if start == -1 {
+			break
+		}
+		end := strings.Index(content[start+2:], "**")
+		if end == -1 {
+			break
+		}
+		end = start + 2 + end
+
+		text := content[start+2 : end]
+		replacement := "<strong>" + text + "</strong>"
+		content = content[:start] + replacement + content[end+2:]
+	}
+
+	// Handle __text__ pattern
+	for strings.Contains(content, "__") {
+		start := strings.Index(content, "__")
+		if start == -1 {
+			break
+		}
+		end := strings.Index(content[start+2:], "__")
+		if end == -1 {
+			break
+		}
+		end = start + 2 + end
+
+		text := content[start+2 : end]
+		replacement := "<strong>" + text + "</strong>"
+		content = content[:start] + replacement + content[end+2:]
+	}
+
+	return content
+}
+
+// processItalicText handles italic markdown (*text* or _text_)
+func processItalicText(content string) string {
+	// Handle *text* pattern
+	for strings.Contains(content, "*") {
+		start := strings.Index(content, "*")
+		if start == -1 {
+			break
+		}
+		end := strings.Index(content[start+1:], "*")
+		if end == -1 {
+			break
+		}
+		end = start + 1 + end
+
+		text := content[start+1 : end]
+		replacement := "<em>" + text + "</em>"
+		content = content[:start] + replacement + content[end+1:]
+	}
+
+	// Handle _text_ pattern
+	for strings.Contains(content, "_") {
+		start := strings.Index(content, "_")
+		if start == -1 {
+			break
+		}
+		end := strings.Index(content[start+1:], "_")
+		if end == -1 {
+			break
+		}
+		end = start + 1 + end
+
+		text := content[start+1 : end]
+		replacement := "<em>" + text + "</em>"
+		content = content[:start] + replacement + content[end+1:]
+	}
+
+	return content
+}
+
+// processLinks handles markdown links [text](url)
+func processLinks(content string) string {
+	// This is a basic implementation - you might want to use regex for better parsing
+	for strings.Contains(content, "[") && strings.Contains(content, "](") && strings.Contains(content, ")") {
+		start := strings.Index(content, "[")
+		if start == -1 {
+			break
+		}
+		textEnd := strings.Index(content[start:], "]")
+		if textEnd == -1 {
+			break
+		}
+		textEnd = start + textEnd
+
+		urlStart := strings.Index(content[textEnd:], "](")
+		if urlStart == -1 {
+			break
+		}
+		urlStart = textEnd + urlStart + 2
+
+		urlEnd := strings.Index(content[urlStart:], ")")
+		if urlEnd == -1 {
+			break
+		}
+		urlEnd = urlStart + urlEnd
+
+		text := content[start+1 : textEnd]
+		url := content[urlStart:urlEnd]
+		replacement := "<a href=\"" + url + "\">" + text + "</a>"
+		content = content[:start] + replacement + content[urlEnd+1:]
+	}
 
 	return content
 }

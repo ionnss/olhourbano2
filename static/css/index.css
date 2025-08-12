@@ -136,47 +136,7 @@ main {
     font-weight: 400;
 }
 
-.total-stats {
-    font-size: 1rem;
-    font-weight: 500;
-}
 
-/* Hero Stats Styles - matching footer stats but with white text */
-.total-stats .stats-container {
-    display: flex;
-    gap: 1.5rem;
-    justify-content: center;
-    align-items: center;
-}
-
-.total-stats .stat-item {
-    text-align: center;
-}
-
-.total-stats .stat-number {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #ffffff;
-    margin-bottom: 0.25rem;
-}
-
-.total-stats .stat-label {
-    font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.8);
-    font-weight: 500;
-}
-
-.total-stats .stat-separator {
-    width: 1px;
-    height: 2rem;
-    background-color: rgba(255, 255, 255, 0.3);
-}
-
-.total-stats-separator {
-    width: 1px;
-    height: 3rem;
-    background: rgba(255, 255, 255, 0.3);
-}
 
 .hero-footer {
     font-size: 1rem;
@@ -205,27 +165,7 @@ main {
         padding: 0 !important;
     }
     
-    .total-stats {
-        flex-direction: column;
-        gap: 1rem !important;
-        text-align: center;
-    }
-    
-    .total-stats .stats-container {
-        gap: 1rem;
-    }
-    
-    .total-stats .stat-number {
-        font-size: 1.25rem;
-    }
-    
-    .total-stats .stat-label {
-        font-size: 0.8rem;
-    }
-    
-    .total-stats-separator {
-        display: none;
-    }
+
     
     .hero-footer {
         padding: 0 !important;
@@ -271,22 +211,7 @@ main {
         gap: 1rem;
     }
     
-    /* Hero stats responsive adjustments for small screens */
-    .total-stats .stats-container {
-        gap: 0.75rem;
-    }
-    
-    .total-stats .stat-number {
-        font-size: 1.1rem;
-    }
-    
-    .total-stats .stat-label {
-        font-size: 0.75rem;
-    }
-    
-    .total-stats .stat-separator {
-        height: 1.5rem;
-    }
+
     
     /* Extra small mobile hero button adjustments */
     .hero-section .btn {
