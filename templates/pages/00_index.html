@@ -4,29 +4,67 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
 
   <!-- Title -->
-  <title>Olho Urbano</title>
+  <title>Olho Urbano - Plataforma de Denúncias Urbanas | Reporte Problemas na Cidade</title>
 
   <!-- Meta tags -->
   <meta name="author" content="Olho Urbano">
   <meta name="robots" content="index, follow">
   <meta name="googlebot" content="index, follow">
   <meta name="google" content="notranslate">
+  <link rel="canonical" href="https://olhourbano.com.br/">
 
   <!-- Description -->
-  <meta name="description" content="Plataforma para cidadãos reportarem e acompanharem problemas na infraestrutura, acessibilidade, iluminação pública, 
-        segurança pública, corrupção, meio ambiente, obras, fiscalização de comércio, entre outros.">
+  <meta name="description" content="Reporte problemas urbanos e acompanhe denúncias em tempo real. Plataforma cidadã para melhorar sua cidade. Denuncie buracos, iluminação, segurança e mais.">
   <meta name="keywords"
     content="denúncia pública, infraestrutura urbana, problemas na cidade, buracos na rua, 
-        iluminação pública, segurança pública, cidadania ativa, corrupção, meio ambiente, obras, fiscalização de comércio, entre outros">
+        iluminação pública, segurança pública, cidadania ativa, corrupção, meio ambiente, obras, fiscalização de comércio, denúncia online, problemas urbanos">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://olhourbano.com.br/">
+  <meta property="og:title" content="Olho Urbano - Plataforma de Denúncias Urbanas">
+  <meta property="og:description" content="Reporte problemas urbanos e acompanhe denúncias em tempo real. Plataforma cidadã para melhorar sua cidade.">
+  <meta property="og:image" content="/static/resource/full_logo.svg">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://olhourbano.com.br/">
+  <meta property="twitter:title" content="Olho Urbano - Plataforma de Denúncias Urbanas">
+  <meta property="twitter:description" content="Reporte problemas urbanos e acompanhe denúncias em tempo real. Plataforma cidadã para melhorar sua cidade.">
+  <meta property="twitter:image" content="/static/resource/full_logo.svg">
 
   <!-- Favicon -->
       <link rel="icon" type="image/x-icon" href="/static/resource/circular_eye.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/static/resource/circular_eye.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/static/resource/circular_eye.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/static/resource/circular_eye.png">
+
+  <!-- Performance optimizations -->
+  <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="//fonts.googleapis.com">
+  <link rel="dns-prefetch" href="//fonts.gstatic.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Olho Urbano",
+    "description": "Plataforma para cidadãos reportarem e acompanharem problemas na infraestrutura urbana",
+    "url": "https://olhourbano.com.br",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://olhourbano.com.br/feed?search={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
 
   <!-- Bootstrap 5.3.7 CSS and Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -51,6 +89,7 @@
 
   <!-- Custom JS -->
   <script src="/static/js/index.js"></script>
+  <script src="/static/js/social-preview.js"></script>
 </head>
 
 <body>

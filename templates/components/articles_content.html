@@ -1,0 +1,41 @@
+{{define "articles_content"}}
+{{if .Articles}}
+    <div class="articles-grid mb-5">
+        {{range .Articles}}
+        <article class="article-card mb-4">
+            <div class="article-header">
+                <h2 class="article-title">
+                    <a href="/articles/{{.Slug}}">{{.Title}}</a>
+                </h2>
+                <div class="article-meta">
+                    <span class="article-date">{{.Date.Format "02 Jan 2006"}}</span>
+                    <span class="article-author">por {{.Author}}</span>
+                    <span class="article-reading-time">{{.ReadingTime}} min de leitura</span>
+                </div>
+                {{if .Tags}}
+                <div class="article-tags">
+                    {{range .Tags}}
+                    <span class="tag">{{.}}</span>
+                    {{end}}
+                </div>
+                {{end}}
+            </div>
+            <div class="article-excerpt">
+                <p>{{.Excerpt}}</p>
+            </div>
+            <div class="article-footer">
+                <a href="/articles/{{.Slug}}" class="read-more">Ler mais <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </article>
+        {{end}}
+    </div>
+{{else}}
+    <div class="text-center">
+        <div class="no-articles">
+            <i class="bi bi-journal-text" style="font-size: 4rem; color: #6c757d;"></i>
+            <h3>Nenhum artigo disponível</h3>
+            <p>Em breve teremos conteúdo incrível para você!</p>
+        </div>
+    </div>
+{{end}}
+{{end}}

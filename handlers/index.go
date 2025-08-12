@@ -28,10 +28,12 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 // Footer page handlers
 func SobreHandler(w http.ResponseWriter, r *http.Request) {
 	data := map[string]interface{}{
-		"PageTitle": "Sobre Nós - Olho Urbano",
+		"PageTitle":    "Sobre Nós",
+		"PageSubtitle": "Conheça mais sobre o Olho Urbano",
+		"Content":      "sobre_content",
 	}
 
-	if err := renderTemplate(w, "footer_pages/sobre.html", data); err != nil {
+	if err := renderTemplate(w, "05_footer_pages.html", data); err != nil {
 		log.Printf("Error rendering sobre template: %s", err.Error())
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
@@ -40,10 +42,12 @@ func SobreHandler(w http.ResponseWriter, r *http.Request) {
 
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	data := map[string]interface{}{
-		"PageTitle": "Status do Sistema - Olho Urbano",
+		"PageTitle":    "Status do Sistema",
+		"PageSubtitle": "Acompanhe o status dos nossos serviços",
+		"Content":      "status_content",
 	}
 
-	if err := renderTemplate(w, "footer_pages/status.html", data); err != nil {
+	if err := renderTemplate(w, "05_footer_pages.html", data); err != nil {
 		log.Printf("Error rendering status template: %s", err.Error())
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
@@ -52,10 +56,12 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 
 func TermosHandler(w http.ResponseWriter, r *http.Request) {
 	data := map[string]interface{}{
-		"PageTitle": "Termos e Privacidade - Olho Urbano",
+		"PageTitle":    "Termos e Privacidade",
+		"PageSubtitle": "Nossos termos de uso e política de privacidade",
+		"Content":      "termos_content",
 	}
 
-	if err := renderTemplate(w, "footer_pages/termos.html", data); err != nil {
+	if err := renderTemplate(w, "05_footer_pages.html", data); err != nil {
 		log.Printf("Error rendering termos template: %s", err.Error())
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
@@ -64,10 +70,12 @@ func TermosHandler(w http.ResponseWriter, r *http.Request) {
 
 func AjudaHandler(w http.ResponseWriter, r *http.Request) {
 	data := map[string]interface{}{
-		"PageTitle": "Ajuda - Olho Urbano",
+		"PageTitle":    "Ajuda",
+		"PageSubtitle": "Encontre respostas para suas dúvidas",
+		"Content":      "ajuda_content",
 	}
 
-	if err := renderTemplate(w, "footer_pages/ajuda.html", data); err != nil {
+	if err := renderTemplate(w, "05_footer_pages.html", data); err != nil {
 		log.Printf("Error rendering ajuda template: %s", err.Error())
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
@@ -75,11 +83,22 @@ func AjudaHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func BlogHandler(w http.ResponseWriter, r *http.Request) {
-	data := map[string]interface{}{
-		"PageTitle": "Blog - Olho Urbano",
+	articles, err := loadArticles()
+	if err != nil {
+		log.Printf("Error loading articles: %v", err)
+		http.Error(w, "Error loading articles", http.StatusInternalServerError)
+		return
 	}
 
-	if err := renderTemplate(w, "footer_pages/blog.html", data); err != nil {
+	data := map[string]interface{}{
+		"PageTitle":    "Blog Olho Urbano",
+		"PageSubtitle": "Artigos, insights e histórias sobre cidades inteligentes",
+		"Content":      "blog_content",
+		"Articles":     articles,
+		"Total":        len(articles),
+	}
+
+	if err := renderTemplate(w, "05_footer_pages.html", data); err != nil {
 		log.Printf("Error rendering blog template: %s", err.Error())
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
@@ -88,10 +107,12 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 
 func GovernosHandler(w http.ResponseWriter, r *http.Request) {
 	data := map[string]interface{}{
-		"PageTitle": "Prefeituras e Governos - Olho Urbano",
+		"PageTitle":    "Prefeituras e Governos",
+		"PageSubtitle": "Soluções para gestão pública",
+		"Content":      "governos_content",
 	}
 
-	if err := renderTemplate(w, "footer_pages/governos.html", data); err != nil {
+	if err := renderTemplate(w, "05_footer_pages.html", data); err != nil {
 		log.Printf("Error rendering governos template: %s", err.Error())
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
@@ -100,10 +121,12 @@ func GovernosHandler(w http.ResponseWriter, r *http.Request) {
 
 func EmpresasHandler(w http.ResponseWriter, r *http.Request) {
 	data := map[string]interface{}{
-		"PageTitle": "Empresas - Olho Urbano",
+		"PageTitle":    "Empresas",
+		"PageSubtitle": "Soluções para o setor privado",
+		"Content":      "empresas_content",
 	}
 
-	if err := renderTemplate(w, "footer_pages/empresas.html", data); err != nil {
+	if err := renderTemplate(w, "05_footer_pages.html", data); err != nil {
 		log.Printf("Error rendering empresas template: %s", err.Error())
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
@@ -112,10 +135,12 @@ func EmpresasHandler(w http.ResponseWriter, r *http.Request) {
 
 func PesquisadoresHandler(w http.ResponseWriter, r *http.Request) {
 	data := map[string]interface{}{
-		"PageTitle": "Universidades e Pesquisadores - Olho Urbano",
+		"PageTitle":    "Universidades e Pesquisadores",
+		"PageSubtitle": "Ferramentas para pesquisa e desenvolvimento",
+		"Content":      "pesquisadores_content",
 	}
 
-	if err := renderTemplate(w, "footer_pages/pesquisadores.html", data); err != nil {
+	if err := renderTemplate(w, "05_footer_pages.html", data); err != nil {
 		log.Printf("Error rendering pesquisadores template: %s", err.Error())
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return

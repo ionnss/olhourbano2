@@ -18,6 +18,10 @@ func CreateRoutes() *mux.Router {
 		w.Write([]byte("OK"))
 	}).Methods("GET")
 
+	// SEO routes
+	r.HandleFunc("/sitemap.xml", handlers.SitemapHandler).Methods("GET")
+	r.HandleFunc("/robots.txt", handlers.RobotsHandler).Methods("GET")
+
 	// Serve static files
 	fileServer := http.FileServer(http.Dir("./static/"))
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fileServer))
@@ -57,6 +61,10 @@ func CreateRoutes() *mux.Router {
 
 	r.HandleFunc("/feed", handlers.FeedHandler).Methods("GET")
 	r.HandleFunc("/map", handlers.MapHandler).Methods("GET")
+
+	// Article routes
+	r.HandleFunc("/articles", handlers.ArticlesHandler).Methods("GET")
+	r.HandleFunc("/articles/{slug}", handlers.ArticleHandler).Methods("GET")
 
 	// Footer pages routes
 	r.HandleFunc("/sobre", handlers.SobreHandler).Methods("GET")

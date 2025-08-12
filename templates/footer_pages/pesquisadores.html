@@ -1,247 +1,31 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universidades e Pesquisadores - Olho Urbano</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/static/css/base.css">
-    <link rel="stylesheet" href="/static/css/header.css">
-    <link rel="stylesheet" href="/static/css/footer.css">
-    <link rel="stylesheet" href="/static/css/footer_pages.css">
-</head>
-<body>
-    {{template "header" .}}
-    
-    <main class="footer-page-main">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <div class="footer-page-content">
-                        <div class="page-header text-center mb-5">
-                            <h1 class="page-title">Universidades e Pesquisadores</h1>
-                            <p class="page-subtitle">Dados urbanos para pesquisa acadêmica e inovação</p>
-                        </div>
-
-                        <div class="hero-section mb-5">
-                            <div class="hero-content">
-                                <h2>Dados Urbanos para Pesquisa Acadêmica</h2>
-                                <p>O Olho Urbano disponibiliza dados urbanos em tempo real para pesquisadores, estudantes e universidades que desejam contribuir para o desenvolvimento de cidades mais inteligentes e sustentáveis.</p>
-                                <div class="hero-stats">
-                                    <div class="stat-item">
-                                        <div class="stat-number">25+</div>
-                                        <div class="stat-label">Universidades Parceiras</div>
-                                    </div>
-                                    <div class="stat-item">
-                                        <div class="stat-number">100+</div>
-                                        <div class="stat-label">Pesquisas Publicadas</div>
-                                    </div>
-                                    <div class="stat-item">
-                                        <div class="stat-number">50k+</div>
-                                        <div class="stat-label">Dados Disponíveis</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="content-section mb-5">
-                            <h2>Áreas de Pesquisa</h2>
-                            <div class="research-areas-grid">
-                                <div class="research-area-card">
-                                    <div class="area-icon">
-                                        <i class="bi bi-geo-alt"></i>
-                                    </div>
-                                    <h3>Planejamento Urbano</h3>
-                                    <p>Análise de padrões urbanos, identificação de áreas prioritárias para intervenção e desenvolvimento de políticas públicas baseadas em dados.</p>
-                                    <ul>
-                                        <li>Análise espacial de problemas urbanos</li>
-                                        <li>Identificação de clusters de problemas</li>
-                                        <li>Modelagem preditiva de demandas</li>
-                                    </ul>
-                                </div>
-                                <div class="research-area-card">
-                                    <div class="area-icon">
-                                        <i class="bi bi-people"></i>
-                                    </div>
-                                    <h3>Ciências Sociais</h3>
-                                    <p>Estudos sobre participação cidadã, comportamento urbano e impacto de políticas públicas na qualidade de vida das comunidades.</p>
-                                    <ul>
-                                        <li>Análise de engajamento cidadão</li>
-                                        <li>Estudos de comportamento urbano</li>
-                                        <li>Impacto de políticas públicas</li>
-                                    </ul>
-                                </div>
-                                <div class="research-area-card">
-                                    <div class="area-icon">
-                                        <i class="bi bi-graph-up"></i>
-                                    </div>
-                                    <h3>Ciência de Dados</h3>
-                                    <p>Desenvolvimento de algoritmos de machine learning, análise de big data urbano e criação de modelos preditivos para gestão urbana.</p>
-                                    <ul>
-                                        <li>Machine learning aplicado</li>
-                                        <li>Análise de séries temporais</li>
-                                        <li>Modelos preditivos</li>
-                                    </ul>
-                                </div>
-                                <div class="research-area-card">
-                                    <div class="area-icon">
-                                        <i class="bi bi-tree"></i>
-                                    </div>
-                                    <h3>Sustentabilidade</h3>
-                                    <p>Pesquisas sobre impacto ambiental, qualidade de vida urbana e desenvolvimento de indicadores de sustentabilidade.</p>
-                                    <ul>
-                                        <li>Indicadores ambientais</li>
-                                        <li>Qualidade de vida urbana</li>
-                                        <li>Impacto ambiental</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="content-section mb-5">
-                            <h2>Programa de Acesso Acadêmico</h2>
-                            <div class="academic-program">
-                                <div class="program-benefits">
-                                    <h3>Benefícios para Pesquisadores</h3>
-                                    <div class="benefits-list">
-                                        <div class="benefit-item">
-                                            <i class="bi bi-check-circle"></i>
-                                            <span>Acesso gratuito aos dados</span>
-                                        </div>
-                                        <div class="benefit-item">
-                                            <i class="bi bi-check-circle"></i>
-                                            <span>API dedicada para pesquisa</span>
-                                        </div>
-                                        <div class="benefit-item">
-                                            <i class="bi bi-check-circle"></i>
-                                            <span>Suporte técnico especializado</span>
-                                        </div>
-                                        <div class="benefit-item">
-                                            <i class="bi bi-check-circle"></i>
-                                            <span>Dados históricos completos</span>
-                                        </div>
-                                        <div class="benefit-item">
-                                            <i class="bi bi-check-circle"></i>
-                                            <span>Possibilidade de parcerias</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="program-requirements">
-                                    <h3>Requisitos para Acesso</h3>
-                                    <ul>
-                                        <li>Vínculo com instituição acadêmica</li>
-                                        <li>Projeto de pesquisa aprovado</li>
-                                        <li>Compromisso com publicação dos resultados</li>
-                                        <li>Respeito às diretrizes de privacidade</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="content-section mb-5">
-                            <h2>Pesquisas em Andamento</h2>
-                            <div class="research-projects">
-                                <div class="project-card">
-                                    <div class="project-header">
-                                        <h4>Análise de Padrões Urbanos em Curitiba</h4>
-                                        <span class="project-institution">UFPR</span>
-                                    </div>
-                                    <p>Estudo sobre a distribuição espacial de problemas urbanos e sua correlação com indicadores socioeconômicos.</p>
-                                    <div class="project-meta">
-                                        <span class="project-researcher">Prof. Dr. João Silva</span>
-                                        <span class="project-status">Em andamento</span>
-                                    </div>
-                                </div>
-                                <div class="project-card">
-                                    <div class="project-header">
-                                        <h4>Machine Learning para Priorização de Demandas</h4>
-                                        <span class="project-institution">UTFPR</span>
-                                    </div>
-                                    <p>Desenvolvimento de algoritmos para priorização automática de denúncias baseada em urgência e impacto.</p>
-                                    <div class="project-meta">
-                                        <span class="project-researcher">Prof. Dra. Maria Santos</span>
-                                        <span class="project-status">Em andamento</span>
-                                    </div>
-                                </div>
-                                <div class="project-card">
-                                    <div class="project-header">
-                                        <h4>Participação Cidadã e Qualidade de Vida</h4>
-                                        <span class="project-institution">PUC-PR</span>
-                                    </div>
-                                    <p>Análise do impacto da participação cidadã na qualidade de vida urbana e satisfação da população.</p>
-                                    <div class="project-meta">
-                                        <span class="project-researcher">Prof. Dr. Carlos Oliveira</span>
-                                        <span class="project-status">Concluído</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="content-section mb-5">
-                            <h2>Publicações Acadêmicas</h2>
-                            <div class="publications-list">
-                                <div class="publication-item">
-                                    <div class="publication-meta">
-                                        <span class="publication-year">2024</span>
-                                        <span class="publication-type">Artigo</span>
-                                    </div>
-                                    <h4>"Análise Espacial de Problemas Urbanos: Um Estudo de Caso em Curitiba"</h4>
-                                    <p class="publication-authors">Silva, J., Santos, M., Oliveira, C.</p>
-                                    <p class="publication-journal">Revista Brasileira de Planejamento Urbano</p>
-                                    <a href="#" class="publication-link">Ver publicação</a>
-                                </div>
-                                <div class="publication-item">
-                                    <div class="publication-meta">
-                                        <span class="publication-year">2024</span>
-                                        <span class="publication-type">Conferência</span>
-                                    </div>
-                                    <h4>"Machine Learning na Gestão Urbana: Experiências e Desafios"</h4>
-                                    <p class="publication-authors">Santos, M., Silva, J.</p>
-                                    <p class="publication-journal">Congresso Brasileiro de Computação</p>
-                                    <a href="#" class="publication-link">Ver publicação</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="content-section">
-                            <h2>Solicitar Acesso</h2>
-                            <p>Interessado em utilizar nossos dados para pesquisa? Entre em contato conosco:</p>
-                            <div class="contact-grid">
-                                <div class="contact-item">
-                                    <div class="contact-icon">
-                                        <i class="bi bi-file-earmark-text"></i>
-                                    </div>
-                                    <h4>Formulário de Solicitação</h4>
-                                    <p>Preencha o formulário com detalhes do seu projeto de pesquisa</p>
-                                    <a href="mailto:olhourbano.contato@gmail.com" class="contact-link">Solicitar Acesso</a>
-                                </div>
-                                <div class="contact-item">
-                                    <div class="contact-icon">
-                                        <i class="bi bi-chat-dots"></i>
-                                    </div>
-                                    <h4>Reunião de Apresentação</h4>
-                                    <p>Agende uma reunião para conhecer nossas soluções</p>
-                                    <a href="mailto:olhourbano.contato@gmail.com" class="contact-link">Agendar Reunião</a>
-                                </div>
-                                <div class="contact-item">
-                                    <div class="contact-icon">
-                                        <i class="bi bi-book"></i>
-                                    </div>
-                                    <h4>Documentação Técnica</h4>
-                                    <p>Acesse guias, APIs e exemplos de uso</p>
-                                    <a href="#" class="contact-link">Acessar Docs</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+{{define "pesquisadores.html"}}
+<div class="coming-soon-section text-center">
+    <div class="coming-soon-icon mb-4">
+        <i class="bi bi-mortarboard" style="font-size: 4rem; color: #6c757d;"></i>
+    </div>
+    <h2 class="coming-soon-title mb-3">Ferramentas para Pesquisadores</h2>
+    <p class="coming-soon-description mb-4">
+        Estamos desenvolvendo ferramentas especializadas para universidades e pesquisadores.
+    </p>
+    <div class="coming-soon-features mb-5">
+        <div class="feature-item">
+            <h4>API de Dados</h4>
+            <p>Acesso a dados anonimizados para pesquisas</p>
         </div>
-    </main>
-
-    {{template "footer" .}}
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+        <div class="feature-item">
+            <h4>Dashboard de Pesquisa</h4>
+            <p>Ferramentas de análise e visualização</p>
+        </div>
+        <div class="feature-item">
+            <h4>Parcerias Acadêmicas</h4>
+            <p>Colaboração em projetos de pesquisa</p>
+        </div>
+    </div>
+    <div class="text-center">
+        <a href="mailto:olhourbano.contato@gmail.com?subject=Solicitação%20de%20Acesso%20-%20Ferramentas%20para%20Pesquisadores&body=Olá%20equipe%20Olho%20Urbano,%0D%0A%0D%0AGostaria%20de%20solicitar%20acesso%20às%20ferramentas%20para%20pesquisadores.%0D%0A%0D%0AInformações%20acadêmicas:%0D%0A-%20Nome%20completo:%0D%0A-%20Instituição:%0D%0A-%20Departamento:%0D%0A-%20Área%20de%20pesquisa:%0D%0A-%20Telefone:%0D%0A%0D%0AInteresse%20específico:%0D%0A-%20API%20de%20Dados%0D%0A-%20Dashboard%20de%20Pesquisa%0D%0A-%20Parcerias%20Acadêmicas%0D%0A%0D%0ADescrição%20do%20projeto%20de%20pesquisa:%0D%0A%0D%0A%0D%0AAguardo%20contato.%0D%0A%0D%0AAtenciosamente," class="btn btn-primary btn-lg">
+            <i class="bi bi-envelope me-2"></i>
+            Solicitar Acesso
+        </a>
+    </div>
+</div>
+{{end}}

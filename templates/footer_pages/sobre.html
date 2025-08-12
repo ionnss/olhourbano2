@@ -1,110 +1,90 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sobre Nós - Olho Urbano</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/static/css/base.css">
-    <link rel="stylesheet" href="/static/css/header.css">
-    <link rel="stylesheet" href="/static/css/footer.css">
-    <link rel="stylesheet" href="/static/css/footer_pages.css">
-</head>
-<body>
-    {{template "header" .}}
-    
-    <main class="footer-page-main">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <div class="footer-page-content">
-                        <div class="page-header text-center mb-5">
-                            <h1 class="page-title">Sobre Nós</h1>
-                            <p class="page-subtitle">Conectando cidadãos e governos para cidades melhores</p>
-                        </div>
+{{define "sobre.html"}}
+<div class="content-section mb-5">
+    <h2>Nossa Missão</h2>
+    <p>O Olho Urbano nasceu da necessidade de criar um canal direto e eficiente entre cidadãos e gestores públicos. 
+        Acreditamos que a participação ativa da sociedade é fundamental para o desenvolvimento de cidades 
+        mais inteligentes, sustentáveis e humanas. O ambiente nos afeta diretamente e uma ferramenta 
+        de Civic Tech pode ser uma ferramenta para melhorar a qualidade de vida das pessoas.</p>
+</div>
 
-                        <div class="content-section mb-5">
-                            <h2>Nossa Missão</h2>
-                            <p>O Olho Urbano nasceu da necessidade de criar um canal direto e eficiente entre cidadãos e gestores públicos. Acreditamos que a participação ativa da sociedade é fundamental para o desenvolvimento de cidades mais inteligentes, sustentáveis e humanas.</p>
-                        </div>
-
-                        <div class="content-section mb-5">
-                            <h2>O Que Fazemos</h2>
-                            <div class="features-grid">
-                                <div class="feature-item">
-                                    <div class="feature-icon">
-                                        <i class="bi bi-megaphone"></i>
-                                    </div>
-                                    <h3>Denúncias Cidadãs</h3>
-                                    <p>Plataforma para reportar problemas urbanos de forma simples e eficiente</p>
-                                </div>
-                                <div class="feature-item">
-                                    <div class="feature-icon">
-                                        <i class="bi bi-graph-up"></i>
-                                    </div>
-                                    <h3>Transparência</h3>
-                                    <p>Acompanhamento em tempo real do status das denúncias e resoluções</p>
-                                </div>
-                                <div class="feature-item">
-                                    <div class="feature-icon">
-                                        <i class="bi bi-people"></i>
-                                    </div>
-                                    <h3>Participação</h3>
-                                    <p>Sistema de votação que prioriza as demandas mais relevantes</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="content-section mb-5">
-                            <h2>Nossa História</h2>
-                            <p>Fundado em Curitiba, o Olho Urbano surgiu da observação de que muitos problemas urbanos poderiam ser resolvidos mais rapidamente se houvesse um canal direto entre cidadãos e gestores. Nossa plataforma foi desenvolvida com foco na usabilidade e transparência, garantindo que cada denúncia seja tratada com a seriedade que merece.</p>
-                        </div>
-
-                        <div class="content-section mb-5">
-                            <h2>Valores</h2>
-                            <div class="values-grid">
-                                <div class="value-item">
-                                    <h4>Transparência</h4>
-                                    <p>Acreditamos que a informação deve ser acessível a todos</p>
-                                </div>
-                                <div class="value-item">
-                                    <h4>Eficiência</h4>
-                                    <p>Buscamos soluções rápidas e efetivas para problemas urbanos</p>
-                                </div>
-                                <div class="value-item">
-                                    <h4>Participação</h4>
-                                    <p>Incentivamos a participação ativa da sociedade</p>
-                                </div>
-                                <div class="value-item">
-                                    <h4>Inovação</h4>
-                                    <p>Utilizamos tecnologia para melhorar a gestão pública</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="content-section">
-                            <h2>Contato</h2>
-                            <p>Quer saber mais sobre o Olho Urbano ou tem alguma sugestão? Entre em contato conosco:</p>
-                            <div class="contact-info">
-                                <div class="contact-item">
-                                    <i class="bi bi-envelope"></i>
-                                    <span>olhourbano.contato@gmail.com</span>
-                                </div>
-                                <div class="contact-item">
-                                    <i class="bi bi-geo-alt"></i>
-                                    <span>Curitiba, Paraná - Brasil</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<div class="content-section mb-5">
+    <h2>O Que Fazemos</h2>
+    <div class="features-grid">
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="bi bi-megaphone"></i>
             </div>
+            <h3>Denúncias Cidadãs</h3>
+            <p>Plataforma para reportar problemas urbanos de forma simples e eficiente</p>
         </div>
-    </main>
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="bi bi-graph-up"></i>
+            </div>
+            <h3>Transparência</h3>
+            <p>Acompanhamento em tempo real do status das denúncias e resoluções</p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="bi bi-people"></i>
+            </div>
+            <h3>Participação</h3>
+            <p>Sistema de votação e comentários que prioriza as demandas mais relevantes</p>
+        </div>
+    </div>
+</div>
 
-    {{template "footer" .}}
+<div class="content-section mb-5">
+    <h2>Nossa História</h2>
+    <p>Fundado em Curitiba, o Olho Urbano surgiu da observação de que muitos problemas urbanos poderiam 
+        ser resolvidos mais rapidamente se houvesse um canal centralizado e direto entre cidadãos e gestores públicos. 
+        Não somente, a inspiração surgiu da teoria do Behaviorismo, que busca entender o comportamento 
+        humano e como ele pode ser influenciado meio ambiente, e suas consequências psicológicas.
+        Nossa plataforma foi desenvolvida com foco na usabilidade e transparência, garantindo 
+        que cada denúncia seja tratada com a seriedade que merece. 
+        A plataforma é uma ferramenta de Civic Tech que busca melhorar a gestão pública e a qualidade de vida das pessoas.</p>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<div class="content-section mb-5">
+    <h2>Valores</h2>
+    <div class="values-grid">
+        <div class="value-item">
+            <h4>Transparência</h4>
+            <p>Acreditamos que a informação deve ser acessível a todos</p>
+        </div>
+        <div class="value-item">
+            <h4>Eficiência</h4>
+            <p>Buscamos soluções rápidas e efetivas para problemas urbanos</p>
+        </div>
+        <div class="value-item">
+            <h4>Participação</h4>
+            <p>Incentivamos a participação ativa da sociedade, de maneira anônima e segura</p>
+        </div>
+        <div class="value-item">
+            <h4>Inovação</h4>
+            <p>Utilizamos tecnologia para melhorar a gestão pública</p>
+        </div>
+    </div>
+</div>
+
+<div class="content-section">
+    <h2>Contato</h2>
+    <p>Quer saber mais sobre o Olho Urbano ou tem alguma sugestão? Entre em contato conosco:</p>
+    <div class="social-media mt-4">
+        <a href="https://x.com/olhourbanoapp" title="Siga-nos no X (Twitter)">
+            <i class="bi bi-twitter-x"></i>
+        </a>
+        <a href="https://www.linkedin.com/company/olho-urbano/" title="Conecte-se no LinkedIn">
+            <i class="bi bi-linkedin"></i>
+        </a>
+        <a href="https://www.instagram.com/olho.urbano/" title="Siga-nos no Instagram">
+            <i class="bi bi-instagram"></i>
+        </a>
+        <a href="mailto:olhourbano.contato@gmail.com" title="Envie um e-mail">
+            <i class="bi bi-envelope-fill"></i>
+        </a>
+    </div>
+    
+    
+</div>
+{{end}}

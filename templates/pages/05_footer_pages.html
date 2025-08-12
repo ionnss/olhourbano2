@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+
+    <!-- Title -->
+    <title>{{.PageTitle}} - Olho Urbano</title>
+
+    <!-- Meta tags -->
+    <meta name="author" content="Olho Urbano">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta name="google" content="notranslate">
+    <link rel="canonical" href="https://olhourbano.com.br/{{.PageSlug}}">
+
+    <!-- Description -->
+    <meta name="description" content="{{.PageSubtitle}} - Olho Urbano. Plataforma cidadã para reportar e acompanhar problemas urbanos. Transparência e participação social.">
+    <meta name="keywords"
+        content="{{.PageTitle}}, olho urbano, plataforma cidadã, denúncias urbanas, 
+            transparência pública, participação social, problemas urbanos, cidadania ativa">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://olhourbano.com.br/{{.PageSlug}}">
+    <meta property="og:title" content="{{.PageTitle}} - Olho Urbano">
+    <meta property="og:description" content="{{.PageSubtitle}} - Olho Urbano. Plataforma cidadã para reportar e acompanhar problemas urbanos.">
+    <meta property="og:image" content="/static/resource/full_logo.svg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://olhourbano.com.br/{{.PageSlug}}">
+    <meta property="twitter:title" content="{{.PageTitle}} - Olho Urbano">
+    <meta property="twitter:description" content="{{.PageSubtitle}} - Olho Urbano. Plataforma cidadã para reportar e acompanhar problemas urbanos.">
+    <meta property="twitter:image" content="/static/resource/full_logo.svg">
+
+    <!-- Favicon -->
+        <link rel="icon" type="image/x-icon" href="/static/resource/circular_eye.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/static/resource/circular_eye.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/static/resource/circular_eye.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/static/resource/circular_eye.png">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "{{.PageTitle}} - Olho Urbano",
+      "description": "{{.PageSubtitle}} - Olho Urbano. Plataforma cidadã para reportar e acompanhar problemas urbanos.",
+      "url": "https://olhourbano.com.br/{{.PageSlug}}",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Olho Urbano",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://olhourbano.com.br/static/resource/full_logo.svg"
+        }
+      }
+    }
+    </script>
+
+    <!-- Bootstrap 5.3.7 CSS and Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <!-- Bootstrap 5.3.7 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+        crossorigin="anonymous"></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/header.css">
+    <link rel="stylesheet" href="/static/css/footer.css">
+    <link rel="stylesheet" href="/static/css/footer_pages.css">
+    <link rel="stylesheet" href="/static/css/index.css">
+
+    <!-- Custom JS -->
+    <script src="/static/js/index.js"></script>
+
+
+</head>
+<body>
+    {{template "header" .}}
+
+    <main class="footer-page-main">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="footer-page-content{{if eq .Content "article_content"}} article-page{{end}}">
+                        {{if ne .Content "article_content"}}
+                        <div class="page-header text-center mb-5">
+                            <h1 class="page-title">{{.PageTitle}}</h1>
+                            <p class="page-subtitle">{{.PageSubtitle}}</p>
+                        </div>
+                        {{end}}
+                        
+                        {{if eq .Content "sobre_content"}}
+                            {{template "sobre.html" .}}
+                        {{else if eq .Content "status_content"}}
+                            {{template "status.html" .}}
+                        {{else if eq .Content "termos_content"}}
+                            {{template "termos.html" .}}
+                        {{else if eq .Content "ajuda_content"}}
+                            {{template "ajuda.html" .}}
+                        {{else if eq .Content "blog_content"}}
+                            {{template "blog.html" .}}
+                        {{else if eq .Content "governos_content"}}
+                            {{template "governos.html" .}}
+                        {{else if eq .Content "empresas_content"}}
+                            {{template "empresas.html" .}}
+                        {{else if eq .Content "pesquisadores_content"}}
+                            {{template "pesquisadores.html" .}}
+                        {{else if eq .Content "articles_content"}}
+                            {{template "articles_content" .}}
+                        {{else if eq .Content "article_content"}}
+                            {{template "article_content" .}}
+                        {{end}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    {{template "footer" .}}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

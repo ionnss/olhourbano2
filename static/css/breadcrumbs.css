@@ -1,0 +1,81 @@
+/* Breadcrumb Navigation Styles */
+.breadcrumb-nav {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    padding: 0.75rem 0;
+    margin-bottom: 2rem;
+}
+
+.breadcrumb {
+    background: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+.breadcrumb-item {
+    color: #6c757d;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: ">";
+    color: #6c757d;
+    font-weight: 500;
+    margin: 0 0.5rem;
+}
+
+.breadcrumb-link {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.breadcrumb-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+.breadcrumb-link i {
+    margin-right: 0.25rem;
+}
+
+.breadcrumb-text {
+    font-weight: 500;
+}
+
+.breadcrumb-item.active .breadcrumb-text {
+    color: #495057;
+    font-weight: 600;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .breadcrumb-nav {
+        padding: 0.5rem 0;
+        margin-bottom: 1rem;
+    }
+    
+    .breadcrumb {
+        font-size: 0.8rem;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        margin: 0 0.25rem;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .breadcrumb-nav {
+        background-color: #ffffff;
+        border-bottom: 2px solid #000000;
+    }
+    
+    .breadcrumb-link {
+        color: #0000ff;
+    }
+    
+    .breadcrumb-item.active .breadcrumb-text {
+        color: #000000;
+    }
+}

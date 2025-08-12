@@ -1,0 +1,52 @@
+{{define "article_content"}}
+<article class="article-content">
+    <header class="article-header mb-4">
+        <h1 class="article-title">{{.Article.Title}}</h1>
+        <div class="article-meta">
+            <span class="article-date">{{.Article.Date.Format "02 de Janeiro de 2006"}}</span>
+            <span class="article-author">por {{.Article.Author}}</span>
+            <span class="article-reading-time">{{.Article.ReadingTime}} min de leitura</span>
+        </div>
+        {{if .Article.Tags}}
+        <div class="article-tags">
+            {{range .Article.Tags}}
+            <span class="tag">{{.}}</span>
+            {{end}}
+        </div>
+        {{end}}
+    </header>
+
+    <!-- Back Button -->
+    <div class="mb-4">
+        <a href="/articles" class="btn shadow rounded-pill d-flex align-items-center px-3 py-2"
+           style="font-weight:600; letter-spacing:0.5px; font-size:1.08rem; border-radius:999px; box-shadow:0 2px 8px rgba(51,51,51,0.8) !important; background-color:rgb(51, 51, 51); color:#fff; text-decoration:none; display:inline-flex; width:fit-content;">
+            <i class="bi bi-arrow-left me-2"></i>
+            Voltar aos Artigos
+        </a>
+    </div>
+
+    <div class="article-body">
+        {{.Article.Content}}
+    </div>
+
+    <footer class="article-footer mt-5">
+        <div class="article-share">
+            <h4>Compartilhe este artigo:</h4>
+            <div class="share-buttons">
+                <a href="https://x.com/intent/tweet?text={{.Article.Title | urlquery}}&url={{.URL | urlquery}}" class="share-btn twitter" title="Compartilhar no X (Twitter)">
+                    <i class="bi bi-twitter-x"></i>
+                </a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{.URL | urlquery}}" class="share-btn facebook" title="Compartilhar no Facebook">
+                    <i class="bi bi-facebook"></i>
+                </a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{.URL | urlquery}}" class="share-btn linkedin" title="Compartilhar no LinkedIn">
+                    <i class="bi bi-linkedin"></i>
+                </a>
+                <a href="https://wa.me/?text={{.Article.Title | urlquery}}%20{{.URL | urlquery}}" class="share-btn whatsapp" title="Compartilhar no WhatsApp">
+                    <i class="bi bi-whatsapp"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+</article>
+{{end}}
