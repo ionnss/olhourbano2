@@ -2,7 +2,7 @@
 title: Tecnologia Cívica: Ferramenta de Cidadania
 author: Equipe Olho Urbano
 date: 2025-08-13
-tags: civic tech, tecnologia cívica, 
+tags: civic tech, tecnologia cívica, comunidades, colaborativo
 excerpt: 
 ---
 
