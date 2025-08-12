@@ -152,16 +152,21 @@ func loadArticleFromFile(filePath string) (Article, error) {
 
 	var inFrontMatter bool
 	var contentLines []string
+	var frontMatterCount int
 
 	for _, line := range lines {
 		if strings.TrimSpace(line) == "---" {
-			if !inFrontMatter {
+			frontMatterCount++
+			if frontMatterCount == 1 {
+				// First --- starts front matter
 				inFrontMatter = true
 				continue
-			} else {
+			} else if frontMatterCount == 2 {
+				// Second --- ends front matter
 				inFrontMatter = false
 				continue
 			}
+			// Any subsequent --- are horizontal rules in content
 		}
 
 		if inFrontMatter {
@@ -231,12 +236,29 @@ func convertMarkdownToHTML(markdown string) string {
 			htmlLines = append(htmlLines, "<h3>"+strings.TrimPrefix(trimmedLine, "### ")+"</h3>")
 		} else if strings.HasPrefix(trimmedLine, "#### ") {
 			htmlLines = append(htmlLines, "<h4>"+strings.TrimPrefix(trimmedLine, "#### ")+"</h4>")
+		} else if strings.HasPrefix(trimmedLine, " **") && strings.HasSuffix(trimmedLine, "**") {
+			// Process bold titles that should be headers
+			content := strings.TrimSpace(strings.TrimPrefix(strings.TrimSuffix(trimmedLine, "**"), " **"))
+			htmlLines = append(htmlLines, "<h1>"+content+"</h1>")
 		} else if strings.HasPrefix(trimmedLine, "- ") {
 			// Process list items
 			content := strings.TrimPrefix(trimmedLine, "- ")
 			// Process bold and italic within list items
 			content = processInlineMarkdown(content)
 			htmlLines = append(htmlLines, "<li>"+content+"</li>")
+		} else if strings.HasPrefix(trimmedLine, "1. ") || strings.HasPrefix(trimmedLine, "2. ") || strings.HasPrefix(trimmedLine, "3. ") || strings.HasPrefix(trimmedLine, "4. ") {
+			// Process numbered list items (1. 2. 3. 4.)
+			parts := strings.SplitN(trimmedLine, ". ", 2)
+			if len(parts) == 2 {
+				content := parts[1]
+				// Process bold and italic within list items
+				content = processInlineMarkdown(content)
+				htmlLines = append(htmlLines, "<li>"+content+"</li>")
+			}
+		} else if trimmedLine == "---" {
+			// Process horizontal rule
+			htmlLines = append(htmlLines, "<hr>")
+
 		} else {
 			// Regular paragraph content
 			content := processInlineMarkdown(trimmedLine)
@@ -380,22 +402,27 @@ func processLinks(content string) string {
 	return content
 }
 
-// wrapListItems wraps consecutive <li> elements in <ul> tags
+// wrapListItems wraps consecutive <li> elements in <ul> or <ol> tags
 func wrapListItems(html string) string {
 	lines := strings.Split(html, "\n")
 	var result []string
 	var inList bool
+	var listType string // "ul" or "ol"
 
 	for _, line := range lines {
 		if strings.Contains(line, "<li>") {
 			if !inList {
-				result = append(result, "<ul>")
+				// Determine list type based on the original markdown
+				// For now, we'll use <ul> for all lists since we're not tracking the original format
+				// In a more sophisticated implementation, you'd track whether it came from "- " or "1. "
+				listType = "ul"
+				result = append(result, "<"+listType+">")
 				inList = true
 			}
 			result = append(result, line)
 		} else {
 			if inList {
-				result = append(result, "</ul>")
+				result = append(result, "</"+listType+">")
 				inList = false
 			}
 			result = append(result, line)
@@ -404,7 +431,7 @@ func wrapListItems(html string) string {
 
 	// Close any open list
 	if inList {
-		result = append(result, "</ul>")
+		result = append(result, "</"+listType+">")
 	}
 
 	return strings.Join(result, "\n")

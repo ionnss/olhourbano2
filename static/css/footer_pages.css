@@ -147,7 +147,6 @@
 }
 
 .article-footer {
-    border-top: 1px solid #e9ecef;
     padding-top: 1rem;
 }
 
@@ -278,7 +277,6 @@
 }
 
 .article-share {
-    border-top: 1px solid #e9ecef;
     padding-top: 2rem;
 }
 
@@ -300,6 +298,8 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
+    border: none;
+    outline: none;
     color: white;
     text-decoration: none;
     transition: transform 0.3s ease;
@@ -307,6 +307,8 @@
 
 .share-btn:hover {
     transform: scale(1.1);
+    border: none;
+    outline: none;
     color: white;
 }
 
@@ -324,6 +326,29 @@
 
 .share-btn.whatsapp {
     background: #25d366;
+}
+
+.share-btn:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+.share-btn:active {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+/* Ensure no borders on share buttons in all states */
+.share-btn,
+.share-btn:hover,
+.share-btn:focus,
+.share-btn:active,
+.share-btn:visited {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 /* Responsive adjustments for articles */
