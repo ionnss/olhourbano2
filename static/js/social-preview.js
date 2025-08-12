@@ -66,8 +66,9 @@ class SocialPreviewTester {
             warnings.push(`Description too long (${tags.ogDescription.length} chars, max 160)`);
         }
 
-        // Check image dimensions
+        // Check image URL format
         if (tags.ogImage) {
+            this.validateImageUrl(tags.ogImage, warnings);
             this.checkImageDimensions(tags.ogImage, warnings);
         }
 
@@ -84,10 +85,45 @@ class SocialPreviewTester {
                 if (this.width < 1200 || this.height < 630) {
                     warnings.push(`Image dimensions (${this.width}x${this.height}) are below recommended 1200x630`);
                 }
+                if (this.width > 1200 || this.height > 630) {
+                    warnings.push(`Image dimensions (${this.width}x${this.height}) are larger than recommended 1200x630`);
+                }
+                if (this.width / this.height !== 1200 / 630) {
+                    warnings.push(`Image aspect ratio (${(this.width / this.height).toFixed(2)}) differs from recommended 1.91:1`);
+                }
+            };
+            img.onerror = function() {
+                warnings.push(`Could not load image: ${imageUrl}`);
             };
             img.src = imageUrl;
         } catch (error) {
             warnings.push('Could not check image dimensions');
+        }
+    }
+
+    /**
+     * Validate image URL format
+     */
+    validateImageUrl(imageUrl, warnings) {
+        if (!imageUrl) {
+            warnings.push('No image URL provided');
+            return;
+        }
+        
+        // Check if URL is absolute
+        if (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+            warnings.push('Image URL should be absolute (start with http:// or https://)');
+        }
+        
+        // Check file extension
+        const extension = imageUrl.split('.').pop()?.toLowerCase();
+        if (extension && !['jpg', 'jpeg', 'png', 'webp'].includes(extension)) {
+            warnings.push(`Image format .${extension} may not be supported by all social platforms. Use JPG, PNG, or WebP.`);
+        }
+        
+        // Check for SVG (not well supported)
+        if (extension === 'svg') {
+            warnings.push('SVG format is not well supported by social media platforms. Use PNG or JPG instead.');
         }
     }
 
