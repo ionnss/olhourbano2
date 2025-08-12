@@ -8,20 +8,20 @@ excerpt: Saiba como plataformas de tecnologia cívica como o [OlhoUrbano.com.br]
 
  **Empoderando Cidades com Tecnologia Cívica: Construindo Comunidades Urbanas Mais Inteligentes e Inclusivas**
 
-No cenário urbano atual, em constante evolução, as cidades enfrentam desafios complexos — transporte público lotado, gerenciamento ineficiente de resíduos, acesso desigual a serviços e uma necessidade crescente de transparência na governança. É aí que entra a **tecnologia cívica** (*civic techs*), um movimento poderoso que utiliza a tecnologia para conectar cidadãos e suas cidades, promovendo colaboração e transparência e tornando a comunicação entre cidadãos e poder público mais ágil, transparente e colaborativa.  
+No cenário urbano atual, em constante evolução, as cidades enfrentam desafios complexos — transporte público lotado, gerenciamento ineficiente de resíduos, acesso desigual a serviços e uma necessidade crescente de transparência na governança. É aí que entra a **tecnologia cívica** (*civic techs*), um movimento poderoso que utiliza a tecnologia para conectar cidadãos e suas cidades, promovendo colaboração e transparência a fim de tornar a comunicação entre cidadãos e poder público mais ágil, transparente e colaborativa.  
 
-No *Olho Urbano*, acreditamos no potencial da tecnologia cívica para transformar espaços urbanos em ambientes mais inclusivos, responsivos e sustentáveis. Vamos explorar o que é a tecnologia cívica, por que ela importa e como ela está reshaping as cidades para melhor.
+No *Olho Urbano*, acreditamos no potencial da tecnologia cívica para transformar espaços urbanos em ambientes mais inclusivos, responsivos e sustentáveis. E que a melhora do ambiente no qual vivemos, está correlacionado diretamento para com a saúde física e psicológica dos indivíduos. 
 
 ---
 
 ## O que é Tecnologia Cívica?
 
-A tecnologia cívica, ou *civic tech*, refere-se a ferramentas, plataformas e soluções digitais projetadas para aprimorar o engajamento cívico, melhorar serviços públicos e fortalecer a relação entre governos e cidadãos. Trata-se de usar a tecnologia — sejam apps, plataformas de dados abertos ou ferramentas de mapeamento colaborativo — para empoderar comunidades a resolver problemas coletivamente. De relatar buracos em ruas a crowdsourcing de ideias para planejamento urbano, a civic tech coloca o poder da mudança nas mãos dos residentes.
+A tecnologia cívica, ou *civic tech*, refere-se a ferramentas, plataformas e soluções digitais projetadas para aprimorar o engajamento cívico, melhorar serviços públicos e fortalecer a relação entre governos e cidadãos, sem excluir as organizações privadas e suas responsabilidades sociais. Trata-se de usar a tecnologia — sejam apps, plataformas de dados abertos ou ferramentas de mapeamento colaborativo — para empoderar comunidades a resolver problemas coletivamente. De relatar buracos em ruas a crowdsourcing de ideias para planejamento urbano, a civic tech coloca o poder da mudança nas mãos dos residentes.
 
-No cerne, a tecnologia cívica é guiada por três princípios chave:
+No cerne, a tecnologia cívica é guiada por alguns princípios chave:
 - **Transparência**: Tornar dados e processos governamentais acessíveis a todos.
 - **Participação**: Incentivar cidadãos a contribuir ativamente para a tomada de decisões.
-- **Colaboração**: Fomentar parcerias entre governos, cidadãos e organizações para enfrentar desafios urbanos.
+- **Colaboração**: Fomentar parcerias entre governos, cidadãos e organizações privadas para enfrentar desafios urbanos.
 
 ---
 
@@ -54,18 +54,18 @@ Quando os moradores podem reportar problemas urbanos de forma simples e eficient
 
 ---
 
-### Benefícios da Tecnologia Cívica
+## Benefícios da Tecnologia Cívica como o Olho Urbano
 
 - **Transparência**: Todas as denúncias ficam visíveis no mapa interativo, com atualização pública do status.  
 - **Eficiência**: Processos internos automatizados reduzem o tempo de resposta das equipes de manutenção e fiscalização.  
 - **Engajamento**: A população participa não só denunciando, mas também **votando** e **comentando** nas demandas mais urgentes.  
-- **Inteligência de Dados**: As informações geradas servem de insumo para políticas públicas e planejamento urbanos mais eficazes.  
+- **Inteligência de Dados**: As informações geradas servem de insumo para políticas públicas e planejamento urbanos mais eficazes. 
 
 ---
 
 ## O Papel do Olho Urbano
 
-O [OlhoUrbano.com.br](https://olhourbano.com.br) foi projetado para ser **um elo entre sociedade civil e administração pública**, inspirado em modelos de *civic tech* bem-sucedidos ao redor do mundo, como *FixMyStreet* (Reino Unido) e *SeeClickFix* (EUA).
+O [OlhoUrbano.com.br](https://olhourbano.com.br) foi projetado para ser **um elo entre sociedade civil, a administração pública e organizações privadas com responsabilidades sociais** [Sobre o Olho Urbano](https://olhourbano.com.br/sobre).
 
 Principais recursos da plataforma:  
 
@@ -91,6 +91,8 @@ A tendência é que as plataformas de *civic tech* evoluam junto com outras tecn
 
 A transformação digital na gestão urbana já é uma realidade — e a **tecnologia cívica** é o motor dessa mudança.  
 
-O [Olho Urbano](https://olhourbano.com.br) quer mostrar como é possível criar cidades mais inteligentes, sustentáveis e humanas quando cidadãos e governos trabalham juntos.
+O [Olho Urbano](https://olhourbano.com.br) quer mostrar como é possível criar cidades mais inteligentes, sustentáveis e humanas quando cidadãos, governos e empresas privadas trabalham juntos em direção às suas responsabilidades sociais.
 
 O futuro das nossas cidades está sendo moldado agora, e cada denúncia, cada voto e cada participação é parte essencial dessa construção coletiva.
+
+---
