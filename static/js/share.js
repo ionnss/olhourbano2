@@ -62,7 +62,7 @@ function createShareModal() {
                     font-size: 14px;
                     color: #666;
                     line-height: 1.4;
-                ">Escolha como você quer compartilhar esta denúncia</p>
+                ">Baixe a imagem para compartilhar nas redes sociais</p>
             </div>
             
             <!-- Link Display Box with Copy Functionality -->
@@ -216,13 +216,51 @@ async function generateShareImage() {
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         
         if (isMobile) {
-            // For mobile users, just show the portrait download button
-            console.log('Mobile device detected, showing portrait download button only');
-            showMobilePortraitDownload();
-            return;
+            // For mobile users, generate only the portrait version
+            console.log('Mobile device detected, generating portrait image only');
+            
+            // Add timeout for mobile image generation
+            const mobileTimeout = setTimeout(() => {
+                console.warn('Mobile image generation timeout, showing fallback');
+                showFallbackPreview();
+            }, 30000); // 30 second timeout
+            
+            try {
+                console.log('Starting portrait image generation for mobile...');
+                const portraitBlob = await generatePortraitImage(reportId, categoryName, categoryIcon, description, location, voteCount, createdAt, reportUrl);
+                
+                // Clear timeout since generation succeeded
+                clearTimeout(mobileTimeout);
+                
+                console.log('Portrait image generated successfully for mobile, blob size:', portraitBlob.size);
+                
+                // Store portrait version
+                window.shareImageBlobPortrait = portraitBlob;
+                window.shareImageUrlPortrait = URL.createObjectURL(portraitBlob);
+                
+                console.log('Portrait image stored and URL created:', window.shareImageUrlPortrait);
+                
+                // Show mobile download button with actual image
+                showMobilePortraitDownload();
+                return;
+            } catch (error) {
+                // Clear timeout since we're handling the error
+                clearTimeout(mobileTimeout);
+                
+                console.error('Error generating portrait image for mobile:', error);
+                console.error('Error details:', {
+                    message: error.message,
+                    stack: error.stack,
+                    reportId,
+                    categoryName,
+                    description: description.substring(0, 50) + '...'
+                });
+                showFallbackPreview();
+                return;
+            }
         }
         
-        // Generate both landscape and portrait versions
+        // Generate both landscape and portrait versions for desktop
         let landscapeBlob, portraitBlob;
         
         try {
@@ -230,11 +268,6 @@ async function generateShareImage() {
             console.log('Landscape image generated successfully');
         } catch (error) {
             console.error('Error generating landscape image:', error);
-            if (isMobile) {
-                console.log('Mobile device detected, showing fallback preview');
-                showFallbackPreview();
-                return;
-            }
             throw error;
         }
         
@@ -628,165 +661,6 @@ async function generatePortraitImage(reportId, categoryName, categoryIcon, descr
     });
 }
 
-
-// Share functions
-function shareToWhatsApp() {
-    const reportId = document.querySelector('.share-btn').dataset.reportId;
-    const url = `https://olhourbano.com.br/report/${reportId}`;
-    const text = `Denúncia #${reportId} no Olho Urbano - Cidadania Ativa! 👁️`;
-    
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text + '\n\n' + url)}`;
-    window.open(whatsappUrl, '_blank');
-}
-
-function shareToFacebook() {
-    const reportId = document.querySelector('.share-btn').dataset.reportId;
-    const url = `https://olhourbano.com.br/report/${reportId}`;
-    
-    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-    window.open(facebookUrl, '_blank');
-}
-
-function shareToTwitter() {
-    const reportId = document.querySelector('.share-btn').dataset.reportId;
-    const url = `https://olhourbano.com.br/report/${reportId}`;
-    const text = `Denúncia #${reportId} no Olho Urbano - Cidadania Ativa! 👁️`;
-    
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
-    window.open(twitterUrl, '_blank');
-}
-
-function shareToTelegram() {
-    const reportId = document.querySelector('.share-btn').dataset.reportId;
-    const url = `https://olhourbano.com.br/report/${reportId}`;
-    const text = `Denúncia #${reportId} no Olho Urbano - Cidadania Ativa! 👁️`;
-    
-    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
-    window.open(telegramUrl, '_blank');
-}
-
-function shareToInstagram() {
-    // Create Instagram modal
-    const instagramModal = document.createElement('div');
-    instagramModal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.8);
-        z-index: 10001;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    `;
-    
-    instagramModal.innerHTML = `
-        <div style="
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            max-width: 500px;
-            text-align: center;
-        ">
-            <h4 style="margin-bottom: 1rem; color: #333;">Compartilhar no Instagram</h4>
-            
-            <div style="margin-bottom: 1.5rem;">
-                <p style="margin-bottom: 1rem; color: #666;">Escolha como compartilhar:</p>
-                
-                <div style="display: flex; flex-direction: column; gap: 1rem;">
-                    <button onclick="shareToInstagramStory()" style="
-                        background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-                        color: white;
-                        border: none;
-                        padding: 1rem;
-                        border-radius: 12px;
-                        font-weight: 600;
-                        cursor: pointer;
-                    ">
-                        📱 Instagram Stories
-                    </button>
-                    
-                    <button onclick="shareToInstagramPost()" style="
-                        background: #e4405f;
-                        color: white;
-                        border: none;
-                        padding: 1rem;
-                        border-radius: 12px;
-                        font-weight: 600;
-                        cursor: pointer;
-                    ">
-                        📸 Instagram Post
-                    </button>
-                </div>
-            </div>
-            
-            <button onclick="closeInstagramModal()" style="
-                background: #6c757d;
-                color: white;
-                border: none;
-                padding: 0.5rem 1rem;
-                border-radius: 6px;
-                cursor: pointer;
-            ">
-                Fechar
-            </button>
-        </div>
-    `;
-    
-    document.body.appendChild(instagramModal);
-    
-    // Store modal reference
-    window.instagramModal = instagramModal;
-}
-
-function shareToLinkedIn() {
-    const reportId = document.querySelector('.share-btn').dataset.reportId;
-    const url = `https://olhourbano.com.br/report/${reportId}`;
-    const text = `Denúncia #${reportId} no Olho Urbano - Cidadania Ativa! 👁️`;
-    
-    const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
-    window.open(linkedinUrl, '_blank');
-}
-
-// Instagram-specific functions
-function shareToInstagramStory() {
-    const reportId = document.querySelector('.share-btn').dataset.reportId;
-    const url = `https://olhourbano.com.br/report/${reportId}`;
-    const text = `🚨 Denúncia #${reportId}\n👁️ Olho Urbano\n\nBaixe a imagem e adicione aos Stories!\n\n${url}`;
-    
-    // Copy text and close modal
-    navigator.clipboard.writeText(text).then(() => {
-        alert('Texto copiado! Cole no Instagram Stories. Baixe a imagem e adicione-a aos seus Stories.');
-        closeInstagramModal();
-    }).catch(() => {
-        alert('Erro ao copiar. Baixe a imagem e adicione-a aos seus Instagram Stories.');
-        closeInstagramModal();
-    });
-}
-
-function shareToInstagramPost() {
-    const reportId = document.querySelector('.share-btn').dataset.reportId;
-    const url = `https://olhourbano.com.br/report/${reportId}`;
-    const text = `🚨 Denúncia #${reportId} no Olho Urbano!\n\n👁️ Cidadania Ativa em ação\n\nBaixe a imagem e adicione ao seu post!\n\n#OlhoUrbano #CidadaniaAtiva #Denúncia\n\n${url}`;
-    
-    // Copy text and close modal
-    navigator.clipboard.writeText(text).then(() => {
-        alert('Texto copiado! Cole no Instagram. Baixe a imagem e adicione-a ao seu post.');
-        closeInstagramModal();
-    }).catch(() => {
-        alert('Erro ao copiar. Baixe a imagem e adicione-a ao seu Instagram post.');
-        closeInstagramModal();
-    });
-}
-
-function closeInstagramModal() {
-    if (window.instagramModal) {
-        document.body.removeChild(window.instagramModal);
-        window.instagramModal = null;
-    }
-}
-
 async function copyShareLink() {
     const reportId = document.querySelector('.share-btn').dataset.reportId;
     const url = `https://olhourbano.com.br/report/${reportId}`;
@@ -864,6 +738,14 @@ document.addEventListener('DOMContentLoaded', initShare);
 
 // Download share image
 function downloadShareImage(version = 'landscape') {
+    console.log('downloadShareImage called with version:', version);
+    console.log('Available blobs:', {
+        landscape: !!window.shareImageBlob,
+        portrait: !!window.shareImageBlobPortrait,
+        landscapeSize: window.shareImageBlob?.size,
+        portraitSize: window.shareImageBlobPortrait?.size
+    });
+    
     if (version === 'landscape') {
         if (window.shareImageBlob) {
             const url = window.shareImageUrl;
@@ -873,6 +755,9 @@ function downloadShareImage(version = 'landscape') {
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+            console.log('Landscape image download initiated');
+        } else {
+            console.error('Landscape image blob not available');
         }
     } else { // portrait
         if (window.shareImageBlobPortrait) {
@@ -883,6 +768,10 @@ function downloadShareImage(version = 'landscape') {
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+            console.log('Portrait image download initiated');
+        } else {
+            console.error('Portrait image blob not available');
+            alert('Erro: Imagem não foi gerada. Tente novamente.');
         }
     }
 }
@@ -1062,18 +951,8 @@ function showFallbackPreview() {
 
 // Export functions for global access
 window.shareReport = shareReport;
-window.shareToWhatsApp = shareToWhatsApp;
-window.shareToFacebook = shareToFacebook;
-window.shareToTwitter = shareToTwitter;
-window.shareToTelegram = shareToTelegram;
-window.shareToInstagram = shareToInstagram;
-window.shareToInstagramStory = shareToInstagramStory;
-window.shareToInstagramPost = shareToInstagramPost;
-window.closeInstagramModal = closeInstagramModal;
-window.shareToLinkedIn = shareToLinkedIn;
 window.copyShareLink = copyShareLink;
 window.closeShareModal = closeShareModal;
 window.downloadShareImage = downloadShareImage;
 window.copyImageToClipboard = copyImageToClipboard;
 window.generateShareImage = generateShareImage;
-
