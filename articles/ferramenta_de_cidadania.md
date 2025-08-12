@@ -3,7 +3,7 @@ title: Tecnologia Cívica: Ferramenta de Cidadania
 author: Equipe Olho Urbano
 date: 2025-08-13
 tags: civic tech, tecnologia cívica, comunidades, colaborativo
-excerpt: 
+excerpt: Entenda o que é Civi Tech e como podemos tornar a melhoria urbano a partir de comportamento colaborativos. 
 ---
 
 **Empoderando Cidades com Tecnologia Cívica: Construindo Comunidades Urbanas Mais Inteligentes e Inclusivas**
