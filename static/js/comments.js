@@ -127,10 +127,9 @@ function showCommentVerificationModal(reportId) {
     // Show the modal
     try {
         const modal = new bootstrap.Modal(modalElement);
-        modal.show();
         
-        // Apply birth date mask to the modal input
-        setTimeout(() => {
+        // Apply masks after modal is fully shown
+        modalElement.addEventListener('shown.bs.modal', function applyMasks() {
             const birthDateInput = document.getElementById('voteBirthDate');
             if (birthDateInput && !birthDateInput.hasAttribute('data-mask-applied')) {
                 if (typeof applyBirthDateMask === 'function') {
@@ -139,7 +138,6 @@ function showCommentVerificationModal(reportId) {
                 }
             }
             
-            // Apply CPF mask to the modal input
             const cpfInput = document.getElementById('voteCpf');
             if (cpfInput && !cpfInput.hasAttribute('data-mask-applied')) {
                 if (typeof applyCPFMask === 'function') {
@@ -147,7 +145,12 @@ function showCommentVerificationModal(reportId) {
                     cpfInput.setAttribute('data-mask-applied', 'true');
                 }
             }
-        }, 100);
+            
+            // Remove the event listener to prevent multiple bindings
+            modalElement.removeEventListener('shown.bs.modal', applyMasks);
+        }, { once: true });
+        
+        modal.show();
     } catch (error) {
         console.error('Error initializing modal:', error);
         showCommentError('Erro ao abrir modal de verificação. Recarregue a página.');

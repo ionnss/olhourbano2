@@ -152,6 +152,21 @@ window.initCPFMask = function() {
     });
 }
 
+// Function to apply masks to modal inputs
+function applyMasksToModal() {
+    const birthDateInput = document.getElementById('voteBirthDate');
+    if (birthDateInput && !birthDateInput.hasAttribute('data-mask-applied')) {
+        applyBirthDateMask(birthDateInput);
+        birthDateInput.setAttribute('data-mask-applied', 'true');
+    }
+    
+    const cpfInput = document.getElementById('voteCpf');
+    if (cpfInput && !cpfInput.hasAttribute('data-mask-applied')) {
+        applyCPFMask(cpfInput);
+        cpfInput.setAttribute('data-mask-applied', 'true');
+    }
+}
+
 // Function to show the vote verification modal
 function showVoteVerificationModal(reportId, buttonElement) {
     // Store the button element for later use
@@ -168,24 +183,20 @@ function showVoteVerificationModal(reportId, buttonElement) {
     document.getElementById('voteVerificationStatus').style.display = 'none';
     
     // Show the modal
-    const modal = new bootstrap.Modal(document.getElementById('voteVerificationModal'));
-    modal.show();
+    const modalElement = document.getElementById('voteVerificationModal');
+    const modal = new bootstrap.Modal(modalElement);
     
-    // Apply birth date mask to the modal input
-    setTimeout(() => {
-        const birthDateInput = document.getElementById('voteBirthDate');
-        if (birthDateInput && !birthDateInput.hasAttribute('data-mask-applied')) {
-            applyBirthDateMask(birthDateInput);
-            birthDateInput.setAttribute('data-mask-applied', 'true');
-        }
-        
-        // Apply CPF mask to the modal input
-        const cpfInput = document.getElementById('voteCpf');
-        if (cpfInput && !cpfInput.hasAttribute('data-mask-applied')) {
-            applyCPFMask(cpfInput);
-            cpfInput.setAttribute('data-mask-applied', 'true');
-        }
-    }, 100);
+    // Apply masks after modal is fully shown
+    modalElement.addEventListener('shown.bs.modal', function applyMasks() {
+        applyMasksToModal();
+        // Remove the event listener to prevent multiple bindings
+        modalElement.removeEventListener('shown.bs.modal', applyMasks);
+    }, { once: true });
+    
+    // Fallback: also try to apply masks after a delay
+    setTimeout(applyMasksToModal, 200);
+    
+    modal.show();
 }
 
 // Function to submit vote after CPF verification
