@@ -1,9 +1,11 @@
 package services
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // ValidateCPF validates Brazilian CPF format and check digit
@@ -160,4 +162,58 @@ func ValidateFiles(fileCount int) []string {
 	}
 
 	return errors
+}
+
+// ConvertBirthDateToDBFormat converts dd/mm/aaaa format to YYYY-MM-DD for database storage
+func ConvertBirthDateToDBFormat(birthDate string) (string, error) {
+	// Check if it's already in YYYY-MM-DD format (from old date inputs)
+	if len(birthDate) == 10 && birthDate[4] == '-' && birthDate[7] == '-' {
+		return birthDate, nil
+	}
+
+	// Parse dd/mm/aaaa format
+	if len(birthDate) != 10 || birthDate[2] != '/' || birthDate[5] != '/' {
+		return "", fmt.Errorf("formato inválido, use dd/mm/aaaa")
+	}
+
+	day := birthDate[0:2]
+	month := birthDate[3:5]
+	year := birthDate[6:10]
+
+	// Validate components
+	dayNum, err := strconv.Atoi(day)
+	if err != nil || dayNum < 1 || dayNum > 31 {
+		return "", fmt.Errorf("dia inválido")
+	}
+
+	monthNum, err := strconv.Atoi(month)
+	if err != nil || monthNum < 1 || monthNum > 12 {
+		return "", fmt.Errorf("mês inválido")
+	}
+
+	yearNum, err := strconv.Atoi(year)
+	if err != nil || yearNum < 1900 || yearNum > time.Now().Year() {
+		return "", fmt.Errorf("ano inválido")
+	}
+
+	// Validate the actual date
+	date := time.Date(yearNum, time.Month(monthNum), dayNum, 0, 0, 0, 0, time.UTC)
+	if date.Day() != dayNum || date.Month() != time.Month(monthNum) || date.Year() != yearNum {
+		return "", fmt.Errorf("data inválida")
+	}
+
+	// Check if date is not in the future
+	if date.After(time.Now()) {
+		return "", fmt.Errorf("data não pode ser no futuro")
+	}
+
+	// Check minimum age (16 years)
+	minAge := 16
+	minDate := time.Now().AddDate(-minAge, 0, 0)
+	if date.After(minDate) {
+		return "", fmt.Errorf("idade mínima: %d anos", minAge)
+	}
+
+	// Convert to YYYY-MM-DD format
+	return fmt.Sprintf("%04d-%02d-%02d", yearNum, monthNum, dayNum), nil
 }

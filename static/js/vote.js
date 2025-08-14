@@ -32,7 +32,125 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Initialize birth date mask for vote modal
+    if (typeof initBirthDateMask === 'function') {
+        initBirthDateMask();
+    }
+    
+    // Initialize CPF mask for vote modal
+    if (typeof initCPFMask === 'function') {
+        initCPFMask();
+    }
 });
+
+// Function to apply birth date mask to a specific input
+window.applyBirthDateMask = function(input) {
+    // Set input type to tel for mobile number pad
+    input.type = 'tel';
+    input.placeholder = 'dd/mm/aaaa';
+    input.maxLength = 10;
+    
+            input.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+            let formattedValue = '';
+            
+            if (value.length > 0) {
+                formattedValue += value.substring(0, 2); // dd
+            }
+            if (value.length >= 3) {
+                formattedValue += '/' + value.substring(2, 4); // mm
+            }
+            if (value.length >= 5) {
+                formattedValue += '/' + value.substring(4, 8); // aaaa
+            }
+            
+            e.target.value = formattedValue;
+        });
+    
+    // Prevent non-numeric input
+    input.addEventListener('keypress', function(e) {
+        if (!/\d/.test(e.key)) {
+            e.preventDefault();
+        }
+    });
+}
+
+// Function to apply CPF mask to a specific input
+window.applyCPFMask = function(input) {
+    // Set input type to tel for mobile number pad
+    input.type = 'tel';
+    input.placeholder = '000.000.000-00';
+    input.maxLength = 14;
+    
+    input.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+        let formattedValue = '';
+        
+        // Apply mask: 000.000.000-00
+        if (value.length > 0) {
+            formattedValue += value.substring(0, 3); // 000
+        }
+        if (value.length >= 4) {
+            formattedValue += '.' + value.substring(3, 6); // .000
+        }
+        if (value.length >= 7) {
+            formattedValue += '.' + value.substring(6, 9); // .000
+        }
+        if (value.length >= 10) {
+            formattedValue += '-' + value.substring(9, 11); // -00
+        }
+        
+        e.target.value = formattedValue;
+    });
+    
+    // Prevent non-numeric input
+    input.addEventListener('keypress', function(e) {
+        if (!/\d/.test(e.key)) {
+            e.preventDefault();
+        }
+    });
+}
+
+// CPF input mask and validation
+window.initCPFMask = function() {
+    const cpfInputs = document.querySelectorAll('input[id*="cpf"], input[id*="Cpf"]');
+    
+    cpfInputs.forEach(input => {
+        // Set input type to tel for mobile number pad
+        input.type = 'tel';
+        input.placeholder = '000.000.000-00';
+        input.maxLength = 14;
+        
+        input.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+            let formattedValue = '';
+            
+            // Apply mask: 000.000.000-00
+            if (value.length > 0) {
+                formattedValue += value.substring(0, 3); // 000
+            }
+            if (value.length >= 4) {
+                formattedValue += '.' + value.substring(3, 6); // .000
+            }
+            if (value.length >= 7) {
+                formattedValue += '.' + value.substring(6, 9); // .000
+            }
+            if (value.length >= 10) {
+                formattedValue += '-' + value.substring(9, 11); // -00
+            }
+            
+            e.target.value = formattedValue;
+        });
+        
+        // Prevent non-numeric input
+        input.addEventListener('keypress', function(e) {
+            if (!/\d/.test(e.key)) {
+                e.preventDefault();
+            }
+        });
+    });
+}
 
 // Function to show the vote verification modal
 function showVoteVerificationModal(reportId, buttonElement) {
@@ -52,6 +170,22 @@ function showVoteVerificationModal(reportId, buttonElement) {
     // Show the modal
     const modal = new bootstrap.Modal(document.getElementById('voteVerificationModal'));
     modal.show();
+    
+    // Apply birth date mask to the modal input
+    setTimeout(() => {
+        const birthDateInput = document.getElementById('voteBirthDate');
+        if (birthDateInput && !birthDateInput.hasAttribute('data-mask-applied')) {
+            applyBirthDateMask(birthDateInput);
+            birthDateInput.setAttribute('data-mask-applied', 'true');
+        }
+        
+        // Apply CPF mask to the modal input
+        const cpfInput = document.getElementById('voteCpf');
+        if (cpfInput && !cpfInput.hasAttribute('data-mask-applied')) {
+            applyCPFMask(cpfInput);
+            cpfInput.setAttribute('data-mask-applied', 'true');
+        }
+    }, 100);
 }
 
 // Function to submit vote after CPF verification

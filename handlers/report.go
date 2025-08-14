@@ -115,8 +115,15 @@ func handleReportSubmission(w http.ResponseWriter, r *http.Request, category *co
 
 	// Extract form data
 	cpf := r.FormValue("cpf")
-	birthDate := r.FormValue("birth_date")
+	birthDateInput := r.FormValue("birth_date")
 	email := r.FormValue("email")
+
+	// Convert birth date format
+	birthDate, err := services.ConvertBirthDateToDBFormat(birthDateInput)
+	if err != nil {
+		http.Error(w, "Data de nascimento: "+err.Error(), http.StatusBadRequest)
+		return
+	}
 	emailConfirmation := r.FormValue("email_confirmation")
 	location := r.FormValue("location")
 	description := r.FormValue("description")

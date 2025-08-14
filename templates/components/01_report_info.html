@@ -42,13 +42,15 @@
                                     <div class="form-text">
                                         <i class="bi bi-shield-lock-fill text-success me-1"></i>
                                         Será verificado com o CPFHub para validação e não será armazenado
+                                        <br><small class="text-muted"><i class="bi bi-info-circle me-1"></i>Digite apenas números (só números)</small>
                                     </div>
                                     <div id="cpfVerificationStatus" class="verification-status" style="display: none;"></div>
                                 </div>
                                 
                                 <div class="col-md-6 mb-3">
                                     <label for="birth_date" class="form-label">Data de Nascimento *</label>
-                                    <input type="date" class="form-control" id="birth_date" name="birth_date" required
+                                    <input type="tel" class="form-control" id="birth_date" name="birth_date" 
+                                           placeholder="dd/mm/aaaa" maxlength="10" required
                                            value="{{if .FormData}}{{.FormData.BirthDate}}{{end}}">
                                     <div class="form-text">Para verificação junto ao CPF</div>
                                 </div>

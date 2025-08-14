@@ -63,13 +63,24 @@ func VerifyCPFHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Convert birth date format for CPF verification
+	birthDateForVerification, err := services.ConvertBirthDateToDBFormat(req.BirthDate)
+	if err != nil {
+		response := services.CPFVerificationResponse{
+			Valid:   false,
+			Message: "Data de nascimento: " + err.Error(),
+		}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
 	// Verify CPF with birth date
-	result, err := services.VerifyCPFWithBirthDate(req.CPF, req.BirthDate)
+	result, err := services.VerifyCPFWithBirthDate(req.CPF, birthDateForVerification)
 	if err != nil {
 		log.Printf("Error verifying CPF: %v", err)
 
 		// Fallback to mock verification
-		result = services.MockCPFVerification(req.CPF, req.BirthDate)
+		result = services.MockCPFVerification(req.CPF, birthDateForVerification)
 		log.Printf("Using mock CPF verification for development")
 	}
 
@@ -218,6 +229,17 @@ func VoteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Convert birth date format for CPF verification
+	birthDateForVerification, err := services.ConvertBirthDateToDBFormat(voteReq.BirthDate)
+	if err != nil {
+		response := VoteResponse{
+			Success: false,
+			Message: "Data de nascimento: " + err.Error(),
+		}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
 	// Hash the CPF to check for existing votes BEFORE API verification
 	hashedCPF := services.HashCPF(voteReq.CPF)
 
@@ -251,11 +273,11 @@ func VoteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Verify CPF with birth date (only if user hasn't voted)
-	result, err := services.VerifyCPFWithBirthDate(voteReq.CPF, voteReq.BirthDate)
+	result, err := services.VerifyCPFWithBirthDate(voteReq.CPF, birthDateForVerification)
 	if err != nil {
 		log.Printf("Error verifying CPF for vote: %v", err)
 		// Fallback to mock verification for development
-		result = services.MockCPFVerification(voteReq.CPF, voteReq.BirthDate)
+		result = services.MockCPFVerification(voteReq.CPF, birthDateForVerification)
 		log.Printf("Using mock CPF verification for vote (development)")
 	}
 

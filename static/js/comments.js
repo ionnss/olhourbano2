@@ -5,6 +5,10 @@ let currentCommentSort = 'recent';
 // Initialize comments functionality
 document.addEventListener('DOMContentLoaded', function() {
     initializeComments();
+    // Initialize birth date mask for comment verification modal
+    if (typeof initBirthDateMask === 'function') {
+        initBirthDateMask();
+    }
 });
 
 function initializeComments() {
@@ -124,6 +128,26 @@ function showCommentVerificationModal(reportId) {
     try {
         const modal = new bootstrap.Modal(modalElement);
         modal.show();
+        
+        // Apply birth date mask to the modal input
+        setTimeout(() => {
+            const birthDateInput = document.getElementById('voteBirthDate');
+            if (birthDateInput && !birthDateInput.hasAttribute('data-mask-applied')) {
+                if (typeof applyBirthDateMask === 'function') {
+                    applyBirthDateMask(birthDateInput);
+                    birthDateInput.setAttribute('data-mask-applied', 'true');
+                }
+            }
+            
+            // Apply CPF mask to the modal input
+            const cpfInput = document.getElementById('voteCpf');
+            if (cpfInput && !cpfInput.hasAttribute('data-mask-applied')) {
+                if (typeof applyCPFMask === 'function') {
+                    applyCPFMask(cpfInput);
+                    cpfInput.setAttribute('data-mask-applied', 'true');
+                }
+            }
+        }, 100);
     } catch (error) {
         console.error('Error initializing modal:', error);
         showCommentError('Erro ao abrir modal de verificação. Recarregue a página.');

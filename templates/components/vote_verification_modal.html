@@ -35,6 +35,7 @@
                         <div class="form-text">
                             <i class="bi bi-shield-lock-fill text-success me-1"></i>
                             Será verificado com o CPFHub para validação e não será armazenado
+                            <br><small class="text-muted"><i class="bi bi-info-circle me-1"></i>Digite apenas números (só números)</small>
                         </div>
                     </div>
                     
@@ -44,10 +45,12 @@
                             <i class="bi bi-calendar-event me-1"></i>
                             Data de Nascimento
                         </label>
-                        <input type="date" 
+                        <input type="tel" 
                                class="form-control" 
                                id="voteBirthDate" 
                                name="birth_date" 
+                               placeholder="dd/mm/aaaa"
+                               maxlength="10"
                                required>
                         <div class="form-text">
                             Data de nascimento registrada no CPF

@@ -132,7 +132,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const birthDateInput = document.getElementById('birth_date');
     if (birthDateInput) {
-        birthDateInput.addEventListener('blur', verifyCPFWithBirthDate);
+        // Only verify on blur if the date is complete
+        birthDateInput.addEventListener('blur', function() {
+            const value = this.value;
+            const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+            if (dateRegex.test(value)) {
+                verifyCPFWithBirthDate();
+            }
+        });
         birthDateInput.addEventListener('input', resetCPFVerificationStatus);
     }
 
@@ -215,6 +222,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (transportTypeSelect) {
         transportTypeSelect.addEventListener('change', handleTransportTypeChange);
     }
+
+    // Birth date input mask and validation
+    initBirthDateMask();
+    
+    // CPF input mask
+    initCPFMask();
 });
 
 // CPF + Birth date verification
@@ -225,6 +238,12 @@ async function verifyCPFWithBirthDate() {
     
     if (!cpf || !birthDate) {
         return;
+    }
+    
+    // Check if birth date is complete (dd/mm/aaaa format)
+    const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    if (!dateRegex.test(birthDate)) {
+        return; // Don't verify if date is incomplete
     }
     
     // Check if status div exists
@@ -690,4 +709,142 @@ function handleTransportTypeChange() {
             selectedFields.style.display = 'block';
         }
     }
+}
+
+// Birth date input mask and validation
+function initBirthDateMask() {
+    const birthDateInputs = document.querySelectorAll('input[id*="birth_date"], input[id*="BirthDate"]');
+    
+    birthDateInputs.forEach(input => {
+        // Set input type to tel for mobile number pad
+        input.type = 'tel';
+        input.placeholder = 'dd/mm/aaaa';
+        input.maxLength = 10;
+        
+        input.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+            let formattedValue = '';
+            
+            if (value.length > 0) {
+                formattedValue += value.substring(0, 2); // dd
+            }
+            if (value.length >= 3) {
+                formattedValue += '/' + value.substring(2, 4); // mm
+            }
+            if (value.length >= 5) {
+                formattedValue += '/' + value.substring(4, 8); // aaaa
+            }
+            
+            e.target.value = formattedValue;
+        });
+        
+        // Validate on blur
+        input.addEventListener('blur', function(e) {
+            validateBirthDate(e.target);
+        });
+        
+        // Prevent non-numeric input
+        input.addEventListener('keypress', function(e) {
+            if (!/\d/.test(e.key)) {
+                e.preventDefault();
+            }
+        });
+    });
+}
+
+function validateBirthDate(input) {
+    const value = input.value;
+    const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    
+    if (!dateRegex.test(value)) {
+        input.setCustomValidity('Formato inválido. Use dd/mm/aaaa');
+        return false;
+    }
+    
+    const [, day, month, year] = value.match(dateRegex);
+    const dayNum = parseInt(day, 10);
+    const monthNum = parseInt(month, 10);
+    const yearNum = parseInt(year, 10);
+    
+    // Basic validation
+    if (dayNum < 1 || dayNum > 31) {
+        input.setCustomValidity('Dia inválido');
+        return false;
+    }
+    
+    if (monthNum < 1 || monthNum > 12) {
+        input.setCustomValidity('Mês inválido');
+        return false;
+    }
+    
+    const currentYear = new Date().getFullYear();
+    if (yearNum < 1900 || yearNum > currentYear) {
+        input.setCustomValidity('Ano inválido');
+        return false;
+    }
+    
+    // Check if date is valid (accounting for leap years, etc.)
+    const date = new Date(yearNum, monthNum - 1, dayNum);
+    if (date.getFullYear() !== yearNum || date.getMonth() !== monthNum - 1 || date.getDate() !== dayNum) {
+        input.setCustomValidity('Data inválida');
+        return false;
+    }
+    
+    // Check if date is not in the future
+    if (date > new Date()) {
+        input.setCustomValidity('Data não pode ser no futuro');
+        return false;
+    }
+    
+    // Check minimum age (e.g., 16 years old)
+    const minAge = 16;
+    const minDate = new Date();
+    minDate.setFullYear(minDate.getFullYear() - minAge);
+    if (date > minDate) {
+        input.setCustomValidity(`Idade mínima: ${minAge} anos`);
+        return false;
+    }
+    
+    input.setCustomValidity('');
+    return true;
+}
+
+// CPF input mask and validation
+function initCPFMask() {
+    const cpfInputs = document.querySelectorAll('input[id*="cpf"], input[id*="Cpf"]');
+    
+    cpfInputs.forEach(input => {
+        // Set input type to tel for mobile number pad
+        input.type = 'tel';
+        input.placeholder = '000.000.000-00';
+        input.maxLength = 14;
+        
+        input.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+            let formattedValue = '';
+            
+            // Apply mask: 000.000.000-00
+            if (value.length > 0) {
+                formattedValue += value.substring(0, 3); // 000
+            }
+            if (value.length >= 4) {
+                formattedValue += '.' + value.substring(3, 6); // .000
+            }
+            if (value.length >= 7) {
+                formattedValue += '.' + value.substring(6, 9); // .000
+            }
+            if (value.length >= 10) {
+                formattedValue += '-' + value.substring(9, 11); // -00
+            }
+            
+            e.target.value = formattedValue;
+        });
+        
+        // Prevent non-numeric input
+        input.addEventListener('keypress', function(e) {
+            if (!/\d/.test(e.key)) {
+                e.preventDefault();
+            }
+        });
+    });
 }

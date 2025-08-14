@@ -51,9 +51,16 @@ func CreateCommentHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Comment content exceeds 500 character limit", http.StatusBadRequest)
 		return
 	}
+	
+	// Convert birth date format for CPF verification
+	birthDateForVerification, err := services.ConvertBirthDateToDBFormat(req.BirthDate)
+	if err != nil {
+		http.Error(w, "Data de nascimento: "+err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	// Verify CPF with birth date
-	verification, err := services.VerifyCPFWithBirthDate(req.CPF, req.BirthDate)
+	verification, err := services.VerifyCPFWithBirthDate(req.CPF, birthDateForVerification)
 	if err != nil {
 		log.Printf("Error verifying CPF: %v", err)
 		http.Error(w, "Error verifying CPF", http.StatusInternalServerError)
