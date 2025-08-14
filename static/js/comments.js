@@ -130,30 +130,37 @@ function showCommentVerificationModal(reportId) {
         
         // Apply masks after modal is fully shown
         modalElement.addEventListener('shown.bs.modal', function applyMasks() {
-            const birthDateInput = document.getElementById('voteBirthDate');
-            if (birthDateInput && !birthDateInput.hasAttribute('data-mask-applied')) {
-                if (typeof applyBirthDateMask === 'function') {
-                    applyBirthDateMask(birthDateInput);
-                    birthDateInput.setAttribute('data-mask-applied', 'true');
-                }
-            }
-            
-            const cpfInput = document.getElementById('voteCpf');
-            if (cpfInput && !cpfInput.hasAttribute('data-mask-applied')) {
-                if (typeof applyCPFMask === 'function') {
-                    applyCPFMask(cpfInput);
-                    cpfInput.setAttribute('data-mask-applied', 'true');
-                }
-            }
-            
+            applyMasksToCommentModal();
             // Remove the event listener to prevent multiple bindings
             modalElement.removeEventListener('shown.bs.modal', applyMasks);
         }, { once: true });
+        
+        // Fallback: also try to apply masks after a delay
+        setTimeout(applyMasksToCommentModal, 200);
         
         modal.show();
     } catch (error) {
         console.error('Error initializing modal:', error);
         showCommentError('Erro ao abrir modal de verificação. Recarregue a página.');
+    }
+}
+
+// Function to apply masks to comment modal inputs
+function applyMasksToCommentModal() {
+    const birthDateInput = document.getElementById('voteBirthDate');
+    if (birthDateInput && !birthDateInput.hasAttribute('data-mask-applied')) {
+        if (typeof applyBirthDateMask === 'function') {
+            applyBirthDateMask(birthDateInput);
+            birthDateInput.setAttribute('data-mask-applied', 'true');
+        }
+    }
+    
+    const cpfInput = document.getElementById('voteCpf');
+    if (cpfInput && !cpfInput.hasAttribute('data-mask-applied')) {
+        if (typeof applyCPFMask === 'function') {
+            applyCPFMask(cpfInput);
+            cpfInput.setAttribute('data-mask-applied', 'true');
+        }
     }
 }
 
