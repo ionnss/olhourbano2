@@ -11,6 +11,14 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     background: #fff;
     border: 1px solid #e9ecef;
+    /* Prevent zoom gestures on report detail map */
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 /* Map Section Header */
@@ -30,6 +38,14 @@
     border-radius: 8px !important;
     margin: 0 !important;
     padding: 0 !important;
+    /* Prevent zoom gestures on the map element */
+    touch-action: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    -khtml-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
 }
 
 /* Map Controls Styling */

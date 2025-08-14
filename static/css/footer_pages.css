@@ -1013,18 +1013,13 @@
 
 /* ===== CONTACT CARD COMPONENT ===== */
 .contact-card {
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    background: none;
     border-radius: 20px;
     padding: 2.5rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e9ecef;
-    transition: all 0.3s ease;
+    /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); */   
+    /* border: 1px solid #e9ecef; */
+    /* transition: all 0.3s ease; */
     margin-bottom: 2rem;
-}
-
-.contact-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
 .contact-card-header {
