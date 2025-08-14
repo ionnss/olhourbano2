@@ -117,7 +117,9 @@ func generateThumbnailAsync(filePath, contentType, hash string) {
 	thumbnailPath := filepath.Join(ThumbnailDir, hash+"_thumb.jpg")
 
 	var err error
-	if strings.HasPrefix(contentType, "video/") {
+	if strings.HasPrefix(contentType, "image/") {
+		err = generateImageThumbnail(filePath, thumbnailPath)
+	} else if strings.HasPrefix(contentType, "video/") {
 		err = generateVideoThumbnail(filePath, thumbnailPath)
 	} else if contentType == "application/pdf" {
 		err = generatePDFThumbnail(filePath, thumbnailPath)
@@ -131,7 +133,24 @@ func generateThumbnailAsync(filePath, contentType, hash string) {
 
 // shouldGenerateThumbnail determines if we should generate a thumbnail for this file type
 func shouldGenerateThumbnail(contentType string) bool {
-	return strings.HasPrefix(contentType, "video/") || contentType == "application/pdf"
+	return strings.HasPrefix(contentType, "image/") || 
+		   strings.HasPrefix(contentType, "video/") || 
+		   contentType == "application/pdf"
+}
+
+// generateImageThumbnail generates a thumbnail from an image file
+func generateImageThumbnail(imagePath, thumbnailPath string) error {
+	cmd := exec.Command("convert",
+		"-resize", ThumbnailSize,
+		"-background", "white",
+		"-gravity", "center",
+		"-extent", ThumbnailSize,
+		imagePath,
+		thumbnailPath,
+	)
+
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }
 
 // generateVideoThumbnail generates a thumbnail from the first frame of a video

@@ -35,7 +35,7 @@ You need to manually create these files on your VPS:
 
 ```bash
 # Database password
-echo "your-production-db-password" > secrets/db_passwords.txt
+echo "your-production-db-password" > secrets/db_password.txt
 
 # Postgres password (for Docker)
 echo "your-production-postgres-password" > secrets/postgres_password.txt
@@ -207,7 +207,7 @@ ls -la secrets/
 # Should show all .txt files with 600 permissions
 
 # Verify secrets are readable by app
-sudo -u olhourbano cat secrets/db_passwords.txt
+sudo -u olhourbano cat secrets/db_password.txt
 ```
 
 ### Check Application

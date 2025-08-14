@@ -63,7 +63,14 @@ func TemplateFuncs() template.FuncMap {
 			return "document"
 		},
 		"getThumbnailPath": func(filePath string) string {
-			return services.GetThumbnailPath(filePath)
+			// Check if thumbnail exists and return web-accessible path
+			thumbnailPath := services.GetThumbnailPath(filePath)
+			if thumbnailPath != "" {
+				// Return web-accessible path instead of file system path
+				filename := filepath.Base(thumbnailPath)
+				return "/thumbnails/" + filename
+			}
+			return ""
 		},
 		"getThumbnailFilename": func(filePath string) string {
 			if filePath == "" {

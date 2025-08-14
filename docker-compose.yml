@@ -123,7 +123,7 @@ volumes:
 
 secrets:
   db_password:
-    file: ./secrets/db_passwords.txt
+    file: ./secrets/db_password.txt
   smtp_password:
     file: ./secrets/smtp_password.txt
   session_key:

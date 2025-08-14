@@ -326,20 +326,9 @@ function createMediaGallery(photos, reportId) {
     visiblePhotos.forEach((photo, index) => {
         const fileType = getFileTypeFromPath(photo);
         const thumbnailSrc = getThumbnailSrc(photo);
-        const isImage = fileType === 'image';
         
-        if (isImage) {
-            // Image file - show actual image
-            mediaHtml += `
-                <div class="media-item" onclick="openFileModal('/${photo}', '${photo}', '${fileType}')" style="cursor: pointer;">
-                    <img src="/${photo}" alt="Evidência ${index + 1}" class="media-thumbnail" loading="lazy">
-                    <div class="media-overlay-hover">
-                        <i class="bi bi-eye-fill"></i>
-                    </div>
-                </div>
-            `;
-        } else if (thumbnailSrc) {
-            // Has thumbnail - show thumbnail
+        if (thumbnailSrc) {
+            // Has thumbnail - show thumbnail for all file types
             mediaHtml += `
                 <div class="media-item" onclick="openFileModal('/${photo}', '${photo}', '${fileType}')" style="cursor: pointer;">
                     <img src="${thumbnailSrc}" alt="Evidência ${index + 1}" class="media-thumbnail" loading="lazy">
@@ -392,8 +381,8 @@ function getThumbnailSrc(filePath) {
     const filename = filePath.split('/').pop();
     const extension = filename.split('.').pop().toLowerCase();
     
-    // Only generate thumbnail for videos and PDFs
-    if (['mp4', 'webm', 'avi', 'mov', 'pdf'].includes(extension)) {
+    // Generate thumbnail for images, videos and PDFs
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'mp4', 'webm', 'avi', 'mov', 'pdf'].includes(extension)) {
         const hash = filename.replace('.' + extension, '');
         return `/thumbnails/${hash}_thumb.jpg`;
     }

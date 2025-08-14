@@ -44,31 +44,12 @@
                 {{range $index, $photo := .Photos}}
                 {{if $photo}}
                 <div class="media-item" onclick="openFileModal('/{{$photo}}', '{{$photo}}', '{{getFileType $photo}}')" style="cursor: pointer;">
-                    {{if isImageFile $photo}}
-                        <!-- Image file - show actual image -->
-                        <img src="/{{$photo}}" alt="Evidência {{add $index 1}}" class="media-thumbnail" loading="lazy">
-                    {{else if isVideoFile $photo}}
-                        <!-- Video file - show thumbnail or icon -->
-                        {{$thumbnailPath := getThumbnailPath $photo}}
-                        {{if $thumbnailPath}}
-                            <img src="/thumbnails/{{getThumbnailFilename $photo}}" alt="Vídeo {{add $index 1}}" class="media-thumbnail" loading="lazy">
-                        {{else}}
-                            <div class="media-thumbnail media-icon-thumbnail">
-                                <i class="bi bi-camera-video-fill"></i>
-                            </div>
-                        {{end}}
-                    {{else if isPdfFile $photo}}
-                        <!-- PDF file - show thumbnail or icon -->
-                        {{$thumbnailPath := getThumbnailPath $photo}}
-                        {{if $thumbnailPath}}
-                            <img src="/thumbnails/{{getThumbnailFilename $photo}}" alt="PDF {{add $index 1}}" class="media-thumbnail" loading="lazy">
-                        {{else}}
-                            <div class="media-thumbnail media-icon-thumbnail">
-                                <i class="bi bi-file-pdf-fill"></i>
-                            </div>
-                        {{end}}
+                    {{$thumbnailPath := getThumbnailPath $photo}}
+                    {{if $thumbnailPath}}
+                        <!-- Has thumbnail - show thumbnail for all file types -->
+                        <img src="{{$thumbnailPath}}" alt="Evidência {{add $index 1}}" class="media-thumbnail" loading="lazy">
                     {{else}}
-                        <!-- Other document types - show icon -->
+                        <!-- No thumbnail - show icon -->
                         <div class="media-thumbnail media-icon-thumbnail">
                             <i class="bi {{getFileTypeIcon $photo}}"></i>
                         </div>
