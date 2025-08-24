@@ -955,7 +955,7 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: #f8f9fa;
+    background: #333333;
     border-radius: 8px;
 }
 
@@ -964,49 +964,45 @@
     top: 15px;
     right: 15px;
     z-index: 1000;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(51, 51, 51, 0.95);
     border-radius: 12px;
     padding: 10px;
     display: flex;
     align-items: center;
     gap: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
 }
 
 .zoom-controls:hover {
-    background: rgba(255, 255, 255, 1);
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+    background: rgba(51, 51, 51, 1);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
 }
 
 .zoom-controls .btn {
-    padding: 8px 12px;
-    font-size: 0.875rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 36px;
+    height: 36px;
     border-radius: 8px;
-    transition: all 0.2s ease;
-    border: 1px solid #dee2e6;
-    background: #fff;
-    color: #495057;
-    min-width: 40px;
-    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 14px;
+    transition: all 0.2s ease;
 }
 
 .zoom-controls .btn:hover {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
 }
 
 .zoom-controls .btn:active {
-    transform: translateY(0);
-    box-shadow: 0 1px 4px rgba(0, 123, 255, 0.3);
+    transform: scale(0.95);
 }
 
 .zoom-controls .btn:disabled {
@@ -1016,35 +1012,34 @@
 }
 
 .zoom-level {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #495057;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
     min-width: 60px;
     text-align: center;
-    padding: 8px 12px;
-    background: #f8f9fa;
-    border-radius: 6px;
-    border: 1px solid #dee2e6;
-    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
 }
 
 .zoom-level.zoomed-out {
-    color: #6c757d;
-    background: #e9ecef;
+    background: rgba(255, 193, 7, 0.2);
+    border-color: rgba(255, 193, 7, 0.3);
 }
 
 .zoom-level.zoomed-in {
-    color: #dc3545;
-    background: #f8d7da;
-    border-color: #f5c6cb;
+    background: rgba(40, 167, 69, 0.2);
+    border-color: rgba(40, 167, 69, 0.3);
 }
 
 .image-container {
+    position: relative;
     width: 100%;
     height: 100%;
-    overflow: auto;
-    position: relative;
-    background: #f8f9fa;
+    overflow: hidden;
+    background: #333333;
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -1061,7 +1056,6 @@
     -khtml-user-drag: none;
     -moz-user-drag: none;
     -o-user-drag: none;
-    user-drag: none;
     border-radius: 4px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
@@ -1194,38 +1188,38 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
     .image-zoom-container {
-        background: #2d3748;
+        background: #333333;
     }
     
     .zoom-controls {
-        background: rgba(45, 55, 72, 0.95);
-        border-color: rgba(255, 255, 255, 0.2);
+        background: rgba(51, 51, 51, 0.95);
+        border-color: rgba(255, 255, 255, 0.1);
     }
     
     .zoom-controls:hover {
-        background: rgba(45, 55, 72, 1);
+        background: rgba(51, 51, 51, 1);
     }
     
     .zoom-controls .btn {
-        background: #4a5568;
-        border-color: #718096;
-        color: #e2e8f0;
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: white;
     }
     
     .zoom-controls .btn:hover {
-        background-color: #3182ce;
-        border-color: #3182ce;
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.3);
     }
     
     .zoom-level {
-        background: #4a5568;
-        border-color: #718096;
-        color: #e2e8f0;
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: white;
     }
     
     .zoom-level.zoomed-out {
-        background: #2d3748;
-        color: #a0aec0;
+        background: #333333;
+        color: #cccccc;
     }
     
     .zoom-level.zoomed-in {
@@ -1235,12 +1229,12 @@
     }
     
     .image-container {
-        background: #2d3748;
+        background: #333333;
     }
     
     .image-error {
-        background: #2d3748;
-        color: #a0aec0;
+        background: #333333;
+        color: #cccccc;
     }
 }
 
@@ -1335,6 +1329,11 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 10;
+    color: white;
+    background: rgba(51, 51, 51, 0.8);
+    padding: 20px;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
 }
 
 /* Zoom instructions */
@@ -1343,13 +1342,13 @@
     bottom: 15px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(51, 51, 51, 0.95);
     padding: 8px 12px;
     border-radius: 20px;
     font-size: 0.75rem;
-    color: #6c757d;
+    color: white;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     transition: opacity 0.3s ease;
     z-index: 100;
 }
@@ -1361,15 +1360,28 @@
 
 /* Modal footer improvements */
 .modal-footer {
-    border-top: 1px solid #dee2e6;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding: 1rem;
-    background: #f8f9fa;
+    background: #333333;
+    color: white;
+    border-radius: 0 0 12px 12px;
 }
 
 .file-actions {
     display: flex;
     gap: 0.5rem;
     align-items: center;
+}
+
+.file-actions .btn {
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.file-actions .btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
 /* Enhanced modal content */
@@ -1499,44 +1511,42 @@
 /* Dark mode support for new elements */
 @media (prefers-color-scheme: dark) {
     .zoom-instructions {
-        background: rgba(45, 55, 72, 0.9);
-        color: #a0aec0;
+        background: rgba(51, 51, 51, 0.95);
+        color: #cccccc;
         border-color: rgba(255, 255, 255, 0.2);
     }
     
     .modal-footer {
-        background: #2d3748;
-        border-top-color: #4a5568;
+        background: #333333;
     }
     
     .modal-header {
-        background: #2d3748;
-        border-bottom-color: #4a5568;
+        background: #333333;
     }
     
     .modal-content {
-        background: #2d3748;
-        color: #e2e8f0;
+        background: #333333;
+        color: #cccccc;
     }
     
     .file-viewer {
-        background: #2d3748;
+        background: #333333;
     }
     
     .file-content {
-        background: #2d3748;
+        background: #333333;
     }
     
     .pdf-container {
-        background: #4a5568;
+        background: #333333;
     }
     
     .pdf-fallback {
-        background: #4a5568;
+        background: #333333;
     }
     
     .document-placeholder {
-        background: #4a5568;
+        background: #333333;
     }
 }
 
@@ -1599,4 +1609,41 @@
         padding: 0.75rem 1.5rem;
         font-size: 1rem;
     }
+}
+
+/* Modal content improvements */
+.modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    background: #333333;
+    color: white;
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: #333333;
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-header .modal-title {
+    color: white;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+.modal-body {
+    background: #333333;
+    color: white;
+    padding: 1.5rem;
+}
+
+.file-viewer {
+    background: #333333;
+    color: white;
+    border-radius: 8px;
+    overflow: hidden;
 }
