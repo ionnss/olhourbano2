@@ -131,6 +131,8 @@
                             {{template "empresas.html" .}}
                         {{else if eq .Content "pesquisadores_content"}}
                             {{template "pesquisadores.html" .}}
+                        {{else if eq .Content "transparencia_content"}}
+                            {{template "transparencia.html" .}}
                         {{else if eq .Content "articles_content"}}
                             {{template "articles_content" .}}
                         {{else if eq .Content "article_content"}}

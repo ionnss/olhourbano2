@@ -546,6 +546,10 @@
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
     border: 1px solid #e9ecef;
+    /* Fix content overflow */
+    overflow: hidden;
+    word-wrap: break-word;
+    word-break: break-word;
 }
 
 .benefit-card:hover,
@@ -555,6 +559,40 @@
 .contact-item:hover {
     transform: translateY(-5px);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Card content styling to prevent overflow */
+.benefit-card h4,
+.feature-card h4,
+.benefit-card p,
+.feature-card p {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+}
+
+.benefit-card .benefit-content,
+.feature-card .feature-content {
+    width: 100%;
+    overflow: hidden;
+}
+
+.benefit-card .benefit-content h4,
+.feature-card .feature-content h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #2c3e50;
+    line-height: 1.3;
+}
+
+.benefit-card .benefit-content p,
+.feature-card .feature-content p {
+    color: #6c757d;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 0;
 }
 
 .benefit-icon,
@@ -569,6 +607,7 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 1.5rem;
+    flex-shrink: 0;
 }
 
 .benefit-icon i,
@@ -1392,6 +1431,7 @@
     
     .content-section h2 {
         font-size: 1.75rem;
+        margin-bottom: 1.5rem;
     }
     
     .content-section h3 {
@@ -1400,6 +1440,84 @@
     
     .content-section h4 {
         font-size: 1.25rem;
+    }
+    
+    .content-section p {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+    
+    /* Sobre page specific mobile optimizations */
+    .benefit-card,
+    .feature-card {
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-radius: 12px;
+        /* Ensure content stays within bounds on mobile */
+        overflow: hidden;
+        word-wrap: break-word;
+    }
+    
+    .benefit-card h4,
+    .feature-card h4 {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        line-height: 1.3;
+    }
+    
+    .benefit-card p,
+    .feature-card p {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+    }
+    
+    .benefit-card .benefit-content,
+    .feature-card .feature-content {
+        width: 100%;
+        overflow: hidden;
+    }
+    
+    .benefit-icon,
+    .feature-icon {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .benefit-icon i,
+    .feature-icon i {
+        font-size: 1.5rem;
+    }
+    
+    /* List optimizations for mobile */
+    .list-unstyled li {
+        padding: 0.5rem 0;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    
+    /* Alert optimizations */
+    .alert {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .alert h5 {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    /* Button optimizations */
+    .btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.95rem;
     }
     
     .hero-stats {
@@ -1537,6 +1655,108 @@
     
     .content-section h2 {
         font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .content-section h3 {
+        font-size: 1.25rem;
+    }
+    
+    .content-section h4 {
+        font-size: 1.1rem;
+    }
+    
+    .content-section p {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    
+    /* Sobre page specific small mobile optimizations */
+    .benefit-card,
+    .feature-card {
+        padding: 1.25rem;
+        margin-bottom: 0.75rem;
+        /* Ensure content stays within bounds on small mobile */
+        overflow: hidden;
+        word-wrap: break-word;
+    }
+    
+    .benefit-card h4,
+    .feature-card h4 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        line-height: 1.3;
+    }
+    
+    .benefit-card p,
+    .feature-card p {
+        font-size: 0.9rem;
+        line-height: 1.4;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+    }
+    
+    .benefit-card .benefit-content,
+    .feature-card .feature-content {
+        width: 100%;
+        overflow: hidden;
+    }
+    
+    .benefit-icon,
+    .feature-icon {
+        width: 45px;
+        height: 45px;
+        margin-bottom: 0.75rem;
+        flex-shrink: 0;
+    }
+    
+    .benefit-icon i,
+    .feature-icon i {
+        font-size: 1.25rem;
+    }
+    
+    /* List optimizations for small mobile */
+    .list-unstyled li {
+        padding: 0.4rem 0;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+    
+    /* Alert optimizations for small mobile */
+    .alert {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+    }
+    
+    .alert h5 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .alert p {
+        font-size: 0.9rem;
+    }
+    
+    /* Button optimizations for small mobile */
+    .btn {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.9rem;
+    }
+    
+    /* Contact card optimizations */
+    .contact-card {
+        padding: 1.25rem;
+    }
+    
+    .contact-card-header h3 {
+        font-size: 1.25rem;
+    }
+    
+    .contact-card-header p {
+        font-size: 0.95rem;
     }
     
     .benefit-card,

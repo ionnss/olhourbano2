@@ -149,15 +149,15 @@ func PesquisadoresHandler(w http.ResponseWriter, r *http.Request) {
 
 // TransparenciaHandler handles the transparency policy page
 func TransparenciaHandler(w http.ResponseWriter, r *http.Request) {
-	seoData := GenerateSEOData("transparencia", map[string]string{
-		"title":       "Transparência e Código Aberto - Olho Urbano",
-		"description": "Conheça nossa política de transparência e como o código fonte está disponível para auditoria de segurança e verificação de práticas de privacidade.",
-		"keywords":    "transparência, código aberto, segurança, auditoria, privacidade, tecnologia cívica, governo aberto",
-	})
-
 	data := map[string]interface{}{
-		"SEOData": seoData,
+		"PageTitle":    "Transparência e Código Aberto",
+		"PageSubtitle": "Nossa abordagem para construir confiança através da transparência",
+		"Content":      "transparencia_content",
 	}
 
-	renderFooterTemplate(w, "transparencia", data)
+	if err := renderTemplate(w, "05_footer_pages.html", data); err != nil {
+		log.Printf("Error rendering transparencia template: %s", err.Error())
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 }
