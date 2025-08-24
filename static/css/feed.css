@@ -199,7 +199,6 @@
     object-fit: cover;
     border-radius: 8px;
     transition: transform 0.2s ease;
-    aspect-ratio: 1;
 }
 
 .media-icon-thumbnail {
