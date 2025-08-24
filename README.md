@@ -1,7 +1,7 @@
 # Olho Urbano
 
 <div align="center">
-  <img src="static/resource/og-image.png" alt="olhourbano logo" width="300"/>
+  <img src="static/resource/og-image.png" alt="olhourbano logo" width="500"/>
   <br><br>
   
   **🔍 Plataforma de Tecnologia Cívica Open Source**
