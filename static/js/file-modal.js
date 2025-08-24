@@ -13,6 +13,7 @@ let translateX = 0;
 let translateY = 0;
 let initialDistance = 0;
 let initialZoom = 1;
+let isZooming = false;
 
 // Fallback modal function if Bootstrap is not available
 function showModalFallback() {
@@ -123,6 +124,28 @@ function showImageViewer(filePath) {
     modalImage.onload = function() {
         initializeImageZoom();
     };
+    
+    // Handle image load error
+    modalImage.onerror = function() {
+        console.error('Failed to load image:', filePath);
+        showImageError();
+    };
+}
+
+// Show image error state
+function showImageError() {
+    const imageViewer = document.getElementById('imageViewer');
+    const modalImage = document.getElementById('modalImage');
+    
+    if (imageViewer && modalImage) {
+        imageViewer.innerHTML = `
+            <div class="image-error text-center p-4">
+                <i class="bi bi-exclamation-triangle display-1 text-warning mb-3"></i>
+                <h5 class="text-muted">Erro ao carregar imagem</h5>
+                <p class="text-muted">Não foi possível carregar esta imagem.</p>
+            </div>
+        `;
+    }
 }
 
 // Initialize image zoom functionality
@@ -139,6 +162,9 @@ function initializeImageZoom() {
     
     // Reset zoom state
     resetImageZoom();
+    
+    // Remove existing event listeners to prevent duplicates
+    removeZoomEventListeners();
     
     // Zoom control event listeners
     if (zoomInBtn) {
@@ -157,17 +183,17 @@ function initializeImageZoom() {
         fitToScreenBtn.addEventListener('click', fitImageToScreen);
     }
     
-    // Mouse wheel zoom
-    imageContainer.addEventListener('wheel', handleWheelZoom);
+    // Mouse wheel zoom with better handling
+    imageContainer.addEventListener('wheel', handleWheelZoom, { passive: false });
     
-    // Mouse drag panning
+    // Mouse drag panning with improved handling
     modalImage.addEventListener('mousedown', startDragging);
     document.addEventListener('mousemove', handleDragging);
     document.addEventListener('mouseup', stopDragging);
     
-    // Touch events for mobile
-    modalImage.addEventListener('touchstart', handleTouchStart);
-    modalImage.addEventListener('touchmove', handleTouchMove);
+    // Touch events for mobile with better support
+    modalImage.addEventListener('touchstart', handleTouchStart, { passive: false });
+    modalImage.addEventListener('touchmove', handleTouchMove, { passive: false });
     modalImage.addEventListener('touchend', handleTouchEnd);
     
     // Keyboard shortcuts
@@ -176,11 +202,32 @@ function initializeImageZoom() {
     // Update zoom level display
     updateZoomLevelDisplay();
     
-    // Initial fit to screen
-    setTimeout(fitImageToScreen, 100);
+    // Initial fit to screen with delay to ensure image is loaded
+    setTimeout(fitImageToScreen, 200);
+    
+    // Add double-click to reset zoom
+    modalImage.addEventListener('dblclick', resetImageZoom);
 }
 
-// Handle mouse wheel zoom
+// Remove zoom event listeners to prevent duplicates
+function removeZoomEventListeners() {
+    const modalImage = document.getElementById('modalImage');
+    const imageContainer = document.getElementById('imageContainer');
+    
+    if (modalImage) {
+        modalImage.removeEventListener('mousedown', startDragging);
+        modalImage.removeEventListener('touchstart', handleTouchStart);
+        modalImage.removeEventListener('touchmove', handleTouchMove);
+        modalImage.removeEventListener('touchend', handleTouchEnd);
+        modalImage.removeEventListener('dblclick', resetImageZoom);
+    }
+    
+    if (imageContainer) {
+        imageContainer.removeEventListener('wheel', handleWheelZoom);
+    }
+}
+
+// Handle mouse wheel zoom with improved precision
 function handleWheelZoom(e) {
     e.preventDefault();
     
@@ -192,7 +239,7 @@ function handleWheelZoom(e) {
     zoomImageAtPoint(delta, x, y);
 }
 
-// Handle keyboard zoom
+// Handle keyboard zoom with better key detection
 function handleKeyboardZoom(e) {
     if (document.getElementById('imageViewer').style.display === 'none') return;
     
@@ -203,6 +250,7 @@ function handleKeyboardZoom(e) {
             zoomImage(1.2);
             break;
         case '-':
+        case '_':
             e.preventDefault();
             zoomImage(0.8);
             break;
@@ -215,41 +263,70 @@ function handleKeyboardZoom(e) {
             e.preventDefault();
             fitImageToScreen();
             break;
+        case 'Escape':
+            e.preventDefault();
+            closeModal();
+            break;
     }
 }
 
-// Start dragging
+// Close modal function
+function closeModal() {
+    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('fileModal'));
+        if (modal) {
+            modal.hide();
+        }
+    } else {
+        hideModalFallback();
+    }
+}
+
+// Start dragging with improved handling
 function startDragging(e) {
     if (currentZoom <= 1) return;
     
     isDragging = true;
-    lastMouseX = e.clientX;
-    lastMouseY = e.clientY;
+    lastMouseX = e.clientX || e.touches[0].clientX;
+    lastMouseY = e.clientY || e.touches[0].clientY;
     e.preventDefault();
+    
+    const modalImage = document.getElementById('modalImage');
+    if (modalImage) {
+        modalImage.style.cursor = 'grabbing';
+    }
 }
 
-// Handle dragging
+// Handle dragging with improved performance
 function handleDragging(e) {
     if (!isDragging) return;
     
-    const deltaX = e.clientX - lastMouseX;
-    const deltaY = e.clientY - lastMouseY;
+    const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : lastMouseX);
+    const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : lastMouseY);
+    
+    const deltaX = clientX - lastMouseX;
+    const deltaY = clientY - lastMouseY;
     
     translateX += deltaX;
     translateY += deltaY;
     
-    lastMouseX = e.clientX;
-    lastMouseY = e.clientY;
+    lastMouseX = clientX;
+    lastMouseY = clientY;
     
     updateImageTransform();
 }
 
-// Stop dragging
+// Stop dragging with cleanup
 function stopDragging() {
     isDragging = false;
+    
+    const modalImage = document.getElementById('modalImage');
+    if (modalImage) {
+        modalImage.style.cursor = 'grab';
+    }
 }
 
-// Touch start handler
+// Touch start handler with improved detection
 function handleTouchStart(e) {
     if (e.touches.length === 1) {
         // Single touch - start dragging
@@ -265,10 +342,11 @@ function handleTouchStart(e) {
             Math.pow(touch2.clientY - touch1.clientY, 2)
         );
         initialZoom = currentZoom;
+        isZooming = true;
     }
 }
 
-// Touch move handler
+// Touch move handler with improved performance
 function handleTouchMove(e) {
     e.preventDefault();
     
@@ -284,7 +362,7 @@ function handleTouchMove(e) {
         lastMouseY = e.touches[0].clientY;
         
         updateImageTransform();
-    } else if (e.touches.length === 2) {
+    } else if (e.touches.length === 2 && isZooming) {
         // Two touches - pinch zoom
         const touch1 = e.touches[0];
         const touch2 = e.touches[1];
@@ -301,13 +379,19 @@ function handleTouchMove(e) {
     }
 }
 
-// Touch end handler
+// Touch end handler with cleanup
 function handleTouchEnd(e) {
     isDragging = false;
+    isZooming = false;
     initialDistance = 0;
+    
+    const modalImage = document.getElementById('modalImage');
+    if (modalImage) {
+        modalImage.style.cursor = 'grab';
+    }
 }
 
-// Zoom image at specific point
+// Zoom image at specific point with improved precision
 function zoomImageAtPoint(scale, x, y) {
     const newZoom = Math.max(minZoom, Math.min(maxZoom, currentZoom * scale));
     const zoomRatio = newZoom / currentZoom;
@@ -321,7 +405,7 @@ function zoomImageAtPoint(scale, x, y) {
     updateZoomLevelDisplay();
 }
 
-// Zoom image
+// Zoom image with improved bounds checking
 function zoomImage(scale) {
     const newZoom = Math.max(minZoom, Math.min(maxZoom, currentZoom * scale));
     currentZoom = newZoom;
@@ -329,16 +413,18 @@ function zoomImage(scale) {
     updateZoomLevelDisplay();
 }
 
-// Reset image zoom
+// Reset image zoom with improved state management
 function resetImageZoom() {
     currentZoom = 1;
     translateX = 0;
     translateY = 0;
+    isDragging = false;
+    isZooming = false;
     updateImageTransform();
     updateZoomLevelDisplay();
 }
 
-// Fit image to screen
+// Fit image to screen with improved calculation
 function fitImageToScreen() {
     const modalImage = document.getElementById('modalImage');
     const imageContainer = document.getElementById('imageContainer');
@@ -347,6 +433,12 @@ function fitImageToScreen() {
     
     const containerRect = imageContainer.getBoundingClientRect();
     const imageRect = modalImage.getBoundingClientRect();
+    
+    // Wait for image to be properly loaded
+    if (imageRect.width === 0 || imageRect.height === 0) {
+        setTimeout(fitImageToScreen, 100);
+        return;
+    }
     
     const scaleX = containerRect.width / imageRect.width;
     const scaleY = containerRect.height / imageRect.height;
@@ -359,25 +451,37 @@ function fitImageToScreen() {
     updateZoomLevelDisplay();
 }
 
-// Update image transform
+// Update image transform with improved performance
 function updateImageTransform() {
     const modalImage = document.getElementById('modalImage');
     if (!modalImage) return;
     
+    // Apply transform with better performance
     modalImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentZoom})`;
-    modalImage.classList.add('zooming');
     
-    // Remove zooming class after animation
-    setTimeout(() => {
-        modalImage.classList.remove('zooming');
-    }, 200);
+    // Add zooming class for animation
+    if (!modalImage.classList.contains('zooming')) {
+        modalImage.classList.add('zooming');
+        setTimeout(() => {
+            modalImage.classList.remove('zooming');
+        }, 200);
+    }
 }
 
-// Update zoom level display
+// Update zoom level display with improved formatting
 function updateZoomLevelDisplay() {
     const zoomLevelDisplay = document.getElementById('zoomLevel');
     if (zoomLevelDisplay) {
-        zoomLevelDisplay.textContent = Math.round(currentZoom * 100) + '%';
+        const percentage = Math.round(currentZoom * 100);
+        zoomLevelDisplay.textContent = `${percentage}%`;
+        
+        // Add visual feedback for zoom level
+        zoomLevelDisplay.className = 'zoom-level';
+        if (percentage < 100) {
+            zoomLevelDisplay.classList.add('zoomed-out');
+        } else if (percentage > 100) {
+            zoomLevelDisplay.classList.add('zoomed-in');
+        }
     }
 }
 
