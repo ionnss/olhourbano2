@@ -281,81 +281,101 @@
 
 /* File Modal Styles */
 .modal-lg {
-    max-width: 800px;
+    max-width: 90%;
+    max-height: 90vh;
 }
 
 .file-viewer {
     position: relative;
-    min-height: 400px;
+    height: 70vh;
+    overflow: hidden;
 }
 
 .file-content {
-    width: 100%;
     height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #modalImage {
-    max-height: 500px;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
 }
 
 #modalVideo {
-    max-height: 500px;
+    max-width: 100%;
+    max-height: 100%;
 }
 
 #pdfFrame {
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+    border: none;
 }
 
 .pdf-container {
+    height: 100%;
     position: relative;
 }
 
 .pdf-fallback {
-    display: none;
-    text-align: center;
-    padding: 2rem;
-    background: #f8f9fa;
-    border-radius: 8px;
-    border: 2px dashed #dee2e6;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .pdf-fallback p {
     margin-bottom: 1rem;
-    color: #6c757d;
 }
 
 .document-placeholder {
-    background: #f8f9fa;
-    border-radius: 8px;
-    border: 2px dashed #dee2e6;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .file-navigation {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1050;
-    width: 100%;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    justify-content: space-between;
-    padding: 0 1rem;
-    pointer-events: none;
+    gap: 10px;
+    z-index: 1000;
 }
 
 .file-navigation button {
-    pointer-events: auto;
-    opacity: 0.8;
-    transition: opacity 0.2s ease;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #dee2e6;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .file-navigation button:hover {
-    opacity: 1;
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
 }
 
 .file-info {
-    font-size: 0.9rem;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.875rem;
+    z-index: 1000;
 }
 
 /* Modal responsive adjustments */
@@ -927,3 +947,170 @@
 
 /* Vote Verification Modal */
 /* Vote verification modal styles moved to modal.css for consistency across all pages */
+
+/* ===== FILE MODAL ZOOM FUNCTIONALITY ===== */
+
+.image-zoom-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.zoom-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.zoom-controls .btn {
+    padding: 4px 8px;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.zoom-controls .btn:hover {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.zoom-level {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #495057;
+    min-width: 50px;
+    text-align: center;
+}
+
+.image-container {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    position: relative;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.zoomable-image {
+    max-width: none;
+    max-height: none;
+    transition: transform 0.3s ease;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+}
+
+.zoomable-image:active {
+    cursor: grabbing;
+}
+
+.zoomable-image.dragging {
+    transition: none;
+}
+
+/* Zoom animation */
+.zoomable-image.zooming {
+    transition: transform 0.2s ease-out;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .zoom-controls {
+        top: 5px;
+        right: 5px;
+        padding: 6px;
+        gap: 6px;
+    }
+    
+    .zoom-controls .btn {
+        padding: 6px 10px;
+        font-size: 1rem;
+    }
+    
+    .zoom-level {
+        font-size: 0.8rem;
+        min-width: 45px;
+    }
+    
+    .image-container {
+        border-radius: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .zoom-controls {
+        flex-direction: column;
+        gap: 4px;
+        padding: 8px 6px;
+    }
+    
+    .zoom-controls .btn {
+        padding: 8px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .zoom-level {
+        font-size: 0.75rem;
+        min-width: 40px;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .zoom-controls {
+        background: rgba(255, 255, 255, 0.95);
+        border: 2px solid #000;
+    }
+    
+    .zoom-controls .btn {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .zoomable-image {
+        transition: none;
+    }
+    
+    .zoomable-image.zooming {
+        transition: none;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .zoom-controls {
+        background: rgba(33, 37, 41, 0.9);
+        color: #fff;
+    }
+    
+    .zoom-level {
+        color: #dee2e6;
+    }
+    
+    .image-container {
+        background: #212529;
+    }
+}
+
+/* ===== EXISTING FILE MODAL STYLES ===== */

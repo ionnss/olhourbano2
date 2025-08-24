@@ -75,6 +75,7 @@ func CreateRoutes() *mux.Router {
 	r.HandleFunc("/governos", handlers.GovernosHandler).Methods("GET")
 	r.HandleFunc("/empresas", handlers.EmpresasHandler).Methods("GET")
 	r.HandleFunc("/pesquisadores", handlers.PesquisadoresHandler).Methods("GET")
+	r.HandleFunc("/transparencia", handlers.TransparenciaHandler).Methods("GET")
 
 	return r
 }

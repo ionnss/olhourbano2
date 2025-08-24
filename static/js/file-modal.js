@@ -2,6 +2,18 @@
 let currentFileIndex = 0;
 let currentFiles = [];
 
+// Image zoom variables
+let currentZoom = 1;
+let minZoom = 0.1;
+let maxZoom = 5;
+let isDragging = false;
+let lastMouseX = 0;
+let lastMouseY = 0;
+let translateX = 0;
+let translateY = 0;
+let initialDistance = 0;
+let initialZoom = 1;
+
 // Fallback modal function if Bootstrap is not available
 function showModalFallback() {
     const modal = document.getElementById('fileModal');
@@ -95,13 +107,278 @@ function openFileGallery(element) {
     }
 }
 
-// Show image viewer
+// Show image viewer with zoom functionality
 function showImageViewer(filePath) {
     const imageViewer = document.getElementById('imageViewer');
     const modalImage = document.getElementById('modalImage');
     
+    // Reset zoom state
+    resetImageZoom();
+    
+    // Set image source
     modalImage.src = filePath;
     imageViewer.style.display = 'block';
+    
+    // Initialize zoom functionality after image loads
+    modalImage.onload = function() {
+        initializeImageZoom();
+    };
+}
+
+// Initialize image zoom functionality
+function initializeImageZoom() {
+    const modalImage = document.getElementById('modalImage');
+    const imageContainer = document.getElementById('imageContainer');
+    const zoomInBtn = document.getElementById('zoomIn');
+    const zoomOutBtn = document.getElementById('zoomOut');
+    const resetZoomBtn = document.getElementById('resetZoom');
+    const fitToScreenBtn = document.getElementById('fitToScreen');
+    const zoomLevelDisplay = document.getElementById('zoomLevel');
+    
+    if (!modalImage || !imageContainer) return;
+    
+    // Reset zoom state
+    resetImageZoom();
+    
+    // Zoom control event listeners
+    if (zoomInBtn) {
+        zoomInBtn.addEventListener('click', () => zoomImage(1.2));
+    }
+    
+    if (zoomOutBtn) {
+        zoomOutBtn.addEventListener('click', () => zoomImage(0.8));
+    }
+    
+    if (resetZoomBtn) {
+        resetZoomBtn.addEventListener('click', resetImageZoom);
+    }
+    
+    if (fitToScreenBtn) {
+        fitToScreenBtn.addEventListener('click', fitImageToScreen);
+    }
+    
+    // Mouse wheel zoom
+    imageContainer.addEventListener('wheel', handleWheelZoom);
+    
+    // Mouse drag panning
+    modalImage.addEventListener('mousedown', startDragging);
+    document.addEventListener('mousemove', handleDragging);
+    document.addEventListener('mouseup', stopDragging);
+    
+    // Touch events for mobile
+    modalImage.addEventListener('touchstart', handleTouchStart);
+    modalImage.addEventListener('touchmove', handleTouchMove);
+    modalImage.addEventListener('touchend', handleTouchEnd);
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', handleKeyboardZoom);
+    
+    // Update zoom level display
+    updateZoomLevelDisplay();
+    
+    // Initial fit to screen
+    setTimeout(fitImageToScreen, 100);
+}
+
+// Handle mouse wheel zoom
+function handleWheelZoom(e) {
+    e.preventDefault();
+    
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    zoomImageAtPoint(delta, x, y);
+}
+
+// Handle keyboard zoom
+function handleKeyboardZoom(e) {
+    if (document.getElementById('imageViewer').style.display === 'none') return;
+    
+    switch(e.key) {
+        case '+':
+        case '=':
+            e.preventDefault();
+            zoomImage(1.2);
+            break;
+        case '-':
+            e.preventDefault();
+            zoomImage(0.8);
+            break;
+        case '0':
+            e.preventDefault();
+            resetImageZoom();
+            break;
+        case 'f':
+        case 'F':
+            e.preventDefault();
+            fitImageToScreen();
+            break;
+    }
+}
+
+// Start dragging
+function startDragging(e) {
+    if (currentZoom <= 1) return;
+    
+    isDragging = true;
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
+    e.preventDefault();
+}
+
+// Handle dragging
+function handleDragging(e) {
+    if (!isDragging) return;
+    
+    const deltaX = e.clientX - lastMouseX;
+    const deltaY = e.clientY - lastMouseY;
+    
+    translateX += deltaX;
+    translateY += deltaY;
+    
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
+    
+    updateImageTransform();
+}
+
+// Stop dragging
+function stopDragging() {
+    isDragging = false;
+}
+
+// Touch start handler
+function handleTouchStart(e) {
+    if (e.touches.length === 1) {
+        // Single touch - start dragging
+        isDragging = true;
+        lastMouseX = e.touches[0].clientX;
+        lastMouseY = e.touches[0].clientY;
+    } else if (e.touches.length === 2) {
+        // Two touches - start pinch zoom
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        initialDistance = Math.sqrt(
+            Math.pow(touch2.clientX - touch1.clientX, 2) +
+            Math.pow(touch2.clientY - touch1.clientY, 2)
+        );
+        initialZoom = currentZoom;
+    }
+}
+
+// Touch move handler
+function handleTouchMove(e) {
+    e.preventDefault();
+    
+    if (e.touches.length === 1 && isDragging) {
+        // Single touch dragging
+        const deltaX = e.touches[0].clientX - lastMouseX;
+        const deltaY = e.touches[0].clientY - lastMouseY;
+        
+        translateX += deltaX;
+        translateY += deltaY;
+        
+        lastMouseX = e.touches[0].clientX;
+        lastMouseY = e.touches[0].clientY;
+        
+        updateImageTransform();
+    } else if (e.touches.length === 2) {
+        // Two touches - pinch zoom
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        const currentDistance = Math.sqrt(
+            Math.pow(touch2.clientX - touch1.clientX, 2) +
+            Math.pow(touch2.clientY - touch1.clientY, 2)
+        );
+        
+        if (initialDistance > 0) {
+            const scale = currentDistance / initialDistance;
+            const newZoom = Math.max(minZoom, Math.min(maxZoom, initialZoom * scale));
+            zoomImage(newZoom / currentZoom);
+        }
+    }
+}
+
+// Touch end handler
+function handleTouchEnd(e) {
+    isDragging = false;
+    initialDistance = 0;
+}
+
+// Zoom image at specific point
+function zoomImageAtPoint(scale, x, y) {
+    const newZoom = Math.max(minZoom, Math.min(maxZoom, currentZoom * scale));
+    const zoomRatio = newZoom / currentZoom;
+    
+    // Calculate new position to zoom towards the mouse point
+    translateX = x - (x - translateX) * zoomRatio;
+    translateY = y - (y - translateY) * zoomRatio;
+    
+    currentZoom = newZoom;
+    updateImageTransform();
+    updateZoomLevelDisplay();
+}
+
+// Zoom image
+function zoomImage(scale) {
+    const newZoom = Math.max(minZoom, Math.min(maxZoom, currentZoom * scale));
+    currentZoom = newZoom;
+    updateImageTransform();
+    updateZoomLevelDisplay();
+}
+
+// Reset image zoom
+function resetImageZoom() {
+    currentZoom = 1;
+    translateX = 0;
+    translateY = 0;
+    updateImageTransform();
+    updateZoomLevelDisplay();
+}
+
+// Fit image to screen
+function fitImageToScreen() {
+    const modalImage = document.getElementById('modalImage');
+    const imageContainer = document.getElementById('imageContainer');
+    
+    if (!modalImage || !imageContainer) return;
+    
+    const containerRect = imageContainer.getBoundingClientRect();
+    const imageRect = modalImage.getBoundingClientRect();
+    
+    const scaleX = containerRect.width / imageRect.width;
+    const scaleY = containerRect.height / imageRect.height;
+    const scale = Math.min(scaleX, scaleY, 1); // Don't scale up beyond 100%
+    
+    currentZoom = scale;
+    translateX = 0;
+    translateY = 0;
+    updateImageTransform();
+    updateZoomLevelDisplay();
+}
+
+// Update image transform
+function updateImageTransform() {
+    const modalImage = document.getElementById('modalImage');
+    if (!modalImage) return;
+    
+    modalImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentZoom})`;
+    modalImage.classList.add('zooming');
+    
+    // Remove zooming class after animation
+    setTimeout(() => {
+        modalImage.classList.remove('zooming');
+    }, 200);
+}
+
+// Update zoom level display
+function updateZoomLevelDisplay() {
+    const zoomLevelDisplay = document.getElementById('zoomLevel');
+    if (zoomLevelDisplay) {
+        zoomLevelDisplay.textContent = Math.round(currentZoom * 100) + '%';
+    }
 }
 
 // Show video viewer
@@ -198,43 +475,45 @@ function supportsPdfViewing() {
     testFrame.style.display = 'none';
     document.body.appendChild(testFrame);
     
-    // Try to load a test PDF
-    testFrame.src = 'data:application/pdf;base64,JVBERi0xLjQKJcOkw7zDtsO8DQoxIDAgb2JqDQo8PA0KL1R5cGUgL0NhdGFsb2cNCi9QYWdlcyAyIDAgUg0KPj4NCmVuZG9iag0KMiAwIG9iag0KPDwNCi9UeXBlIC9QYWdlcw0KL0NvdW50IDANCi9LaWRzIFtdDQo+Pg0KZW5kb2JqDQp4cmVmDQowIDMNCjAwMDAwMDAwMDAgNjU1MzUgZiANCjAwMDAwMDAwMTAgMDAwMDAgbiANCjAwMDAwMDAwNzkgMDAwMDAgbiANCnRyYWlsZXINCjw8DQovU2l6ZSAzDQovUm9vdCAxIDAgUg0KL0luZm8gMyAwIFINCj4+DQpzdGFydHhyZWYNCjExMg0KJSVFT0Y=';
-    
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const supported = testFrame.contentDocument && testFrame.contentDocument.body;
-            document.body.removeChild(testFrame);
-            resolve(supported);
-        }, 100);
-    });
+    try {
+        testFrame.src = 'data:application/pdf;base64,JVBERi0xLjQKJcOkw7zDtsO8DQoxIDAgb2JqDQo8PA0KL1R5cGUgL0NhdGFsb2cNCi9QYWdlcyAyIDAgUg0KPj4NCmVuZG9iag0KMiAwIG9iag0KPDwNCi9UeXBlIC9QYWdlcw0KL0NvdW50IDANCi9LaWRzIFtdDQo+Pg0KZW5kb2JqDQp4cmVmDQowIDMNCjAwMDAwMDAwMDAgNjU1MzUgZg0KMDAwMDAwMDAwMCAwMDAwMCBuDQowMDAwMDAwMDAxIDAwMDAwIG4NCnRyYWlsZXINCjw8DQovU2l6ZSAzDQovUm9vdCAxIDAgUg0KL0luZm8gMyAwIFINCj4+DQpzdGFydHhyZWYNCjANCiUlRU9GDQo=';
+        
+        // If the iframe loads successfully, PDF viewing is supported
+        return true;
+    } catch (e) {
+        return false;
+    } finally {
+        document.body.removeChild(testFrame);
+    }
 }
 
 // Show document viewer (fallback)
 function showDocumentViewer(filePath, fileName) {
     const documentViewer = document.getElementById('documentViewer');
-    const downloadLink = document.getElementById('downloadLink');
-    
-    downloadLink.href = filePath;
-    documentViewer.style.display = 'block';
+    if (documentViewer) {
+        documentViewer.style.display = 'block';
+    }
 }
 
 // Hide all viewers
 function hideAllViewers() {
     const viewers = ['imageViewer', 'videoViewer', 'pdfViewer', 'documentViewer'];
     viewers.forEach(viewerId => {
-        document.getElementById(viewerId).style.display = 'none';
+        const viewer = document.getElementById(viewerId);
+        if (viewer) {
+            viewer.style.display = 'none';
+        }
     });
 }
 
 // File type detection functions
 function isImageFile(fileName) {
-    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'];
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg'];
     return imageExtensions.some(ext => fileName.toLowerCase().endsWith(ext));
 }
 
 function isVideoFile(fileName) {
-    const videoExtensions = ['.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm'];
+    const videoExtensions = ['.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm', '.mkv'];
     return videoExtensions.some(ext => fileName.toLowerCase().endsWith(ext));
 }
 
@@ -250,21 +529,22 @@ function getFileType(fileName) {
 }
 
 function getVideoMimeType(filePath) {
-    const ext = filePath.split('.').pop().toLowerCase();
+    const extension = filePath.split('.').pop().toLowerCase();
     const mimeTypes = {
         'mp4': 'video/mp4',
-        'avi': 'video/avi',
+        'avi': 'video/x-msvideo',
         'mov': 'video/quicktime',
         'wmv': 'video/x-ms-wmv',
         'flv': 'video/x-flv',
-        'webm': 'video/webm'
+        'webm': 'video/webm',
+        'mkv': 'video/x-matroska'
     };
-    return mimeTypes[ext] || 'video/mp4';
+    return mimeTypes[extension] || 'video/mp4';
 }
 
 // Navigation functions for gallery
 function nextFile() {
-    if (currentFiles.length > 0 && currentFileIndex < currentFiles.length - 1) {
+    if (currentFileIndex < currentFiles.length - 1) {
         currentFileIndex++;
         const file = currentFiles[currentFileIndex];
         openFileModal(file.path, file.name, file.type);
@@ -272,7 +552,7 @@ function nextFile() {
 }
 
 function previousFile() {
-    if (currentFiles.length > 0 && currentFileIndex > 0) {
+    if (currentFileIndex > 0) {
         currentFileIndex--;
         const file = currentFiles[currentFileIndex];
         openFileModal(file.path, file.name, file.type);

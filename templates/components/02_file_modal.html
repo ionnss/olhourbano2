@@ -12,9 +12,28 @@
             </div>
             <div class="modal-body">
                 <div class="file-viewer">
-                    <!-- Image Viewer -->
+                    <!-- Image Viewer with Zoom -->
                     <div id="imageViewer" class="file-content" style="display: none;">
-                        <img id="modalImage" src="" alt="Imagem" class="img-fluid rounded">
+                        <div class="image-zoom-container">
+                            <div class="zoom-controls">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="zoomOut" title="Diminuir zoom">
+                                    <i class="bi bi-zoom-out"></i>
+                                </button>
+                                <span class="zoom-level" id="zoomLevel">100%</span>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="zoomIn" title="Aumentar zoom">
+                                    <i class="bi bi-zoom-in"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="resetZoom" title="Resetar zoom">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="fitToScreen" title="Ajustar à tela">
+                                    <i class="bi bi-arrows-fullscreen"></i>
+                                </button>
+                            </div>
+                            <div class="image-container" id="imageContainer">
+                                <img id="modalImage" src="" alt="Imagem" class="zoomable-image">
+                            </div>
+                        </div>
                     </div>
                     
                     <!-- Video Viewer -->
