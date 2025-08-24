@@ -7,11 +7,8 @@
   **🔍 Plataforma de Tecnologia Cívica Open Source**
   
   [![Licença: Transparência](https://img.shields.io/badge/Licença-Transparência-blue.svg)](LICENSE)
-  [![Segurança: Auditável](https://img.shields.io/badge/Segurança-Auditável-green.svg)](SECURITY.md)
   [![Status: Produção](https://img.shields.io/badge/Status-Produção-brightgreen.svg)](https://olhourbano.com.br)
 </div>
-
-
 
 ## 🌟 Sobre o Olho Urbano
 
@@ -60,6 +57,7 @@ Este repositório está **aberto para inspeção** para demonstrar nosso comprom
 - **📊 Estatísticas em Tempo Real**: Análises de relatórios e votação ao vivo
 - **🔄 Processamento de Arquivos**: Suporte para imagens, vídeos, PDFs com limpeza de metadados
 - **💬 Recursos Comunitários**: Sistema de comentários e votação
+- **📝 Sistema de Artigos**: Blog integrado com suporte a Markdown
 
 ## 🚀 Começando (Apenas Desenvolvimento)
 
@@ -69,15 +67,14 @@ Este repositório está **aberto para inspeção** para demonstrar nosso comprom
 - Docker & Docker Compose
 - ImageMagick (para processamento de arquivos)
 
-### Configuração do Ambiente
-Veja [DEPLOYMENT.md](DEPLOYMENT.md) para instruções detalhadas de configuração.
+
 
 ## 📚 Documentação
 
-- **[Documentação de Segurança](SECURITY.md)**: Medidas abrangentes de segurança e procedimentos de auditoria
-- **[Guia de Implantação](DEPLOYMENT.md)**: Instruções de implantação em produção
+- **[Política de Transparência](TRANSPARENCY.md)**: Nossa abordagem à transparência e código aberto
+- **[Guia de Contribuição](CONTRIBUTING.md)**: Como contribuir com o projeto
 - **[Esquema do Banco de Dados](db/README.md)**: Estrutura do banco de dados e sistema de migração
-- **[Documentação da API](handlers/)**: Handlers e endpoints da API backend
+- **[Configuração](config/)**: Arquivos de configuração e categorias
 
 ## 🔧 Componentes Principais
 
@@ -87,11 +84,12 @@ Veja [DEPLOYMENT.md](DEPLOYMENT.md) para instruções detalhadas de configuraç�
 - **`models/`**: Estruturas de dados e modelos do banco de dados
 - **`config/`**: Gerenciamento de configuração e categorias
 - **`db/`**: Conexão com banco de dados e sistema de migração
+- **`templates/`**: Templates HTML e componentes da interface
 
 ### Recursos de Segurança
 - **Gerenciamento de Segredos**: Segredos baseados em arquivo com integração Docker
 - **Verificação de CPF**: API oficial de validação de CPF brasileiro
-- **Segurança de Arquivos**: Limpeza de metadados e escaneamento de vírus
+- **Segurança de Arquivos**: Limpeza de metadados e validação de tipos
 - **Aplicação de HTTPS**: SSL/TLS com headers de segurança
 - **Validação de Entrada**: Validação abrangente de formulários
 
@@ -121,6 +119,7 @@ Devido ao nosso modelo de licenciamento, não podemos aceitar contribuições di
 ## 📞 Contato e Suporte
 
 - **Email**: olhourbano.contato@gmail.com
+- **Email Secundário**: zara.leonardo@gmail.com
 - **Website**: [https://olhourbano.com.br](https://olhourbano.com.br)
 - **Plataforma Ativa**: [https://olhourbano.com.br](https://olhourbano.com.br)
 
