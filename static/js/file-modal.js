@@ -63,30 +63,20 @@ function openFileModal(filePath, fileName, fileType) {
     
     // Show appropriate viewer based on file type
     if (fileType === 'image' || isImageFile(fileName)) {
-        console.log('Showing image viewer');
         showImageViewer(filePath);
-        modalTitle.innerHTML = '<i class="bi bi-image me-2"></i>Visualizar Imagem';
     } else if (fileType === 'video' || isVideoFile(fileName)) {
-        console.log('Showing video viewer');
         showVideoViewer(filePath);
-        modalTitle.innerHTML = '<i class="bi bi-camera-video me-2"></i>Visualizar Vídeo';
-    } else if (isPdfFile(fileName)) {
-        console.log('Showing PDF viewer');
+    } else if (fileType === 'pdf' || isPdfFile(fileName)) {
         showPdfViewer(filePath);
-        modalTitle.innerHTML = '<i class="bi bi-file-pdf me-2"></i>Visualizar PDF';
     } else {
-        console.log('Showing document viewer');
         showDocumentViewer(filePath, fileName);
-        modalTitle.innerHTML = '<i class="bi bi-file-earmark me-2"></i>Visualizar Documento';
     }
     
-    // Try to use Bootstrap modal, fallback to manual if not available
+    // Show modal
     if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-        console.log('Using Bootstrap modal');
-        const bootstrapModal = new bootstrap.Modal(modal);
-        bootstrapModal.show();
+        const bsModal = new bootstrap.Modal(modal);
+        bsModal.show();
     } else {
-        console.log('Using fallback modal');
         showModalFallback();
     }
 }
@@ -112,22 +102,46 @@ function openFileGallery(element) {
 function showImageViewer(filePath) {
     const imageViewer = document.getElementById('imageViewer');
     const modalImage = document.getElementById('modalImage');
+    const imageLoading = document.getElementById('imageLoading');
+    const zoomInstructions = document.getElementById('zoomInstructions');
     
     // Reset zoom state
     resetImageZoom();
+    
+    // Show loading state
+    if (imageLoading) {
+        imageLoading.style.display = 'block';
+    }
     
     // Set image source
     modalImage.src = filePath;
     imageViewer.style.display = 'block';
     
+    // Show zoom instructions on mobile
+    if (zoomInstructions && isMobileDevice()) {
+        zoomInstructions.classList.remove('hidden');
+        // Hide instructions after 5 seconds
+        setTimeout(() => {
+            zoomInstructions.classList.add('hidden');
+        }, 5000);
+    }
+    
     // Initialize zoom functionality after image loads
     modalImage.onload = function() {
+        // Hide loading state
+        if (imageLoading) {
+            imageLoading.style.display = 'none';
+        }
         initializeImageZoom();
     };
     
     // Handle image load error
     modalImage.onerror = function() {
         console.error('Failed to load image:', filePath);
+        // Hide loading state
+        if (imageLoading) {
+            imageLoading.style.display = 'none';
+        }
         showImageError();
     };
 }
@@ -207,6 +221,12 @@ function initializeImageZoom() {
     
     // Add double-click to reset zoom
     modalImage.addEventListener('dblclick', resetImageZoom);
+    
+    // Add loading class for smooth transitions
+    modalImage.classList.add('loading');
+    setTimeout(() => {
+        modalImage.classList.remove('loading');
+    }, 300);
 }
 
 // Remove zoom event listeners to prevent duplicates
@@ -243,6 +263,9 @@ function handleWheelZoom(e) {
 function handleKeyboardZoom(e) {
     if (document.getElementById('imageViewer').style.display === 'none') return;
     
+    // Check if user is typing in an input field
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    
     switch(e.key) {
         case '+':
         case '=':
@@ -266,6 +289,14 @@ function handleKeyboardZoom(e) {
         case 'Escape':
             e.preventDefault();
             closeModal();
+            break;
+        case 'ArrowLeft':
+            e.preventDefault();
+            previousFile();
+            break;
+        case 'ArrowRight':
+            e.preventDefault();
+            nextFile();
             break;
     }
 }
@@ -482,6 +513,9 @@ function updateZoomLevelDisplay() {
         } else if (percentage > 100) {
             zoomLevelDisplay.classList.add('zoomed-in');
         }
+        
+        // Update ARIA live region
+        zoomLevelDisplay.setAttribute('aria-label', `Zoom: ${percentage}%`);
     }
 }
 
@@ -569,7 +603,8 @@ function showPdfFallback() {
 
 // Enhanced mobile PDF detection
 function isMobileDevice() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+           window.innerWidth <= 768;
 }
 
 // Check if browser supports PDF viewing
@@ -736,15 +771,36 @@ document.addEventListener('DOMContentLoaded', function() {
         navButtons.className = 'file-navigation position-absolute';
         navButtons.style.cssText = 'top: 50%; transform: translateY(-50%); z-index: 1050;';
         navButtons.innerHTML = `
-            <button class="btn btn-light btn-sm me-2" onclick="previousFile()" ${currentFileIndex === 0 ? 'disabled' : ''}>
+            <button class="btn btn-light btn-sm me-2" onclick="previousFile()" ${currentFileIndex === 0 ? 'disabled' : ''} aria-label="Arquivo anterior">
                 <i class="bi bi-chevron-left"></i>
             </button>
-            <button class="btn btn-light btn-sm" onclick="nextFile()" ${currentFileIndex === currentFiles.length - 1 ? 'disabled' : ''}>
+            <button class="btn btn-light btn-sm" onclick="nextFile()" ${currentFileIndex === currentFiles.length - 1 ? 'disabled' : ''} aria-label="Próximo arquivo">
                 <i class="bi bi-chevron-right"></i>
             </button>
         `;
         modalBody.appendChild(navButtons);
     }
+    
+    // Add keyboard navigation for gallery
+    document.addEventListener('keydown', function(event) {
+        const modal = document.getElementById('fileModal');
+        if (modal && modal.classList.contains('show') && currentFiles.length > 1) {
+            switch(event.key) {
+                case 'ArrowLeft':
+                    event.preventDefault();
+                    previousFile();
+                    break;
+                case 'ArrowRight':
+                    event.preventDefault();
+                    nextFile();
+                    break;
+                case 'Escape':
+                    event.preventDefault();
+                    closeModal();
+                    break;
+            }
+        }
+    });
 });
 
 // Test function for PDF viewing
@@ -764,3 +820,5 @@ window.openPdfInNewTab = function(filePath) {
 window.openFileModal = openFileModal;
 window.showPdfViewer = showPdfViewer;
 window.openPdfInNewTab = openPdfInNewTab; 
+window.nextFile = nextFile;
+window.previousFile = previousFile; 

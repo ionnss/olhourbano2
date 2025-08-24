@@ -8,37 +8,49 @@
                     <i class="bi bi-file-earmark me-2"></i>
                     Visualizar Arquivo
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div class="modal-body">
                 <div class="file-viewer">
-                    <!-- Image Viewer with Zoom -->
+                    <!-- Image Viewer with Enhanced Zoom -->
                     <div id="imageViewer" class="file-content" style="display: none;">
                         <div class="image-zoom-container">
-                            <div class="zoom-controls">
-                                <button type="button" class="btn btn-sm btn-outline-secondary" id="zoomOut" title="Diminuir zoom">
-                                    <i class="bi bi-zoom-out"></i>
+                            <div class="zoom-controls" role="toolbar" aria-label="Controles de zoom da imagem">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="zoomOut" title="Diminuir zoom (Ctrl + -)" aria-label="Diminuir zoom">
+                                    <i class="bi bi-zoom-out" aria-hidden="true"></i>
                                 </button>
-                                <span class="zoom-level" id="zoomLevel">100%</span>
-                                <button type="button" class="btn btn-sm btn-outline-secondary" id="zoomIn" title="Aumentar zoom">
-                                    <i class="bi bi-zoom-in"></i>
+                                <span class="zoom-level" id="zoomLevel" role="status" aria-live="polite">100%</span>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="zoomIn" title="Aumentar zoom (Ctrl + +)" aria-label="Aumentar zoom">
+                                    <i class="bi bi-zoom-in" aria-hidden="true"></i>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary" id="resetZoom" title="Resetar zoom">
-                                    <i class="bi bi-arrow-clockwise"></i>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="resetZoom" title="Resetar zoom (0)" aria-label="Resetar zoom">
+                                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary" id="fitToScreen" title="Ajustar à tela">
-                                    <i class="bi bi-arrows-fullscreen"></i>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="fitToScreen" title="Ajustar à tela (F)" aria-label="Ajustar à tela">
+                                    <i class="bi bi-arrows-fullscreen" aria-hidden="true"></i>
                                 </button>
                             </div>
-                            <div class="image-container" id="imageContainer">
-                                <img id="modalImage" src="" alt="Imagem" class="zoomable-image">
+                            <div class="image-container" id="imageContainer" role="img" aria-label="Visualizador de imagem">
+                                <img id="modalImage" src="" alt="Imagem" class="zoomable-image" loading="lazy">
+                                <div class="image-loading" id="imageLoading" style="display: none;">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Carregando imagem...</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Zoom instructions for mobile -->
+                            <div class="zoom-instructions" id="zoomInstructions">
+                                <small class="text-muted">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Use os gestos de pinça para zoom ou arraste para mover
+                                </small>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Video Viewer -->
                     <div id="videoViewer" class="file-content" style="display: none;">
-                        <video id="modalVideo" controls class="w-100 rounded">
+                        <video id="modalVideo" controls class="w-100 rounded" preload="metadata">
                             <source id="videoSource" src="" type="">
                             Seu navegador não suporta vídeos.
                         </video>
@@ -53,15 +65,15 @@
                                 </div>
                                 <p class="text-muted">Carregando PDF...</p>
                             </div>
-                            <iframe id="pdfFrame" src="" width="100%" height="500px" frameborder="0"></iframe>
+                            <iframe id="pdfFrame" src="" width="100%" height="500px" frameborder="0" title="Visualizador de PDF"></iframe>
                             <div class="pdf-fallback" style="display: none;">
                                 <div class="text-center p-4">
-                                    <i class="bi bi-file-pdf display-1 text-muted mb-3"></i>
+                                    <i class="bi bi-file-pdf display-1 text-muted mb-3" aria-hidden="true"></i>
                                     <h5 class="text-muted mb-3">Visualizar PDF</h5>
                                     <p class="text-muted mb-3">Clique no botão abaixo para abrir o PDF em uma nova aba:</p>
                                     <div class="d-flex justify-content-center">
-                                        <a id="pdfOpenLink" href="" class="btn btn-primary btn-lg" target="_blank">
-                                            <i class="bi bi-box-arrow-up-right me-2"></i>
+                                        <a id="pdfOpenLink" href="" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
+                                            <i class="bi bi-box-arrow-up-right me-2" aria-hidden="true"></i>
                                             Abrir PDF em Nova Aba
                                         </a>
                                     </div>
@@ -73,10 +85,20 @@
                     <!-- Document Viewer (fallback) -->
                     <div id="documentViewer" class="file-content" style="display: none;">
                         <div class="document-placeholder text-center p-4">
-                            <i class="bi bi-file-earmark-text display-1 text-muted mb-3"></i>
+                            <i class="bi bi-file-earmark-text display-1 text-muted mb-3" aria-hidden="true"></i>
                             <h5 class="text-muted">Documento</h5>
                             <p class="text-muted mb-3">Este arquivo não pode ser visualizado diretamente.</p>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex justify-content-end align-items-center w-100">
+                    <div class="file-actions">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-lg me-1"></i>
+                            Fechar
+                        </button>
                     </div>
                 </div>
             </div>
