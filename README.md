@@ -6,7 +6,7 @@
   
   **Plataforma de Tecnologia Cívica Open Source**
   
-  [![Licença: Transparência](https://img.shields.io/badge/Licença-Transparência-blue.svg)](LICENSE)
+  [![Licença: Transparência](https://img.shields.io/badge/Licença-Transparência-blue.svg)](https://github.com/ionnss/olhourbano2?tab=License-1-ov-file)
   [![Status: Produção](https://img.shields.io/badge/Status-Produção-brightgreen.svg)](https://olhourbano.com.br)
   [![Go Version](https://img.shields.io/badge/Go-1.24.4+-blue.svg)](go.mod)
   [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-blue.svg)](docker-compose.yml)
@@ -42,7 +42,7 @@ Este repositório está **aberto para inspeção** para demonstrar nosso comprom
 - **Uso Comercial**: Implantação comercial requer permissão explícita
 - **Implantação Não Autorizada**: Executar este software requer consentimento por escrito
 
-**Licença**: [Licença de Transparência](LICENSE) - Visualizar para transparência, restrito para cópia
+**Licença**: [Licença de Transparência](https://github.com/ionnss/olhourbano2?tab=License-1-ov-file) - Visualizar para transparência, restrito para cópia
 
 ## Arquitetura
 
@@ -184,7 +184,7 @@ olhourbano2/
 ## Documentação
 
 - **[Política de Transparência](TRANSPARENCY.md)**: Nossa abordagem à transparência e código aberto
-- **[Guia de Contribuição](CONTRIBUTING.md)**: Como contribuir com o projeto
+- **[Guia de Contribuição](https://github.com/ionnss/olhourbano2?tab=contributing-ov-file)**: Como contribuir com o projeto
 - **[Guia de Migração](MIGRATION_GUIDE.md)**: Migração entre servidores e backup
 - **[Esquema do Banco de Dados](db/README.md)**: Estrutura do banco de dados e sistema de migração
 - **[Configuração](config/)**: Arquivos de configuração e categorias
@@ -220,7 +220,7 @@ Devido ao nosso modelo de licenciamento, não podemos aceitar contribuições di
 
 ## Legal
 
-Este software é fornecido sob a [Licença de Transparência](LICENSE). 
+Este software é fornecido sob a [Licença de Transparência](https://github.com/ionnss/olhourbano2?tab=License-1-ov-file). 
 Para consultas sobre licenciamento ou solicitações de uso comercial, entre em contato: olhourbano.contato@gmail.com
 
 ---

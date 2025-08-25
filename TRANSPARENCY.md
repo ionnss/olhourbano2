@@ -75,7 +75,7 @@ Nossa transparência permite que você verifique:
 ## Marco Legal
 
 ### 📜 Detalhes da Licença
-Nossa [Licença de Transparência](LICENSE) foi projetada para:
+Nossa [Licença de Transparência](https://github.com/ionnss/olhourbano2?tab=License-1-ov-file) foi projetada para:
 - **Permitir Inspeção**: Permitir revisão de código e auditoria de segurança
 - **Restringir Cópia**: Prevenir uso e distribuição não autorizados
 - **Proteger Investimento**: Manter controle sobre a plataforma

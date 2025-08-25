@@ -83,7 +83,7 @@ Ajude a expandir a adoção da plataforma:
 
 ### Antes de Contribuir
 
-1. **Revise Nossa Licença**: Entenda nossa [Licença de Transparência](LICENSE)
+1. **Revise Nossa Licença**: Entenda nossa [Licença de Transparência](https://github.com/ionnss/olhourbano2?tab=License-1-ov-file)
 2. **Leia a Documentação**: Familiarize-se com nossa [política de transparência](TRANSPARENCY.md)
 3. **Verifique Problemas Existentes**: Evite duplicar trabalho existente
 4. **Entre em Contato**: Entre em contato se tiver perguntas sobre contribuir
