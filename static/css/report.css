@@ -1091,6 +1091,12 @@ body.report-page main {
     margin-bottom: 0;
 }
 
+/* Override feed.css flex display for report detail page */
+.report-detail-container .report-location {
+    display: block;
+    align-items: unset;
+}
+
 /* Report detail page description - show full text */
 .report-detail-container .description-text {
     font-size: 1rem;
