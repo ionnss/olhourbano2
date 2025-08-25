@@ -26,7 +26,7 @@ A transparência total do código fonte permite que:
 
 ### Nossa Abordagem: Licença de Transparência
 
-Diferente do código aberto tradicional, desenvolvemos uma **"Licença de Transparência"** que equilibra abertura com proteção. Nosso repositório está disponível em: **[github.com/ions/olhourbano2](https://github.com/ionnss/olhourbano2?tab=readme-ov-file#olho-urbano)**
+Diferente do código aberto tradicional, desenvolvemos uma **"Licença de Transparência"** que equilibra abertura com proteção. Nosso repositório está disponível em: **[github.com/ions/olhourbano2/license](https://github.com/ionnss/olhourbano2?tab=License-1-ov-file)**
 
 **O que você pode fazer:**
 - ✅ Examinar todo o código fonte
@@ -130,13 +130,12 @@ Nosso código está organizado de forma transparente:
 - Templates responsivos
 - Interface de usuário acessível
 - Integração com Google Maps
-- Sistema de upload de arquivos
+- Sistema de upload de arquivos com limpeza de metadados
 
 **⚙️ Infraestrutura**
 - Configuração Docker e Docker Compose
 - Proxy reverso com Caddy
 - Gerenciamento de segredos
-- Scripts de backup e migração
 
 ### Medidas de Segurança Visíveis
 
