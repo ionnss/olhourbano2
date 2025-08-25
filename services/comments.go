@@ -42,7 +42,65 @@ func CreateComment(db *sql.DB, reportID int, hashedCPF, content string) (*models
 		return nil, fmt.Errorf("error updating comment count: %w", err)
 	}
 
+	// Send email notification to report owner (async)
+	go sendCommentNotificationEmail(db, reportID, hashedCPF, content)
+
 	return &comment, nil
+}
+
+// sendCommentNotificationEmail sends email notification to report owner
+func sendCommentNotificationEmail(db *sql.DB, reportID int, commenterHashedCPF, commentContent string) {
+	// Get report owner's email
+	var reportOwnerEmail string
+	err := db.QueryRow(`
+		SELECT email 
+		FROM reports 
+		WHERE id = $1
+	`, reportID).Scan(&reportOwnerEmail)
+
+	if err != nil {
+		// Log error but don't fail the comment creation
+		fmt.Printf("Error getting report owner email for notification: %v\n", err)
+		return
+	}
+
+	// Don't send notification if no email or if commenter is the report owner
+	if reportOwnerEmail == "" {
+		return
+	}
+
+	// Check if commenter is the report owner (to avoid self-notifications)
+	var reportOwnerHashedCPF string
+	err = db.QueryRow(`
+		SELECT hashed_cpf 
+		FROM reports 
+		WHERE id = $1
+	`, reportID).Scan(&reportOwnerHashedCPF)
+
+	if err != nil {
+		fmt.Printf("Error getting report owner CPF for notification: %v\n", err)
+		return
+	}
+
+	// Don't send notification if commenter is the report owner
+	if commenterHashedCPF == reportOwnerHashedCPF {
+		return
+	}
+
+	// Get commenter display name (first 8 characters of hashed CPF)
+	commenterName := commenterHashedCPF
+	if len(commenterHashedCPF) >= 8 {
+		commenterName = commenterHashedCPF[:8]
+	}
+
+	// Truncate comment content for email (max 100 characters)
+	emailCommentContent := commentContent
+	if len(commentContent) > 100 {
+		emailCommentContent = commentContent[:97] + "..."
+	}
+
+	// Send the notification email
+	SendCommentNotificationEmail(reportOwnerEmail, reportID, commenterName, emailCommentContent)
 }
 
 // GetCommentsForReport retrieves comments for a specific report
@@ -72,11 +130,11 @@ func GetCommentsForReport(db *sql.DB, reportID int, sort string, limit int, offs
 		}
 
 		commentDisplay := &models.CommentDisplay{
-			ID:                comment.ID,
-			ReportID:          comment.ReportID,
-			Content:           comment.Content,
-			CreatedAt:         comment.CreatedAt,
-			HashedCPFDisplay:  comment.GetHashedCPFDisplay(),
+			ID:               comment.ID,
+			ReportID:         comment.ReportID,
+			Content:          comment.Content,
+			CreatedAt:        comment.CreatedAt,
+			HashedCPFDisplay: comment.GetHashedCPFDisplay(),
 		}
 
 		comments = append(comments, commentDisplay)
@@ -84,10 +142,6 @@ func GetCommentsForReport(db *sql.DB, reportID int, sort string, limit int, offs
 
 	return comments, nil
 }
-
-
-
-
 
 // GetCommentCountForReport returns the total number of comments for a report
 func GetCommentCountForReport(db *sql.DB, reportID int) (int, error) {

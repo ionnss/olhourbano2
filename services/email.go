@@ -70,6 +70,36 @@ olhourbano.contato@gmail.com
 	}
 }
 
+// GetCommentNotificationEmailTemplate returns the email template for comment notifications
+func GetCommentNotificationEmailTemplate(reportID int, commenterName, commentContent string) EmailTemplate {
+	subject := fmt.Sprintf("Olho Urbano - Novo Comentário na Denúncia #%d", reportID)
+
+	body := fmt.Sprintf(`
+Olá,
+
+Sua denúncia recebeu um novo comentário!
+
+Detalhes:
+- Denúncia: #%d
+- Comentário de: %s
+- Conteúdo: "%s"
+
+Para visualizar o comentário e responder, acesse:
+https://olhourbano.com.br/report/%d
+
+Obrigado por contribuir para uma cidade melhor!
+
+--
+Equipe Olho Urbano
+olhourbano.contato@gmail.com
+`, reportID, commenterName, commentContent, reportID)
+
+	return EmailTemplate{
+		Subject: subject,
+		Body:    body,
+	}
+}
+
 // SendEmail sends an email using SMTP configuration
 func SendEmail(to string, template EmailTemplate) error {
 	// Load configuration
@@ -117,5 +147,15 @@ func SendStatusEmail(email string, reportID int, status string) {
 	err := SendEmail(email, template)
 	if err != nil {
 		log.Printf("Erro ao enviar email de status para %s: %v", email, err)
+	}
+}
+
+// SendCommentNotificationEmail sends a notification email when a comment is posted
+func SendCommentNotificationEmail(email string, reportID int, commenterName, commentContent string) {
+	template := GetCommentNotificationEmailTemplate(reportID, commenterName, commentContent)
+
+	err := SendEmail(email, template)
+	if err != nil {
+		log.Printf("Erro ao enviar email de notificação de comentário para %s: %v", email, err)
 	}
 }
