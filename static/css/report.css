@@ -1091,7 +1091,8 @@ body.report-page main {
     margin-bottom: 0;
 }
 
-.description-text {
+/* Report detail page description - show full text */
+.report-detail-container .description-text {
     font-size: 1rem;
     color: #333;
     line-height: 1.6;
@@ -1099,6 +1100,12 @@ body.report-page main {
     word-wrap: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
+    /* Override feed truncation styles */
+    display: block !important;
+    -webkit-line-clamp: unset !important;
+    line-clamp: unset !important;
+    -webkit-box-orient: unset !important;
+    overflow: visible !important;
 }
 
 .transport-info {
@@ -1322,13 +1329,18 @@ body.report-page main {
         gap: 0.5rem;
     }
     
-    .description-text {
+    .report-detail-container .description-text {
         font-size: 0.95rem;
         word-wrap: break-word;
         overflow-wrap: break-word;
         hyphens: auto;
         max-width: 100%;
-        overflow: hidden;
+        /* Override feed truncation styles */
+        display: block !important;
+        -webkit-line-clamp: unset !important;
+        line-clamp: unset !important;
+        -webkit-box-orient: unset !important;
+        overflow: visible !important;
     }
     
     .location-text {
@@ -1400,13 +1412,18 @@ body.report-page main {
         font-size: 0.6rem;
     }
     
-    .description-text {
+    .report-detail-container .description-text {
         font-size: 0.9rem;
         word-wrap: break-word;
         overflow-wrap: break-word;
         hyphens: auto;
         max-width: 100%;
-        overflow: hidden;
+        /* Override feed truncation styles */
+        display: block !important;
+        -webkit-line-clamp: unset !important;
+        line-clamp: unset !important;
+        -webkit-box-orient: unset !important;
+        overflow: visible !important;
     }
     
     .location-text {
