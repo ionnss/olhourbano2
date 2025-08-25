@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 )
@@ -118,7 +119,10 @@ func loadArticles() ([]Article, error) {
 	}
 
 	// Sort articles by date (newest first)
-	// This is a simple implementation - in production you might want more sophisticated sorting
+	sort.Slice(articles, func(i, j int) bool {
+		return articles[i].Date.After(articles[j].Date)
+	})
+
 	return articles, nil
 }
 
